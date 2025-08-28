@@ -1,0 +1,31 @@
+syntax = "proto3";
+
+option java_package = "com.grupoc.test";
+option java_outer_classname = "Test";
+
+service Hello{
+    rpc Saludar(Empty) returns (SaludoReply);
+    rpc SaludarNombre(SaludoRequest) returns (SaludoReply);
+}
+
+service Users{
+    rpc DevolverUsuario(Empty) returns (UsuarioDto);
+}
+
+message Empty{}
+
+message SaludoRequest{
+    string nombre = 1;
+}
+
+message SaludoReply{
+    string saludo = 1;
+}
+
+message UsuarioDto{
+    string name = 1;
+    string lastName = 2;
+    int32 age = 3;
+    string email = 4;
+}
+
