@@ -133,6 +133,12 @@
 				<version>3.4.2</version>
 				<configuration>
 					<protocVersion>${protobuf-java.version}</protocVersion>
+
+                    <!-- cambia el directorio de los archivos .proto para que sean accesibles para el servidor y el cliente -->
+                    <sourceDirectories>
+                        <sourceDirectory>${project.basedir}/../proto</sourceDirectory>
+                    </sourceDirectories>
+
 					<binaryMavenPlugins>
 						<binaryMavenPlugin>
 							<groupId>io.grpc</groupId>
