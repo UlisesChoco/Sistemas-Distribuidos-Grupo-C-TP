@@ -134,10 +134,12 @@
 				<configuration>
 					<protocVersion>${protobuf-java.version}</protocVersion>
 
-                    <!-- cambia el directorio de los archivos .proto para que sean accesibles para el servidor y el cliente -->
+                    <!-- cambia el directorio de los archivos .proto -->
+                    <!--
                     <sourceDirectories>
                         <sourceDirectory>${project.basedir}/../proto</sourceDirectory>
                     </sourceDirectories>
+                    -->
 
 					<binaryMavenPlugins>
 						<binaryMavenPlugin>
