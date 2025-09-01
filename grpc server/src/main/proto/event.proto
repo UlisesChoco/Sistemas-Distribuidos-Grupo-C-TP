@@ -1,0 +1,4 @@
+syntax = "proto3";
+
+option java_outer_classname = "EventServiceClass";
+option java_package = "com.grupo_c.SistemasDistribuidosTP.service";
