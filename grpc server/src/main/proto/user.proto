@@ -10,22 +10,27 @@ message LoginRequest {
   string password = 2;
 }
 
-message UserDTO {
-  OperationsUserDTO operationsUserDTO = 1;
+message UserWithTokenDTO {
+  UserWithRolesDTO userWithRolesDTO = 1;
   string token = 2;
 }
 
-message OperationsUserDTO {
+message RoleDTO {
+  string name = 1;
+}
+
+message UserWithRolesDTO {
   string username = 1;
   string name = 2;
   string surname = 3;
   string phoneNumber = 4;
   string email = 5;
   bool isActive = 6;
+  repeated RoleDTO roles = 7;
 }
 
 message UserListResponse {
-  repeated OperationsUserDTO users = 1;
+  repeated UserWithRolesDTO users = 1;
 }
 
 message Response {
@@ -43,10 +48,10 @@ message UserRequest {
 }
 
 service UserService {
-  rpc Login(LoginRequest) returns (UserDTO);
-  rpc CreateUser(OperationsUserDTO) returns (Response);
-  rpc ModifyUser(OperationsUserDTO) returns (Response);
+  rpc Login(LoginRequest) returns (UserWithTokenDTO);
+  rpc CreateUser(UserWithRolesDTO) returns (Response);
+  rpc ModifyUser(UserWithRolesDTO) returns (Response);
   rpc DeleteUser(UserRequest) returns (Response);
   rpc GetUserList(Empty) returns (UserListResponse);
-  rpc GetUser(UserRequest) returns (UserDTO);
+  rpc GetUser(UserRequest) returns (UserWithRolesDTO);
 }
