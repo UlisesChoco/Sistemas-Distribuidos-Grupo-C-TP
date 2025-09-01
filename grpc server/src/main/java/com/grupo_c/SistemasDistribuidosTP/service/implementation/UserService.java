@@ -10,20 +10,20 @@ public class UserService extends UserServiceGrpc.UserServiceImplBase {
     @Override
     public void login(
             UserServiceClass.LoginRequest request,
-            StreamObserver<UserServiceClass.UserDTO> responseObserver
+            StreamObserver<UserServiceClass.UserWithTokenDTO> responseObserver
     ) {
 
     }
     @Override
     public void createUser(
-            UserServiceClass.OperationsUserDTO request,
+            UserServiceClass.UserWithRolesDTO request,
             StreamObserver<UserServiceClass.Response> responseObserver
     ) {
 
     }
     @Override
     public void modifyUser(
-            UserServiceClass.OperationsUserDTO request,
+            UserServiceClass.UserWithRolesDTO request,
             StreamObserver<UserServiceClass.Response> responseObserver
     ) {
 
@@ -45,7 +45,7 @@ public class UserService extends UserServiceGrpc.UserServiceImplBase {
     @Override
     public void getUser(
             UserServiceClass.UserRequest request,
-            StreamObserver<UserServiceClass.UserDTO> responseObserver
+            StreamObserver<UserServiceClass.UserWithRolesDTO> responseObserver
     ) {
 
     }
