@@ -2,3 +2,51 @@ syntax = "proto3";
 
 option java_outer_classname = "UserServiceClass";
 option java_package = "com.grupo_c.SistemasDistribuidosTP.service";
+
+message Empty{}
+
+message LoginRequest {
+  string username = 1;
+  string password = 2;
+}
+
+message UserDTO {
+  OperationsUserDTO operationsUserDTO = 1;
+  string token = 2;
+}
+
+message OperationsUserDTO {
+  string username = 1;
+  string name = 2;
+  string surname = 3;
+  string phoneNumber = 4;
+  string email = 5;
+  bool isActive = 6;
+}
+
+message UserListResponse {
+  repeated OperationsUserDTO users = 1;
+}
+
+message Response {
+  bool succeeded = 1;
+}
+
+message UserSimpleDTO{
+  string username = 1;
+  string name = 2;
+  string surname = 3;
+}
+
+message UserRequest {
+  string username = 1;
+}
+
+service UserService {
+  rpc Login(LoginRequest) returns (UserDTO);
+  rpc CreateUser(OperationsUserDTO) returns (Response);
+  rpc ModifyUser(OperationsUserDTO) returns (Response);
+  rpc DeleteUser(UserRequest) returns (Response);
+  rpc GetUserList(Empty) returns (UserListResponse);
+  rpc GetUser(UserRequest) returns (UserDTO);
+}
