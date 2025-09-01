@@ -2,6 +2,7 @@ package com.grupo_c.SistemasDistribuidosTP.entity;
 
 import java.time.LocalDateTime;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import jakarta.persistence.JoinColumn;
@@ -75,6 +76,26 @@ public class User {
         this.creationDate = LocalDateTime.now();
         this.modificationDate = LocalDateTime.now();
     }
+
+    public User(
+            Set<Role> roles,
+            String username,
+            String name,
+            String surname,
+            String phoneNumber,
+            String password,
+            String email,
+            boolean isActive
+    ) {
+        this.roles = roles;
+        this.username = username;
+        this.name = name;
+        this.surname = surname;
+        this.phoneNumber = phoneNumber;
+        this.password = password;
+        this.email = email;
+        this.isActive = isActive;
+    }
     
     // Getters y Setters
     public Long getIdUser() { return idUser; }
@@ -124,7 +145,25 @@ public class User {
         this.roles.remove(role);
         role.getUsers().remove(this);
     }
-    
+
+    public Set<String> getRolesAsStrings() {
+        Set<String> rolesAsStrings = new HashSet<>();
+        for(Role role : roles)
+            rolesAsStrings.add(role.getName());
+        return rolesAsStrings;
+    }
+
+    public String getRolesSeparatedByCommaAsString() {
+        String rolesSeparatedByComma = "";
+        int rolesSize = roles.size();
+        List<Role> rolesAsList = roles.stream().toList();
+        for(int i = 0 ; i < rolesSize ; i++) {
+            String role = rolesAsList.get(i).getName();
+            rolesSeparatedByComma = (i < rolesSize - 1) ? rolesSeparatedByComma.concat(role + ",") : rolesSeparatedByComma.concat(role);
+        }
+        return rolesSeparatedByComma;
+    }
+
     @PreUpdate
     public void preUpdate() {
         this.modificationDate = LocalDateTime.now();
