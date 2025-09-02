@@ -34,7 +34,8 @@ message UserListResponse {
 }
 
 message Response {
-  bool succeeded = 1;
+  string message = 1;
+  bool succeeded = 2;
 }
 
 message UserSimpleDTO{
