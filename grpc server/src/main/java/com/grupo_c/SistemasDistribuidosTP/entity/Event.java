@@ -22,7 +22,7 @@ public class Event {
     
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long idEvent;
+    private Long id;
     
     @Column(nullable = false, length = 200)
     private String name;
@@ -59,8 +59,8 @@ public class Event {
     }
     
     // Getters y Setters
-    public Long getIdEvent() { return idEvent; }
-    public void setIdEvent(Long idEvent) { this.idEvent = idEvent; }
+    public Long getId() { return id; }
+    public void setId(Long id) { this.id = id; }
     
     public String getName() { return name; }
     public void setName(String name) { this.name = name; }

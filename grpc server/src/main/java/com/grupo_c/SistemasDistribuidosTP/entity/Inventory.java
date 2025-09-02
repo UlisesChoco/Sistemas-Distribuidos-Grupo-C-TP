@@ -24,7 +24,7 @@ public class Inventory {
     
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long idInventory;
+    private Long id;
     
     // Relación con User
     @ManyToOne
@@ -61,8 +61,9 @@ public class Inventory {
     }
     
     // Getters y Setters
-    public Long getIdInventory() { return idInventory; }
-    public void setIdInventory(Long idInventory) { this.idInventory = idInventory; }
+    public Long getId() { return id; }
+    public void setId(Long id) { this.id = id; }
+    
     
     public User getUserCreator() { return userCreator; }
     public void setUserCreator(User userCreator) { this.userCreator = userCreator; }
