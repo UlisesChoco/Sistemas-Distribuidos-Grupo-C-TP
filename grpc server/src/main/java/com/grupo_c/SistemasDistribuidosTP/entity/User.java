@@ -131,11 +131,10 @@ public class User {
     
     public Set<Role> getRoles() { return roles; }
     public void setRoles(Set<Role> roles) { this.roles = roles; }
-    
+
     public Set<Event> getEvents(){ return events; }
     public void setEvents(Set<Event> events) { this.events = events; }
-    
-    
+
     // Utils
     public void addRole(Role role) {
         this.roles.add(role);
@@ -169,5 +168,4 @@ public class User {
     public void preUpdate() {
         this.modificationDate = LocalDateTime.now();
     }
-    
 }
