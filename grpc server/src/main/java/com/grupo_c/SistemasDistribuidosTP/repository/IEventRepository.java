@@ -33,10 +33,10 @@ public interface IEventRepository extends JpaRepository<Event, Long> {
     @Query("SELECT e FROM Event e WHERE e.isCompleted = true")
     List<Event> findPastEvents();
     
-    @Query("SELECT e FROM Event e JOIN e.participants u WHERE u.idUser = :userId")
+    @Query("SELECT e FROM Event e JOIN e.participants u WHERE u.id = :userId")
     List<Event> findByParticipantId(@Param("userId") Long userId);
     
-    @Query("SELECT e FROM Event e JOIN e.participants u WHERE u.idUser = :userId AND e.isCompleted = false")
+    @Query("SELECT e FROM Event e JOIN e.participants u WHERE u.id = :userId AND e.isCompleted = false")
     List<Event> findUpcomingEventsByParticipant(@Param("userId") Long userId);
     
     @Query("SELECT COUNT(e) FROM Event e WHERE e.isCompleted = false AND e.date > CURRENT_TIMESTAMP")
