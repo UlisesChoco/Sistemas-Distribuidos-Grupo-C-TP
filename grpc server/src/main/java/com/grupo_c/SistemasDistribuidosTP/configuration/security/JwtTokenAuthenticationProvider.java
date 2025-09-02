@@ -26,15 +26,8 @@ public class JwtTokenAuthenticationProvider {
         String username = jwtUtils.extractUsernameFromToken(decodedJWT);
         String rolesSeparatedByComma = jwtUtils.extractClaimFromToken(decodedJWT, "roles").asString();
         Set<String> roles = new HashSet<>();
-        String role = "";
-        for(char character : rolesSeparatedByComma.toCharArray()) {
-            if(character != ',') {
-                role = role.concat(String.valueOf(character));
-            } else {
-                roles.add(role);
-                role = "";
-            }
-        }
+        for(String currentRole : rolesSeparatedByComma.split(","))
+            roles.add(currentRole.trim());
 
         return new JwtAuthentication(token, username, roles);
     }
