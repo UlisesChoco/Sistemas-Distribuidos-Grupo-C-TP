@@ -3,7 +3,7 @@
 // source: user.proto
 // Protobuf Java Version: 4.30.2
 
-package com.grupo_c.SistemasDistribuidosTP.service.grpc_generated;
+package com.grupo_c.SistemasDistribuidosTP.service;
 
 public final class UserServiceClass {
   private UserServiceClass() {}
@@ -232,7 +232,7 @@ public final class UserServiceClass {
                 UserServiceClass.Empty.class, UserServiceClass.Empty.Builder.class);
       }
 
-      // Construct using com.grupo_c.SistemasDistribuidosTP.service.grpc_generated.UserServiceClass.Empty.newBuilder()
+      // Construct using com.grupo_c.SistemasDistribuidosTP.service.UserServiceClass.Empty.newBuilder()
       private Builder() {
 
       }
@@ -711,7 +711,7 @@ public final class UserServiceClass {
                 UserServiceClass.LoginRequest.class, UserServiceClass.LoginRequest.Builder.class);
       }
 
-      // Construct using com.grupo_c.SistemasDistribuidosTP.service.grpc_generated.UserServiceClass.LoginRequest.newBuilder()
+      // Construct using com.grupo_c.SistemasDistribuidosTP.service.UserServiceClass.LoginRequest.newBuilder()
       private Builder() {
 
       }
@@ -1365,7 +1365,7 @@ public final class UserServiceClass {
                 UserServiceClass.UserWithTokenDTO.class, UserServiceClass.UserWithTokenDTO.Builder.class);
       }
 
-      // Construct using com.grupo_c.SistemasDistribuidosTP.service.grpc_generated.UserServiceClass.UserWithTokenDTO.newBuilder()
+      // Construct using com.grupo_c.SistemasDistribuidosTP.service.UserServiceClass.UserWithTokenDTO.newBuilder()
       private Builder() {
         maybeForceBuilderInitialization();
       }
@@ -2025,7 +2025,7 @@ public final class UserServiceClass {
                 UserServiceClass.RoleDTO.class, UserServiceClass.RoleDTO.Builder.class);
       }
 
-      // Construct using com.grupo_c.SistemasDistribuidosTP.service.grpc_generated.UserServiceClass.RoleDTO.newBuilder()
+      // Construct using com.grupo_c.SistemasDistribuidosTP.service.UserServiceClass.RoleDTO.newBuilder()
       private Builder() {
 
       }
@@ -2891,7 +2891,7 @@ public final class UserServiceClass {
                 UserServiceClass.UserWithRolesDTO.class, UserServiceClass.UserWithRolesDTO.Builder.class);
       }
 
-      // Construct using com.grupo_c.SistemasDistribuidosTP.service.grpc_generated.UserServiceClass.UserWithRolesDTO.newBuilder()
+      // Construct using com.grupo_c.SistemasDistribuidosTP.service.UserServiceClass.UserWithRolesDTO.newBuilder()
       private Builder() {
 
       }
@@ -4105,7 +4105,7 @@ public final class UserServiceClass {
                 UserServiceClass.UserListResponse.class, UserServiceClass.UserListResponse.Builder.class);
       }
 
-      // Construct using com.grupo_c.SistemasDistribuidosTP.service.grpc_generated.UserServiceClass.UserListResponse.newBuilder()
+      // Construct using com.grupo_c.SistemasDistribuidosTP.service.UserServiceClass.UserListResponse.newBuilder()
       private Builder() {
 
       }
@@ -4857,7 +4857,7 @@ public final class UserServiceClass {
                 UserServiceClass.Response.class, UserServiceClass.Response.Builder.class);
       }
 
-      // Construct using com.grupo_c.SistemasDistribuidosTP.service.grpc_generated.UserServiceClass.Response.newBuilder()
+      // Construct using com.grupo_c.SistemasDistribuidosTP.service.UserServiceClass.Response.newBuilder()
       private Builder() {
 
       }
@@ -5535,7 +5535,7 @@ public final class UserServiceClass {
                 UserServiceClass.UserSimpleDTO.class, UserServiceClass.UserSimpleDTO.Builder.class);
       }
 
-      // Construct using com.grupo_c.SistemasDistribuidosTP.service.grpc_generated.UserServiceClass.UserSimpleDTO.newBuilder()
+      // Construct using com.grupo_c.SistemasDistribuidosTP.service.UserServiceClass.UserSimpleDTO.newBuilder()
       private Builder() {
 
       }
@@ -6217,7 +6217,7 @@ public final class UserServiceClass {
                 UserServiceClass.UserRequest.class, UserServiceClass.UserRequest.Builder.class);
       }
 
-      // Construct using com.grupo_c.SistemasDistribuidosTP.service.grpc_generated.UserServiceClass.UserRequest.newBuilder()
+      // Construct using com.grupo_c.SistemasDistribuidosTP.service.UserServiceClass.UserRequest.newBuilder()
       private Builder() {
 
       }
