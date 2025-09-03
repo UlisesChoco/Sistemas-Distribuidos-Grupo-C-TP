@@ -1,4 +1,4 @@
-package com.grupo_c.SistemasDistribuidosTP.ServiceImp;
+package com.grupo_c.SistemasDistribuidosTP.serviceImp;
 
 import com.grupo_c.SistemasDistribuidosTP.service.EventServiceClass;
 import com.grupo_c.SistemasDistribuidosTP.service.EventServiceGrpc;
@@ -10,7 +10,7 @@ public class EventServiceImp extends EventServiceGrpc.EventServiceImplBase {
 
     @Override
     public void createEvent (EventServiceClass.EventDto event,
-                             StreamObserver<EventServiceClass.Response> responseStreamObserver){
+                             StreamObserver<EventServiceClass.Response2> responseStreamObserver){
 
         /*
         EventServiceClass.Response response = EventServiceClass.Response.newBuilder().setSucceeded(true).build();
@@ -21,25 +21,25 @@ public class EventServiceImp extends EventServiceGrpc.EventServiceImplBase {
 
     @Override
     public void modifyEvent (EventServiceClass.EventWithParticipantsDto event,
-                             StreamObserver<EventServiceClass.Response> responseStreamObserver){
+                             StreamObserver<EventServiceClass.Response2> responseStreamObserver){
 
     }
 
     @Override
     public void deleteEvent (EventServiceClass.EventRequest request,
-                             StreamObserver<EventServiceClass.Response> responseStreamObserver){
+                             StreamObserver<EventServiceClass.Response2> responseStreamObserver){
 
     }
 
     @Override
     public void assignUserToEvent (EventServiceClass.EventAssignOrDeleteRequest request,
-                                   StreamObserver<EventServiceClass.Response> responseStreamObserver){
+                                   StreamObserver<EventServiceClass.Response2> responseStreamObserver){
 
     }
 
     @Override
     public void deleteUserFromEvent (EventServiceClass.EventAssignOrDeleteRequest request,
-                                     StreamObserver<EventServiceClass.Response> responseStreamObserver){
+                                     StreamObserver<EventServiceClass.Response2> responseStreamObserver){
 
     }
 
@@ -50,13 +50,13 @@ public class EventServiceImp extends EventServiceGrpc.EventServiceImplBase {
     }
 
     @Override
-    public void getEventsWithParticipantsList (EventServiceClass.Empty request,
+    public void getEventsWithParticipantsList (EventServiceClass.Empty2 request,
                                                StreamObserver<EventServiceClass.EventsWithParticipantsList> responseStreamObserver){
 
     }
 
     @Override
-    public void getEventsWithoutParticipantsList (EventServiceClass.Empty request,
+    public void getEventsWithoutParticipantsList (EventServiceClass.Empty2 request,
                                                StreamObserver<EventServiceClass.EventsWithoutParticipantsList> responseStreamObserver){
 
     }

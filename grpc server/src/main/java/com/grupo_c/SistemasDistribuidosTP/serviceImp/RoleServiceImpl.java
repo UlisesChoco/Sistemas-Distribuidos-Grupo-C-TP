@@ -1,4 +1,4 @@
-package com.grupo_c.SistemasDistribuidosTP.service.implementation;
+package com.grupo_c.SistemasDistribuidosTP.serviceImp;
 
 import com.grupo_c.SistemasDistribuidosTP.entity.Role;
 import com.grupo_c.SistemasDistribuidosTP.repository.IRoleRepository;

@@ -5,7 +5,7 @@ import "google/protobuf/timestamp.proto";
 option java_outer_classname = "EventServiceClass";
 option java_package = "com.grupo_c.SistemasDistribuidosTP.service";
 
-message Empty{}
+message Empty2{}
 
 //import user.proto
 message UserDto{}
@@ -33,7 +33,7 @@ message EventWithoutParticipantsDto{
     google.protobuf.Timestamp date = 4;
 }
 
-message Response{
+message Response2{
     bool succeeded = 1;
 }
 
@@ -55,13 +55,13 @@ message EventsWithoutParticipantsList{
 }
 
 service EventService{
-    rpc CreateEvent (EventDto) returns (Response);
-    rpc ModifyEvent (EventWithParticipantsDto) returns (Response);
-    rpc DeleteEvent (EventRequest) returns (Response);
-    rpc AssignUserToEvent (EventAssignOrDeleteRequest) returns (Response);
-    rpc DeleteUserFromEvent (EventAssignOrDeleteRequest) returns (Response);
+    rpc CreateEvent (EventDto) returns (Response2);
+    rpc ModifyEvent (EventWithParticipantsDto) returns (Response2);
+    rpc DeleteEvent (EventRequest) returns (Response2);
+    rpc AssignUserToEvent (EventAssignOrDeleteRequest) returns (Response2);
+    rpc DeleteUserFromEvent (EventAssignOrDeleteRequest) returns (Response2);
     rpc GetEvent (EventRequest) returns (EventWithParticipantsDto);
-    rpc GetEventsWithParticipantsList (Empty) returns(EventsWithParticipantsList);
-    rpc GetEventsWithoutParticipantsList (Empty) returns(EventsWithoutParticipantsList);
+    rpc GetEventsWithParticipantsList (Empty2) returns(EventsWithParticipantsList);
+    rpc GetEventsWithoutParticipantsList (Empty2) returns(EventsWithoutParticipantsList);
 
 }

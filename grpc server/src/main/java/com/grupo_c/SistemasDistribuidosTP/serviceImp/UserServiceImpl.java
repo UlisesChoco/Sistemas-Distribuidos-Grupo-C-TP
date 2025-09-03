@@ -1,13 +1,10 @@
-package com.grupo_c.SistemasDistribuidosTP.service.implementation;
+package com.grupo_c.SistemasDistribuidosTP.serviceImp;
 
 import com.grupo_c.SistemasDistribuidosTP.configuration.security.JwtUtils;
 import com.grupo_c.SistemasDistribuidosTP.entity.Role;
 import com.grupo_c.SistemasDistribuidosTP.entity.User;
 import com.grupo_c.SistemasDistribuidosTP.repository.IUserRepository;
-import com.grupo_c.SistemasDistribuidosTP.service.IRoleService;
-import com.grupo_c.SistemasDistribuidosTP.service.IUserService;
-import com.grupo_c.SistemasDistribuidosTP.service.grpc_generated.UserServiceClass;
-import com.grupo_c.SistemasDistribuidosTP.service.grpc_generated.UserServiceGrpc;
+import com.grupo_c.SistemasDistribuidosTP.service.*;
 import io.grpc.stub.StreamObserver;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -166,7 +163,7 @@ public class UserServiceImpl extends UserServiceGrpc.UserServiceImplBase impleme
     @Override
     public void createUser(
             UserServiceClass.UserWithRolesDTO request,
-            StreamObserver<UserServiceClass.Response> responseObserver
+            StreamObserver<UtilsServiceClass.Response> responseObserver
     ) {
         if(!isUserValid(request, responseObserver)) return;
 
@@ -194,7 +191,7 @@ public class UserServiceImpl extends UserServiceGrpc.UserServiceImplBase impleme
 
         userRepository.save(userEntity);
 
-        UserServiceClass.Response response = UserServiceClass.Response
+        UtilsServiceClass.Response response = UtilsServiceClass.Response
                 .newBuilder()
                 .setMessage("Registration succeeded.")
                 .setSucceeded(true)
@@ -206,7 +203,7 @@ public class UserServiceImpl extends UserServiceGrpc.UserServiceImplBase impleme
     @Override
     public void modifyUser(
             UserServiceClass.UserWithRolesDTO request,
-            StreamObserver<UserServiceClass.Response> responseObserver
+            StreamObserver<UtilsServiceClass.Response> responseObserver
     ) {
         User userEntity = userRepository.findByUsername(request.getUsername()).orElse(null);
 
@@ -223,7 +220,7 @@ public class UserServiceImpl extends UserServiceGrpc.UserServiceImplBase impleme
 
         userRepository.save(userEntity);
 
-        UserServiceClass.Response response = UserServiceClass.Response
+        UtilsServiceClass.Response response = UtilsServiceClass.Response
                 .newBuilder()
                 .setMessage("Modification succeeded.")
                 .setSucceeded(true)
@@ -235,7 +232,7 @@ public class UserServiceImpl extends UserServiceGrpc.UserServiceImplBase impleme
     @Override
     public void deleteUser(
             UserServiceClass.UserRequest request,
-            StreamObserver<UserServiceClass.Response> responseObserver
+            StreamObserver<UtilsServiceClass.Response> responseObserver
     ) {
         User userEntity = userRepository.findByUsername(request.getUsername()).orElse(null);
 
@@ -246,7 +243,7 @@ public class UserServiceImpl extends UserServiceGrpc.UserServiceImplBase impleme
 
         userRepository.save(userEntity);
 
-        UserServiceClass.Response response = UserServiceClass.Response
+        UtilsServiceClass.Response response = UtilsServiceClass.Response
                 .newBuilder()
                 .setMessage("Deletion succeeded.")
                 .setSucceeded(true)
@@ -257,7 +254,7 @@ public class UserServiceImpl extends UserServiceGrpc.UserServiceImplBase impleme
 
     @Override
     public void getUserList(
-            UserServiceClass.Empty request,
+            UtilsServiceClass.Empty request,
             StreamObserver<UserServiceClass.UserListResponse> responseObserver
     ) {
         List<User> usersEntities = userRepository.findAll();
@@ -331,14 +328,14 @@ public class UserServiceImpl extends UserServiceGrpc.UserServiceImplBase impleme
 
     private boolean isUserValid(
             UserServiceClass.UserWithRolesDTO request,
-            StreamObserver<UserServiceClass.Response> responseObserver
+            StreamObserver<UtilsServiceClass.Response> responseObserver
     ) {
         boolean usernameIsAlreadyTaken = userRepository.existsByUsername(request.getUsername());
         boolean phoneNumberIsAlreadyTaken = userRepository.existsByPhoneNumber(request.getPhoneNumber());
         boolean emailIsAlreadyTaken = userRepository.existsByEmail(request.getEmail());
 
         if(usernameIsAlreadyTaken) {
-            UserServiceClass.Response response = UserServiceClass.Response
+            UtilsServiceClass.Response response = UtilsServiceClass.Response
                     .newBuilder()
                     .setMessage("Registration failed. Username '"+request.getUsername()+"' already in use.")
                     .setSucceeded(false)
@@ -349,7 +346,7 @@ public class UserServiceImpl extends UserServiceGrpc.UserServiceImplBase impleme
         }
 
         if(phoneNumberIsAlreadyTaken) {
-            UserServiceClass.Response response = UserServiceClass.Response
+            UtilsServiceClass.Response response = UtilsServiceClass.Response
                     .newBuilder()
                     .setMessage("Registration failed. Phone number '"+request.getPhoneNumber()+"' already in use.")
                     .setSucceeded(false)
@@ -360,7 +357,7 @@ public class UserServiceImpl extends UserServiceGrpc.UserServiceImplBase impleme
         }
 
         if(emailIsAlreadyTaken) {
-            UserServiceClass.Response response = UserServiceClass.Response
+            UtilsServiceClass.Response response = UtilsServiceClass.Response
                     .newBuilder()
                     .setMessage("Registration failed. Email '"+request.getEmail()+"' already in use.")
                     .setSucceeded(false)
@@ -375,11 +372,11 @@ public class UserServiceImpl extends UserServiceGrpc.UserServiceImplBase impleme
 
     private boolean userDoesNotExist(
             UserServiceClass.UserWithRolesDTO request,
-            StreamObserver<UserServiceClass.Response> responseObserver,
+            StreamObserver<UtilsServiceClass.Response> responseObserver,
             User userEntity
     ) {
         if(userEntity == null) {
-            UserServiceClass.Response response = UserServiceClass.Response
+            UtilsServiceClass.Response response = UtilsServiceClass.Response
                     .newBuilder()
                     .setMessage("Modification failed. User with username '"+request.getUsername()+"' and email '"+request.getEmail()+"' does not exists.")
                     .setSucceeded(false)
@@ -394,11 +391,11 @@ public class UserServiceImpl extends UserServiceGrpc.UserServiceImplBase impleme
 
     private boolean userDoesNotExist(
             UserServiceClass.UserRequest request,
-            StreamObserver<UserServiceClass.Response> responseObserver,
+            StreamObserver<UtilsServiceClass.Response> responseObserver,
             User userEntity
     ) {
         if(userEntity == null) {
-            UserServiceClass.Response response = UserServiceClass.Response
+            UtilsServiceClass.Response response = UtilsServiceClass.Response
                     .newBuilder()
                     .setMessage("Deletion failed. User with username '"+request.getUsername()+"' does not exists.")
                     .setSucceeded(false)
