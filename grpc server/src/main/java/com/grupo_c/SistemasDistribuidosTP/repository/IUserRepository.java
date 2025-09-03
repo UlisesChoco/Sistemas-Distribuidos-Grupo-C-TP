@@ -32,6 +32,10 @@ public interface IUserRepository extends JpaRepository<User, Long> {
     boolean existsByEmail(String email);
 
     boolean existsByPhoneNumber(String phoneNumber);
+
+    boolean existsByEmailAndUsernameNot(String email, String username);
+
+    boolean existsByPhoneNumberAndUsernameNot(String phoneNumber, String username);
     
     @Query("SELECT u FROM User u JOIN u.roles r WHERE r.name = :roleName")
     List<User> findByRoleName(@Param("roleName") String roleName);
