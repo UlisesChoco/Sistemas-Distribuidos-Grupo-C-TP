@@ -146,7 +146,7 @@ public class UserServiceImpl implements IUserService {
 
     @Override
     public void modifyUser(User userEntity, UserServiceClass.UserWithRolesDTO userWithRolesDTO, List<Role> rolesFromDB) throws EmailAlreadyExistsException, PhoneNumberAlreadyExistsException {
-        if(existsByEmailAndUsernameNot(userEntity.getEmail(), userEntity.getUsername())) if(existsByEmail(userWithRolesDTO.getEmail())) throw new EmailAlreadyExistsException("Modification failed. Email already taken.");
+        if(existsByEmailAndUsernameNot(userEntity.getEmail(), userEntity.getUsername())) throw new EmailAlreadyExistsException("Modification failed. Email already taken.");
         if(existsByPhoneNumberAndUsernameNot(userWithRolesDTO.getPhoneNumber(), userEntity.getUsername())) throw new PhoneNumberAlreadyExistsException("Modification failed. Phone number already taken.");
 
         UserMapper.userWithRolesDTOToUser(userWithRolesDTO, userEntity, rolesFromDB);
