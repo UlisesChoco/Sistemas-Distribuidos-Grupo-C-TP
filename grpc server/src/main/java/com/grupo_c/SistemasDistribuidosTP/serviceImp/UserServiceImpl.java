@@ -137,6 +137,7 @@ public class UserServiceImpl implements IUserService {
 
         User userEntity = new User();
         String generatedPassword = UUID.randomUUID().toString();
+        //todo: REMOVER ESTE PRINT EN LA VERSION FINAL. simplemente lo dejo para saber que password esta generando para facilitar pruebas
         System.out.println("Creating new user with this password: "+generatedPassword);
         UserMapper.userWithRolesDTOToUser(userWithRolesDTO, userEntity, rolesFromDB);
         userEntity.setPassword(passwordEncoder.encode(generatedPassword));
