@@ -6,14 +6,19 @@ option java_outer_classname = "EventServiceClass";
 option java_package = "com.grupo_c.SistemasDistribuidosTP.service";
 
 import "utils.proto";
-import "user.proto";
+//import "user.proto";
+
+message ParticipantDto{
+    int64 id = 1;
+    string username = 2;
+}
 
 message EventDto{
     string name = 1;
     string description = 2;
     google.protobuf.Timestamp date = 3;
     //el evento inicialmente cuenta con el usuario creador
-    repeated int64 participantsIds = 4;
+    repeated ParticipantDto participants = 4;
 }
 
 message EventWithParticipantsDto{
@@ -21,7 +26,7 @@ message EventWithParticipantsDto{
     string name = 2;
     string description = 3;
     google.protobuf.Timestamp date = 4;
-    repeated UserSimpleDTO participants = 5;
+    repeated ParticipantDto participants = 5;
     bool is_completed = 6;
 }
 

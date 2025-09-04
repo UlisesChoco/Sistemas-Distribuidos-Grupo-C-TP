@@ -9,6 +9,7 @@ import com.grupo_c.SistemasDistribuidosTP.entity.Event;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface IEventRepository extends JpaRepository<Event, Long> {
@@ -32,7 +33,13 @@ public interface IEventRepository extends JpaRepository<Event, Long> {
     
     @Query("SELECT e FROM Event e WHERE e.isCompleted = true")
     List<Event> findPastEvents();
-    
+
+    @Query("SELECT e FROM Event e LEFT JOIN FETCH e.participants")
+    List<Event> findAllJoinParticipants();
+
+    @Query("SELECT e FROM Event e LEFT JOIN FETCH e.participants WHERE e.id = :eventId ")
+    Optional<Event> findByIdJoinParticipants(@Param("eventId") Long eventId);
+
     @Query("SELECT e FROM Event e JOIN e.participants u WHERE u.id = :userId")
     List<Event> findByParticipantId(@Param("userId") Long userId);
     

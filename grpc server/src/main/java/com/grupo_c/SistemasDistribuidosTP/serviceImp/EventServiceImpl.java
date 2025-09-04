@@ -6,19 +6,12 @@ import com.grupo_c.SistemasDistribuidosTP.mapper.EventMapper;
 import com.grupo_c.SistemasDistribuidosTP.repository.IEventRepository;
 import com.grupo_c.SistemasDistribuidosTP.repository.IUserRepository;
 import com.grupo_c.SistemasDistribuidosTP.service.*;
-import io.grpc.Status;
 import io.grpc.stub.StreamObserver;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
+import java.util.*;
 
-@Slf4j
 @Service
 public class EventServiceImpl extends EventServiceGrpc.EventServiceImplBase implements IEventService {
 
@@ -44,8 +37,13 @@ public class EventServiceImpl extends EventServiceGrpc.EventServiceImplBase impl
         Event e = em.toEntity(event);
         e.setIsCompleted(false);
 
-        Set<User> users = new HashSet<>(userRepository.findAllById(event.getParticipantsIdsList()));
-        e.setParticipants(users);
+        List<Long> ids = new ArrayList<>();
+        for (EventServiceClass.ParticipantDto participant : event.getParticipantsList()){
+            ids.add(participant.getId());
+        }
+
+        Set<User> participants = new HashSet<>(userRepository.findAllById(ids));
+        e.setParticipants(participants);
 
         eventRepository.save(e);
 
@@ -62,6 +60,34 @@ public class EventServiceImpl extends EventServiceGrpc.EventServiceImplBase impl
     public void modifyEvent (EventServiceClass.EventWithParticipantsDto event,
                              StreamObserver<UtilsServiceClass.Response> responseStreamObserver){
 
+        if(eventRepository.findById(event.getId()).orElse(null) == null){
+            UtilsServiceClass.Response response = UtilsServiceClass.Response
+                    .newBuilder()
+                    .setMessage("Event does not exists.")
+                    .setSucceeded(false)
+                    .build();
+            responseStreamObserver.onNext(response);
+            responseStreamObserver.onCompleted();
+        }
+
+        List<Long> ids = new ArrayList<>();
+        for (EventServiceClass.ParticipantDto participant : event.getParticipantsList()){
+            ids.add(participant.getId());
+        }
+
+        Set<User> participants = new HashSet<>(userRepository.findAllById(ids));
+
+        Event e = em.toEntityWithParticipants(event,participants);
+
+        eventRepository.save(e);
+
+        UtilsServiceClass.Response response = UtilsServiceClass.Response
+                .newBuilder()
+                .setMessage("Event modified.")
+                .setSucceeded(true)
+                .build();
+        responseStreamObserver.onNext(response);
+        responseStreamObserver.onCompleted();
     }
 
     @Override
@@ -97,24 +123,93 @@ public class EventServiceImpl extends EventServiceGrpc.EventServiceImplBase impl
     public void assignUserToEvent (EventServiceClass.EventAssignOrDeleteRequest request,
                                    StreamObserver<UtilsServiceClass.Response> responseStreamObserver){
 
+        Event e = eventRepository.findByIdJoinParticipants(request.getEventId()).orElse(null);
+        User u = userRepository.findById(request.getUserId()).orElse(null);
+
+        if(e==null || u==null){
+            UtilsServiceClass.Response response = UtilsServiceClass.Response
+                    .newBuilder()
+                    .setMessage("Id del evento o del participante invalido")
+                    .setSucceeded(false)
+                    .build();
+            responseStreamObserver.onNext(response);
+            responseStreamObserver.onCompleted();
+            return;
+        }
+
+        e.getParticipants().add(u);
+
+        eventRepository.save(e);
+
+        UtilsServiceClass.Response response = UtilsServiceClass.Response
+                .newBuilder()
+                .setMessage("El usuario " + u.getUsername() + " fue añadido al evento " + e.getName())
+                .setSucceeded(true)
+                .build();
+        responseStreamObserver.onNext(response);
+        responseStreamObserver.onCompleted();
     }
 
     @Override
     public void deleteUserFromEvent (EventServiceClass.EventAssignOrDeleteRequest request,
                                      StreamObserver<UtilsServiceClass.Response> responseStreamObserver){
 
+        Event e = eventRepository.findByIdJoinParticipants(request.getEventId()).orElse(null);
+        User u = userRepository.findByIdJoinEvents(request.getUserId()).orElse(null);
+
+        if(e==null || u==null){
+            UtilsServiceClass.Response response = UtilsServiceClass.Response
+                    .newBuilder()
+                    .setMessage("Id del evento o del participante invalido")
+                    .setSucceeded(false)
+                    .build();
+            responseStreamObserver.onNext(response);
+            responseStreamObserver.onCompleted();
+            return;
+        }
+
+        e.getParticipants().removeIf(p->p.getId().equals(u.getId()));
+
+        eventRepository.save(e);
+
+        UtilsServiceClass.Response response = UtilsServiceClass.Response
+                .newBuilder()
+                .setMessage("El usuario " + u.getUsername() + " fue eliminado del evento " + e.getName())
+                .setSucceeded(true)
+                .build();
+        responseStreamObserver.onNext(response);
+        responseStreamObserver.onCompleted();
     }
 
     @Override
     public void getEvent (EventServiceClass.EventRequest request,
                           StreamObserver<EventServiceClass.EventWithParticipantsDto> responseStreamObserver){
 
+        Event e = eventRepository.findByIdJoinParticipants(request.getId()).orElse(null);
+
+        EventServiceClass.EventWithParticipantsDto response = em.toEventWithParticipantsDto(e);
+
+        responseStreamObserver.onNext(response);
+        responseStreamObserver.onCompleted();
     }
 
     @Override
     public void getEventsWithParticipantsList (UtilsServiceClass.Empty request,
                                                StreamObserver<EventServiceClass.EventsWithParticipantsList> responseStreamObserver){
 
+        List<Event> events = eventRepository.findAllJoinParticipants();
+        List<EventServiceClass.EventWithParticipantsDto> eventsWithParticipantsDto = new ArrayList<>();
+
+        for(Event event: events){
+            eventsWithParticipantsDto.add(em.toEventWithParticipantsDto(event));
+        }
+
+        EventServiceClass.EventsWithParticipantsList response = EventServiceClass.EventsWithParticipantsList.newBuilder()
+                .addAllEvents(eventsWithParticipantsDto)
+                .build();
+
+        responseStreamObserver.onNext(response);
+        responseStreamObserver.onCompleted();
     }
 
     @Override
@@ -125,7 +220,7 @@ public class EventServiceImpl extends EventServiceGrpc.EventServiceImplBase impl
         List<EventServiceClass.EventWithoutParticipantsDto> eventsWithoutParticipantsDto = new ArrayList<>();
 
         for(Event event : events){
-            eventsWithoutParticipantsDto.add(em.toDto(event));
+            eventsWithoutParticipantsDto.add(em.toEventWithoutParticipantsDto(event));
         }
 
         EventServiceClass.EventsWithoutParticipantsList response = EventServiceClass.EventsWithoutParticipantsList.
@@ -135,7 +230,5 @@ public class EventServiceImpl extends EventServiceGrpc.EventServiceImplBase impl
         responseStreamObserver.onNext(response);
         responseStreamObserver.onCompleted();
     }
-
-
 
 }

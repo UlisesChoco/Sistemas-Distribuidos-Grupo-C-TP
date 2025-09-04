@@ -48,4 +48,8 @@ public interface IUserRepository extends JpaRepository<User, Long> {
     
     @Query("SELECT COUNT(u) FROM User u WHERE u.isActive = true")
     long countActiveUsers();
+
+    //para eventos
+    @Query("SELECT u FROM User u LEFT JOIN Fetch u.events WHERE u.id = :id")
+    Optional<User> findByIdJoinEvents(@Param("id") Long id);
 }
