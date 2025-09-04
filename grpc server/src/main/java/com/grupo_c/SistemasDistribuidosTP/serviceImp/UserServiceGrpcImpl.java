@@ -5,10 +5,7 @@ import com.grupo_c.SistemasDistribuidosTP.entity.User;
 import com.grupo_c.SistemasDistribuidosTP.exception.*;
 import com.grupo_c.SistemasDistribuidosTP.factory.ResponseFactory;
 import com.grupo_c.SistemasDistribuidosTP.mapper.UserMapper;
-import com.grupo_c.SistemasDistribuidosTP.service.IRoleService;
-import com.grupo_c.SistemasDistribuidosTP.service.IUserService;
-import com.grupo_c.SistemasDistribuidosTP.service.UserServiceClass;
-import com.grupo_c.SistemasDistribuidosTP.service.UserServiceGrpc;
+import com.grupo_c.SistemasDistribuidosTP.service.*;
 import com.grupo_c.SistemasDistribuidosTP.validator.UserValidator;
 import io.grpc.Status;
 import io.grpc.StatusRuntimeException;
@@ -56,7 +53,7 @@ public class UserServiceGrpcImpl extends UserServiceGrpc.UserServiceImplBase {
     @Override
     public void createUser(
             UserServiceClass.UserWithRolesDTO request,
-            StreamObserver<UserServiceClass.Response> responseObserver
+            StreamObserver<UtilsServiceClass.Response> responseObserver
     ) {
         if(!UserValidator.isUserValid(request)) {
             responseObserver.onNext(ResponseFactory.createResponse(
@@ -81,7 +78,7 @@ public class UserServiceGrpcImpl extends UserServiceGrpc.UserServiceImplBase {
     @Override
     public void modifyUser(
             UserServiceClass.UserWithRolesDTO request,
-            StreamObserver<UserServiceClass.Response> responseObserver
+            StreamObserver<UtilsServiceClass.Response> responseObserver
     ) {
         User userEntity;
         try {
@@ -113,7 +110,7 @@ public class UserServiceGrpcImpl extends UserServiceGrpc.UserServiceImplBase {
     @Override
     public void deleteUser(
             UserServiceClass.UserRequest request,
-            StreamObserver<UserServiceClass.Response> responseObserver
+            StreamObserver<UtilsServiceClass.Response> responseObserver
     ) {
         User userEntity;
         try {
@@ -135,7 +132,7 @@ public class UserServiceGrpcImpl extends UserServiceGrpc.UserServiceImplBase {
 
     @Override
     public void getUserList(
-            UserServiceClass.Empty request,
+            UtilsServiceClass.Empty request,
             StreamObserver<UserServiceClass.UserListResponse> responseObserver
     ) {
         responseObserver.onNext(UserMapper.usersToUserListResponse(userService.findAll()));

@@ -3,7 +3,7 @@ syntax = "proto3";
 option java_outer_classname = "UserServiceClass";
 option java_package = "com.grupo_c.SistemasDistribuidosTP.service";
 
-message Empty{}
+import "utils.proto";
 
 message LoginRequest {
   string username = 1;
@@ -33,15 +33,9 @@ message UserListResponse {
   repeated UserWithRolesDTO users = 1;
 }
 
-message Response {
-  string message = 1;
-  bool succeeded = 2;
-}
-
 message UserSimpleDTO{
-  string username = 1;
-  string name = 2;
-  string surname = 3;
+    int64 id = 1;
+    string username = 2;
 }
 
 message UserRequest {
