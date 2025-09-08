@@ -20,15 +20,5 @@ const proto = grpc.loadPackageDefinition(packageDefinition);
 // crear cliente
 const inventoryClient = new proto.InventoryService('localhost:9090', grpc.credentials.createInsecure());
 
-/* --------------------- Implementaciones de las llamadas rpc --------------------- */
-
-inventoryClient.rpcMethod({ /* request params */ }, (error, response) => { 
-    if (error) {
-        console.error('Error:', error);
-    } else {
-        console.log('Response:', response);
-    }
-});
-
 // exportar el cliente
 module.exports = inventoryClient;

@@ -20,15 +20,5 @@ const proto = grpc.loadPackageDefinition(packageDefinition);
 // crear cliente
 const eventClient = new proto.EventService('localhost:9090', grpc.credentials.createInsecure());
 
-/* --------------------- Implementaciones de las llamadas rpc --------------------- */
-
-eventClient.rpcMethod({ /* request params */ }, (error, response) => { 
-    if (error) {
-        console.error('Error:', error);
-    } else {
-        console.log('Response:', response);
-    }
-});
-
 // exportar el cliente
 module.exports = eventClient;
