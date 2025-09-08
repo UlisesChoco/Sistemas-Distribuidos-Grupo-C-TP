@@ -1,10 +1,14 @@
-Para poder levantar el cliente segui estos comandos:
+# Instrucciones para levantar el cliente
 
-cd './grpc client'
+## 1. Instalar dependencias del cliente gRPC
+```bash
+cd "./grpc client"
 npm install
+```
 
-Con esos comandos te moves adentro del cliente, e instalas todas las dependencias necesarias para levantarlo.
-Posteriormente, para ejecutar Express, vas a tener que:
-
+## 2. Ejecutar Express
+```bash
 cd express/
 node app.js
+```
+
