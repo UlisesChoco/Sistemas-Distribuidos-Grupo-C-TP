@@ -4,7 +4,6 @@ const eventClient = require('../../clients/eventClient');
 const grpc = require('@grpc/grpc-js');
 
 
-// faltaria validar que la fecha no sea anterior a hoy aunque en el backend ya se hace
 router.post('/create', (req, res) => {
     const { name, description, date, participants } = req.body;
 
@@ -16,12 +15,20 @@ router.post('/create', (req, res) => {
         return res.status(400).json({ error: 'Faltan campos obligatorios' });
     }
 
+    // validacion fecha no anterior a hoy
+    const eventSeconds = Math.floor(new Date(date).getTime() / 1000);
+    const currentDateSeconds = Math.floor(new Date().getTime() / 1000);
+
+    if (eventSeconds < currentDateSeconds) {
+        return res.status(400).json({ error: 'La fecha no puede ser anterior a la actual' });
+    }
+
     //estructura del request para gRPC
     const requestBody = {
         name: req.body.name,
         description,
         date: {
-            seconds: Math.floor(new Date(date).getTime() / 1000),
+            seconds: eventSeconds,
             nanos: 0,
         },
         participants: participants || [], // si no hay participantes, se envía una lista vacía
@@ -38,7 +45,6 @@ router.post('/create', (req, res) => {
     });
 });
 
-// lo mismo con la validacion de la fecha
 router.put('/updateEvent', (req, res) => {
     const { id, name, description, date, participants, is_completed } = req.body;
 
@@ -48,12 +54,20 @@ router.put('/updateEvent', (req, res) => {
         return res.status(400).json({ error: 'Faltan campos obligatorios' });
     }
 
+    // validacion fecha no anterior a hoy
+    const eventSeconds = Math.floor(new Date(date).getTime() / 1000);
+    const currentDateSeconds = Math.floor(new Date().getTime() / 1000);
+
+    if (eventSeconds < currentDateSeconds) {
+        return res.status(400).json({ error: 'La fecha no puede ser anterior a la actual' });
+    }
+
     const requestBody = {
         id,
         name,
         description,
         date: {
-            seconds: Math.floor(new Date(date).getTime() / 1000),
+            seconds: currentDateSeconds,
             nanos: 0,
         },
         participants: participants || [],
@@ -69,7 +83,6 @@ router.put('/updateEvent', (req, res) => {
     });
 });
 
-// solo se pueden eliminar eventos futuros, faltaría validar eso
 router.delete('/deleteEvent/:id', (req, res) => {
     const eventId = req.params.id;
     const token = req.headers.authorization?.replace('Bearer ', '');

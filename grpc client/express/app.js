@@ -14,7 +14,7 @@ para mejor organizacion
 */
 
 const eventRouter = require("./router/events");
-app.use("/events", eventRouter); // todos los endpoints del eventRouter van a empezar con /event
+app.use("/events", eventRouter); // todas las rutas de eventos van a empezar con /events
 
 // ruta para paginas estáticas
 //app.use(express.static("../../front/views"));
