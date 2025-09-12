@@ -3,7 +3,7 @@ const protoLoader = require('@grpc/proto-loader');
 const path = require('path');
 
 // Ubicación del archivo .proto
-const PROTO_PATH = path.join(__dirname, '../../proto/user.proto');
+const PROTO_PATH = path.join(__dirname, '../proto/user.proto');
 
 // carga del archivo .proto en un solo paquete
 const packageDefinition = protoLoader.loadSync(PROTO_PATH, {
