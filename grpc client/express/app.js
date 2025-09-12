@@ -13,6 +13,12 @@ IMPORTANTE: los routers los creamos en la carpetita router que cree al mismo niv
 para mejor organizacion
 */
 
+const eventRouter = require("./router/events");
+app.use("/events", eventRouter); // todos los endpoints del eventRouter van a empezar con /event
+
+// ruta para paginas estáticas
+//app.use(express.static("../../front/views"));
+
 app.listen(port, () => {
     console.log("Express app listening on port", port,".");
 })

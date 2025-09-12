@@ -1,0 +1,182 @@
+const express = require('express');
+const router = express.Router();
+const eventClient = require('../../clients/eventClient');
+const grpc = require('@grpc/grpc-js');
+
+
+// faltaria validar que la fecha no sea anterior a hoy aunque en el backend ya se hace
+router.post('/create', (req, res) => {
+    const { name, description, date, participants } = req.body;
+
+    //extraigo el token desde headers
+    const token = req.headers.authorization?.replace('Bearer ', '');
+
+    //validaciones basicas
+    if (!name || !description || !date) {
+        return res.status(400).json({ error: 'Faltan campos obligatorios' });
+    }
+
+    //estructura del request para gRPC
+    const requestBody = {
+        name: req.body.name,
+        description,
+        date: {
+            seconds: Math.floor(new Date(date).getTime() / 1000),
+            nanos: 0,
+        },
+        participants: participants || [], // si no hay participantes, se envía una lista vacía
+    };
+
+    //agrego el token a los metadata
+    const metadata = new grpc.Metadata();
+    metadata.add('Authorization', 'Bearer ' + token);
+
+    //llamo a la función
+    eventClient.CreateEvent(requestBody, metadata, (err, response) => {
+        if (err) return res.status(500).json({ error: err.message });
+        res.json(response);
+    });
+});
+
+// lo mismo con la validacion de la fecha
+router.put('/updateEvent', (req, res) => {
+    const { id, name, description, date, participants, is_completed } = req.body;
+
+    const token = req.headers.authorization?.replace('Bearer ', '');
+
+    if (!name || !description || !date) {
+        return res.status(400).json({ error: 'Faltan campos obligatorios' });
+    }
+
+    const requestBody = {
+        id,
+        name,
+        description,
+        date: {
+            seconds: Math.floor(new Date(date).getTime() / 1000),
+            nanos: 0,
+        },
+        participants: participants || [],
+        is_completed: is_completed || false, // si no se especifica, por defecto es false
+    };
+
+    const metadata = new grpc.Metadata();
+    metadata.add('Authorization', 'Bearer ' + token);
+
+    eventClient.ModifyEvent(requestBody, metadata, (err, response) => {
+        if (err) return res.status(500).json({ error: err.message });
+        res.json(response);
+    });
+});
+
+// solo se pueden eliminar eventos futuros, faltaría validar eso
+router.delete('/deleteEvent/:id', (req, res) => {
+    const eventId = req.params.id;
+    const token = req.headers.authorization?.replace('Bearer ', '');
+
+    if (!eventId) {
+        return res.status(400).json({ error: 'Falta el ID del evento' });
+    }
+
+    const requestBody = { id: eventId };
+
+    const metadata = new grpc.Metadata();
+    metadata.add('Authorization', 'Bearer ' + token);
+
+    eventClient.DeleteEvent(requestBody, metadata, (err, response) => {
+        if (err) return res.status(500).json({ error: err.message });
+        res.json(response);
+    });
+});
+
+router.post('/assignUserToEvent', (req, res) => {
+    const { eventId, userId } = req.body;
+
+    const token = req.headers.authorization?.replace('Bearer ', '');
+
+    if (!eventId || !userId) {
+        return res.status(400).json({ error: 'Faltan campos obligatorios' });
+    }
+
+    const requestBody = { event_id: eventId, user_id: userId };
+
+    const metadata = new grpc.Metadata();
+    metadata.add('Authorization', 'Bearer ' + token);
+
+    eventClient.AssignUserToEvent(requestBody, metadata, (err, response) => {
+        if (err) return res.status(500).json({ error: err.message });
+        res.json(response);
+    });
+});
+
+
+router.post('/deleteUserFromEvent', (req, res) => {
+    const { eventId, userId } = req.body;
+
+    const token = req.headers.authorization?.replace('Bearer ', '');
+
+    if (!eventId || !userId) {
+        return res.status(400).json({ error: 'Faltan campos obligatorios' });
+    }
+
+    const requestBody = { event_id: eventId, user_id: userId };
+
+    const metadata = new grpc.Metadata();
+    metadata.add('Authorization', 'Bearer ' + token);
+
+    eventClient.DeleteUserFromEvent(requestBody, metadata, (err, response) => {
+        if (err) return res.status(500).json({ error: err.message });
+        res.json(response);
+    });
+});
+
+router.get('/getEvent/:id', (req, res) => {
+    const eventId = req.params.id;
+    const token = req.headers.authorization?.replace('Bearer ', '');
+
+    if (!eventId) {
+        return res.status(400).json({ error: 'Falta el ID del evento' });
+    }
+
+    const requestBody = { id: eventId };
+
+    const metadata = new grpc.Metadata();
+    metadata.add('Authorization', 'Bearer ' + token);
+
+    eventClient.GetEvent(requestBody, metadata, (err, response) => {
+        if (err) return res.status(500).json({ error: err.message });
+        res.json(response);
+    });
+});
+
+router.get('/getEventsWithoutParticipants', (req, res) => {
+
+    const token = req.headers.authorization?.replace('Bearer ', '');
+
+    const requestBody = {}; // No se necesitan parámetros para este request
+
+    const metadata = new grpc.Metadata();
+    metadata.add('Authorization', 'Bearer ' + token);
+
+    eventClient.GetEventsWithoutParticipantsList(requestBody, metadata, (err, response) => {
+        if (err) return res.status(500).json({ error: err.message });
+        res.json(response);
+    });
+});
+
+router.get('/getEventsWithParticipants', (req, res) => {
+
+    const token = req.headers.authorization?.replace('Bearer ', '');
+
+    const requestBody = {};
+
+    const metadata = new grpc.Metadata();
+    metadata.add('Authorization', 'Bearer ' + token);
+
+    eventClient.GetEventsWithParticipantsList(requestBody, metadata, (err, response) => {
+        if (err) return res.status(500).json({ error: err.message });
+        res.json(response);
+    });
+});
+
+module.exports = router;
