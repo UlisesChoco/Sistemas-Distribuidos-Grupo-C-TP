@@ -107,6 +107,17 @@ public class EventServiceImpl extends EventServiceGrpc.EventServiceImplBase impl
             return;
         }
 
+        if (event.getIsCompleted()){
+            UtilsServiceClass.Response response = UtilsServiceClass.Response
+                    .newBuilder()
+                    .setMessage("El evento ya finalizó, no se puede eliminar")
+                    .setSucceeded(false)
+                    .build();
+            responseStreamObserver.onNext(response);
+            responseStreamObserver.onCompleted();
+            return;
+        }
+
         eventRepository.delete(event);
 
         UtilsServiceClass.Response response = UtilsServiceClass.Response

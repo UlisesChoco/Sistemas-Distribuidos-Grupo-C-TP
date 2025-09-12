@@ -67,7 +67,7 @@ router.put('/updateEvent', (req, res) => {
         name,
         description,
         date: {
-            seconds: currentDateSeconds,
+            seconds: eventSeconds,
             nanos: 0,
         },
         participants: participants || [],
