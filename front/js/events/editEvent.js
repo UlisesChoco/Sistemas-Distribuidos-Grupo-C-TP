@@ -44,7 +44,7 @@ async function loadForm(eventData) {
 }
 
 /*
-al entrar al form o al tocar un botón se deberían cargar los usuarios activos
+al entrar al form se deben cargar los usuarios activos
 para poder agregarlos como participantes
 */
 async function loadActiveUsers(participants) {
@@ -52,9 +52,7 @@ async function loadActiveUsers(participants) {
     usersSelect.innerHTML = ' '; // limpia el select
 
     //acá deberia hacer un fetch al endpoint de usuarios y cargar la lista
-
-    //simulo usuarios activos
-
+    //se simula la carga de usuarios activos
     const usernames = ['username 1', 'username 2'];
 
     for (let id = 1; id <= 2; id++) {
@@ -73,7 +71,6 @@ async function loadActiveUsers(participants) {
 // se carga la lista de usuarios al cargar la página
 window.addEventListener('DOMContentLoaded', getEvent);
 
-//TODO
 function modifyEvent() {
     const form = document.getElementById("form");
 
@@ -103,8 +100,6 @@ function modifyEvent() {
         "Content-Type": "application/json",
         "Authorization": "Bearer " + "token123" // Simulando un token de autenticación
     });
-
-    //console.log(eventData);
 
     fetch(`http://localhost:9091/events/modifyEvent`, {
         method: 'PUT',

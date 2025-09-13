@@ -1,6 +1,6 @@
 
 /*
-al entrar al form o al tocar un botón se deberían cargar los usuarios activos
+al entrar al form se deben cargar los usuarios activos
 para poder agregarlos como participantes
 */
 async function loadActiveUsers() {
