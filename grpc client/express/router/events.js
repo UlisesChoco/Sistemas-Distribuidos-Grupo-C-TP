@@ -45,7 +45,7 @@ router.post('/create', (req, res) => {
     });
 });
 
-router.put('/updateEvent', (req, res) => {
+router.put('/modifyEvent', (req, res) => {
     const { id, name, description, date, participants, is_completed } = req.body;
 
     const token = req.headers.authorization?.replace('Bearer ', '');
