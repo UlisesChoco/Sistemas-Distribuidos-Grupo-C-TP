@@ -6,7 +6,11 @@ const path = require('path');
 const PROTO_PATH = path.join(__dirname, '../proto/event.proto');
 
 // carga del archivo .proto en un solo paquete
-const packageDefinition = protoLoader.loadSync(PROTO_PATH, {
+const packageDefinition = protoLoader.loadSync([
+    path.join(__dirname, '../proto/event.proto'),
+    path.join(__dirname, '../proto/utils.proto')
+],
+    {
     keepCase: true,
     longs: String,
     enums: String,
