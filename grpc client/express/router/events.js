@@ -192,4 +192,10 @@ router.get('/getEventsWithParticipants', (req, res) => {
     });
 });
 
+//-------------------------- rutas de vistas -------------------------------
+
+router.get('/events', (req, res) => {
+    res.render('events/events', {});
+});
+
 module.exports = router;
