@@ -95,6 +95,12 @@ public class GrpcServerInterceptor implements ServerInterceptor {
         // queda para agregar mas metodos publicos a futuro (si los hay)
         return Set.of(
                 "UserService/Login"
+                ,"InventoryService/CreateInventory"
+                ,"InventoryService/GetInventoryList"
+                ,"InventoryService/GetInventoryById"
+                ,"InventoryService/GetInventoryByCategory"
+                ,"InventoryService/UpdateInventory"
+                ,"InventoryService/DeleteInventory"
         );
     }
 }

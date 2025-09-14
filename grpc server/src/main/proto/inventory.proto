@@ -34,7 +34,7 @@ message InventoryCategory {
 service InventoryService {
   rpc GetInventoryList(Empty) returns (InventoryListResponse);
   rpc GetInventoryById(InventoryRequest) returns (InventoryDTO);
-//	rpc GetInventoryByCategory(InventoryCategory) returns (InventoryListResponse);
+rpc GetInventoryByCategory(InventoryCategory) returns (InventoryListResponse);
   rpc CreateInventory(InventoryDTO) returns (InventoryDTO);
   rpc UpdateInventory(InventoryDTO) returns (InventoryDTO);
 	rpc DeleteInventory(InventoryRequest) returns (Empty);

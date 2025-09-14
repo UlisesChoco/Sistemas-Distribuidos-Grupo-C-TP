@@ -30,12 +30,16 @@ public interface IUserRepository extends JpaRepository<User, Long> {
     boolean existsByUsername(String username);
     
     boolean existsByEmail(String email);
-
+    
     boolean existsByPhoneNumber(String phoneNumber);
-
-    boolean existsByEmailAndUsernameNot(String email, String username);
-
-    boolean existsByPhoneNumberAndUsernameNot(String phoneNumber, String username);
+    
+    @Query("SELECT u FROM User u WHERE u.email = :email AND u.username <> :username")
+    boolean existsByEmailAndUsernameNot(@Param("email") String email, 
+                                      @Param("username") String username);
+    
+    @Query("SELECT u FROM User u WHERE u.phoneNumber = :phoneNumber AND u.username <> :username")
+    boolean existsByPhoneNumberAndUsernameNot(@Param("phoneNumber") String phoneNumber, 
+                                            @Param("username") String username);
     
     @Query("SELECT u FROM User u JOIN u.roles r WHERE r.name = :roleName")
     List<User> findByRoleName(@Param("roleName") String roleName);
@@ -43,13 +47,12 @@ public interface IUserRepository extends JpaRepository<User, Long> {
     @Query("SELECT u FROM User u JOIN u.roles r WHERE r.name IN :roleNames")
     List<User> findByRoleNames(@Param("roleNames") List<String> roleNames);
     
-    @Query("SELECT u FROM User u WHERE u.isActive = true ORDER BY u.surname, u.name ASC")
+    @Query("SELECT u FROM User u WHERE u.isActive = true ORDER BY u.surname, u.name")
     List<User> findAllActiveUsersOrdered();
     
     @Query("SELECT COUNT(u) FROM User u WHERE u.isActive = true")
     long countActiveUsers();
-
-    //para eventos
-    @Query("SELECT u FROM User u LEFT JOIN Fetch u.events WHERE u.id = :id")
-    Optional<User> findByIdJoinEvents(@Param("id") Long id);
+    
+    @Query("SELECT u FROM User u LEFT JOIN FETCH u.events WHERE u.id = :userId")
+    Optional<User> findByIdJoinEvents(@Param("userId") Long userId);
 }
