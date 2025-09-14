@@ -48,7 +48,12 @@
                                 <button onclick="modifyEvent(<%= event.id %>)">modificar</button>
                                 <button onclick="deleteEvent(<%= event.id %>)" <% if(event.is_completed){ %>disabled<% } %> >eliminar</button>
                             <!-- } -->
-                            <button onclick="joinEvent()">unirme</button>
+                            <% if(event.joined){ %>
+                                <!-- falta extraer el id del usuario logueado -->
+                                <button onclick="leaveEvent(<%= event.id %>, 1)">abandonar</button>
+                            <%} else {%>
+                                <button onclick="joinEvent(<%= event.id %>, 1)">participar</button>
+                            <% } %>
                         </td>
                     </tr>
                 <% }) %>

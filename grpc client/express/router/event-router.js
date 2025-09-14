@@ -167,7 +167,10 @@ router.get('/getEventsWithoutParticipants', (req, res) => {
 
     const token = req.headers.authorization?.replace('Bearer ', '');
 
-    const requestBody = {}; // No se necesitan parámetros para este request
+    //se necesita el id del usuario logueado
+    const id = 1;
+
+    const requestBody = {id}; 
 
     const metadata = new grpc.Metadata();
     metadata.add('Authorization', 'Bearer ' + token);
@@ -182,7 +185,7 @@ router.get('/getEventsWithParticipants', (req, res) => {
 
     const token = req.headers.authorization?.replace('Bearer ', '');
 
-    const requestBody = {};
+    const requestBody = {}; // No se necesitan parámetros para este request
 
     const metadata = new grpc.Metadata();
     metadata.add('Authorization', 'Bearer ' + token);
@@ -212,7 +215,10 @@ router.get('/', (req, res) => {
 
     //const token = req.headers.authorization?.replace('Bearer ', '');
 
-    const requestBody = {};
+    //se necesita el id del usuario logueado
+    const id = 1;
+
+    const requestBody = {id}; 
 
     const metadata = new grpc.Metadata();
     metadata.add('Authorization', 'Bearer ' + token);

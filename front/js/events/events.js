@@ -39,10 +39,62 @@ function deleteEvent(eventId) {
 
 //TODO funciones para unirse o dejar un evento
 //se necesita tener el usuario logueado
-function joinEvent() {
+function joinEvent(eventId, userId) {
+
+    const requestData = {eventId, userId};
+
+    const headers = new Headers({
+        "Content-Type": "application/json",
+        "Authorization": "Bearer " + "token123" // Simulando un token de autenticación
+    });
+
+    fetch(`http://localhost:9091/events/assignUserToEvent`, {
+        method: 'POST',
+        headers: headers,
+        body: JSON.stringify(requestData)
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error(response.statusText);
+        }
+        return response.json();
+    })
+    .then(data => {
+        console.log('Success:', data);
+        // recargo la pagina
+        window.location.replace(`/events`);
+    }).catch(error => {
+        console.error('Error:', error);
+    });
 }
 
-function leaveEvent() {
+function leaveEvent(eventId, userId) {
+
+    const requestData = {eventId, userId};
+
+    const headers = new Headers({
+        "Content-Type": "application/json",
+        "Authorization": "Bearer " + "token123" // Simulando un token de autenticación
+    });
+
+    fetch(`http://localhost:9091/events/deleteUserFromEvent`, {
+        method: 'POST',
+        headers: headers,
+        body: JSON.stringify(requestData)
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error(response.statusText);
+        }
+        return response.json();
+    })
+    .then(data => {
+        console.log('Success:', data);
+        // recargo la pagina
+        window.location.replace(`/events`);
+    }).catch(error => {
+        console.error('Error:', error);
+    });
 }
 
 /*

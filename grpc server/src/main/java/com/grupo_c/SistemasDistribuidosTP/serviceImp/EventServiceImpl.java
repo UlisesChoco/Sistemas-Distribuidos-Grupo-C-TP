@@ -224,14 +224,17 @@ public class EventServiceImpl extends EventServiceGrpc.EventServiceImplBase impl
     }
 
     @Override
-    public void getEventsWithoutParticipantsList (UtilsServiceClass.Empty request,
+    public void getEventsWithoutParticipantsList (EventServiceClass.EventRequest request,
                                                StreamObserver<EventServiceClass.EventsWithoutParticipantsList> responseStreamObserver){
 
-        List<Event> events = eventRepository.findAll();
+        List<Event> events = eventRepository.findAllJoinParticipants();
         List<EventServiceClass.EventWithoutParticipantsDto> eventsWithoutParticipantsDto = new ArrayList<>();
 
         for(Event event : events){
-            eventsWithoutParticipantsDto.add(em.toEventWithoutParticipantsDto(event));
+            //valida si el usuario que hizo el request forma parte del evento
+            boolean joined = event.getParticipants().stream().anyMatch(p-> p.getId().equals(request.getId()));
+
+            eventsWithoutParticipantsDto.add(em.toEventWithoutParticipantsDto(event, joined));
         }
 
         EventServiceClass.EventsWithoutParticipantsList response = EventServiceClass.EventsWithoutParticipantsList.
