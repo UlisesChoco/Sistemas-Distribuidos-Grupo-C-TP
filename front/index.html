@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test User Endpoints</title>
+</head>
+<body>
+    <script>
+        let token;
+        async function login(username, password) {
+            const request = {
+                method : 'POST',
+                headers : {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json'
+                },
+                body : JSON.stringify({
+                    'username': username,
+                    'password': password
+                })
+            };
+            const response = await fetch("http://localhost:9091/user/login", request);
+            const data = await response.json();
+            token = data.token;
+            console.log(data);
+        }
+        async function modify() {
+            const request = {
+                method : 'POST',
+                headers : {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json',
+                    'Authorization': 'Bearer '+token
+                },
+                body : {
+                    user : {
+                        email : "test",
+                        isActive : true,
+                        name : "test",
+                        phoneNumber : "test",
+                        roles : {
+                            name : "test"
+                        },
+                        surname : "test",
+                        username : "test"
+                    }
+                }
+            };
+            console.log(request);
+            const response = await fetch("http://localhost:9091/user/modify", request);
+            const data = await response.json();
+            console.log(data);
+        }
+    </script>
+</body>
+</html>

@@ -17,9 +17,12 @@ IMPORTANTE: los routers los creamos en la carpetita router que cree al mismo niv
 para mejor organizacion
 */
 
+// routers
+const userRouter = require('./router/user-router');
+app.use("/user", userRouter);
+
 const eventRouter = require("./router/events");
 app.use("/events", eventRouter); // todas las rutas de eventos van a empezar con /events
-
 
 //IMPORTANTE dejar este get al final para que no reemplace a los routers
 app.get('/', (req, res) => {
