@@ -8,6 +8,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import java.util.List;
 
 public interface IUserService {
+    User findById(long id) throws UserNotFoundException;
     User findByUsername(String username) throws UsernameNotFoundException;
     User findByEmail(String email);
     User findByUsernameOrEmail(String username, String email);
@@ -17,6 +18,9 @@ public interface IUserService {
     List<User> findBySurnameContainingIgnoreCase(String surname);
     boolean existsByUsername(String username);
     boolean existsByEmail(String email);
+    boolean existsByUsernameAndIdNot(String username, long id);
+    boolean existsByEmailAndIdNot(String email, long id);
+    boolean existsByPhoneNumberAndIdNot(String phoneNumber, long id);
     boolean existsByPhoneNumber(String phoneNumber);
     boolean existsByEmailAndUsernameNot(String email, String username);
     boolean existsByPhoneNumberAndUsernameNot(String phoneNumber, String username);
@@ -28,6 +32,6 @@ public interface IUserService {
     User save(User userEntity);
     void isUserValid(User userEntity, String password) throws UsernameNotFoundException, InvalidPasswordException, UserNotActiveException;
     void createUser(UserServiceClass.UserWithRolesDTO userWithRolesDTO, List<Role> rolesFromDB) throws UsernameAlreadyExistsException, EmailAlreadyExistsException, PhoneNumberAlreadyExistsException;
-    void modifyUser(User userEntity, UserServiceClass.UserWithRolesDTO userWithRolesDTO, List<Role> rolesFromDB) throws EmailAlreadyExistsException, PhoneNumberAlreadyExistsException;
+    void modifyUser(User userEntity, UserServiceClass.UserWithIdAndRolesDTO userWithIdAndRolesDTO, List<Role> rolesFromDB) throws UsernameAlreadyExistsException, EmailAlreadyExistsException, PhoneNumberAlreadyExistsException;
     void deleteUser(User userEntity);
 }

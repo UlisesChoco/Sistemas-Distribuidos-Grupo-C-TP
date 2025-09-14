@@ -20,33 +20,47 @@ message RoleDTO {
 }
 
 message UserWithRolesDTO {
-  string username = 1;
-  string name = 2;
-  string surname = 3;
-  string phoneNumber = 4;
-  string email = 5;
-  bool isActive = 6;
-  repeated RoleDTO roles = 7;
+  string username = 2;
+  string name = 3;
+  string surname = 4;
+  string phoneNumber = 5;
+  string email = 6;
+  bool isActive = 7;
+  repeated RoleDTO roles = 8;
+}
+
+message UserWithIdAndRolesDTO {
+  int64 id = 1;
+  UserWithRolesDTO userWithRolesDTO = 2;
 }
 
 message UserListResponse {
-  repeated UserWithRolesDTO users = 1;
+  repeated UserWithIdAndRolesDTO users = 1;
 }
 
-message UserSimpleDTO{
+message ActiveUsersListDTO {
+  repeated UserSimpleDTO users = 1;
+}
+
+message UserSimpleDTO {
     int64 id = 1;
     string username = 2;
 }
 
-message UserRequest {
+message UserIdDTO {
+  int64 id = 1;
+}
+
+message UserUsernameDTO {
   string username = 1;
 }
 
 service UserService {
   rpc Login(LoginRequest) returns (UserWithTokenDTO);
   rpc CreateUser(UserWithRolesDTO) returns (Response);
-  rpc ModifyUser(UserWithRolesDTO) returns (Response);
-  rpc DeleteUser(UserRequest) returns (Response);
+  rpc ModifyUser(UserWithIdAndRolesDTO) returns (Response);
+  rpc DeleteUser(UserIdDTO) returns (Response);
   rpc GetUserList(Empty) returns (UserListResponse);
-  rpc GetUser(UserRequest) returns (UserWithRolesDTO);
+  rpc GetActiveUsersList(Empty) returns (ActiveUsersListDTO);
+  rpc GetUser(UserUsernameDTO) returns (UserWithIdAndRolesDTO);
 }

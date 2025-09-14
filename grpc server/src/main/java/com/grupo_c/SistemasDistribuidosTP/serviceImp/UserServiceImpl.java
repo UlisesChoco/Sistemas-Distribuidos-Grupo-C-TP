@@ -1,12 +1,10 @@
 package com.grupo_c.SistemasDistribuidosTP.serviceImp;
 
-import com.grupo_c.SistemasDistribuidosTP.configuration.security.JwtUtils;
 import com.grupo_c.SistemasDistribuidosTP.entity.Role;
 import com.grupo_c.SistemasDistribuidosTP.entity.User;
 import com.grupo_c.SistemasDistribuidosTP.exception.*;
 import com.grupo_c.SistemasDistribuidosTP.mapper.UserMapper;
 import com.grupo_c.SistemasDistribuidosTP.repository.IUserRepository;
-import com.grupo_c.SistemasDistribuidosTP.service.IRoleService;
 import com.grupo_c.SistemasDistribuidosTP.service.IUserService;
 import com.grupo_c.SistemasDistribuidosTP.service.UserServiceClass;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -22,12 +20,17 @@ public class UserServiceImpl implements IUserService {
 
     public UserServiceImpl(
             IUserRepository userRepository,
-            PasswordEncoder passwordEncoder,
-            JwtUtils jwtUtils,
-            IRoleService roleService
+            PasswordEncoder passwordEncoder
     ) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
+    }
+
+    @Override
+    public User findById(long id) throws UserNotFoundException {
+        return userRepository.findById(id).orElseThrow(() ->
+                new UserNotFoundException("User with specified ID does not exist.")
+        );
     }
 
     @Override
@@ -75,6 +78,21 @@ public class UserServiceImpl implements IUserService {
     @Override
     public boolean existsByEmail(String email) {
         return userRepository.existsByEmail(email);
+    }
+
+    @Override
+    public boolean existsByUsernameAndIdNot(String username, long id) {
+        return userRepository.existsByUsernameAndIdNot(username, id);
+    }
+
+    @Override
+    public boolean existsByEmailAndIdNot(String email, long id) {
+        return userRepository.existsByEmailAndIdNot(email, id);
+    }
+
+    @Override
+    public boolean existsByPhoneNumberAndIdNot(String phoneNumber, long id) {
+        return userRepository.existsByPhoneNumberAndIdNot(phoneNumber, id);
     }
 
     @Override
@@ -145,9 +163,11 @@ public class UserServiceImpl implements IUserService {
     }
 
     @Override
-    public void modifyUser(User userEntity, UserServiceClass.UserWithRolesDTO userWithRolesDTO, List<Role> rolesFromDB) throws EmailAlreadyExistsException, PhoneNumberAlreadyExistsException {
-        if(existsByEmailAndUsernameNot(userEntity.getEmail(), userEntity.getUsername())) throw new EmailAlreadyExistsException("Modification failed. Email already taken.");
-        if(existsByPhoneNumberAndUsernameNot(userWithRolesDTO.getPhoneNumber(), userEntity.getUsername())) throw new PhoneNumberAlreadyExistsException("Modification failed. Phone number already taken.");
+    public void modifyUser(User userEntity, UserServiceClass.UserWithIdAndRolesDTO userWithIdAndRolesDTO, List<Role> rolesFromDB) throws UsernameAlreadyExistsException, EmailAlreadyExistsException, PhoneNumberAlreadyExistsException {
+        UserServiceClass.UserWithRolesDTO userWithRolesDTO = userWithIdAndRolesDTO.getUserWithRolesDTO();
+        if(existsByUsernameAndIdNot(userWithRolesDTO.getUsername(), userEntity.getId())) throw new UsernameAlreadyExistsException("Modification failed. Username already taken.");
+        if(existsByEmailAndIdNot(userWithRolesDTO.getEmail(), userEntity.getId())) throw new EmailAlreadyExistsException("Modification failed. Email already taken.");
+        if(existsByPhoneNumberAndIdNot(userWithRolesDTO.getPhoneNumber(), userEntity.getId())) throw new PhoneNumberAlreadyExistsException("Modification failed. Phone number already taken.");
 
         UserMapper.userWithRolesDTOToUser(userWithRolesDTO, userEntity, rolesFromDB);
         userEntity.setModificationDate(LocalDateTime.now());
@@ -157,6 +177,7 @@ public class UserServiceImpl implements IUserService {
     @Override
     public void deleteUser(User userEntity) {
         userEntity.setIsActive(false);
+        userEntity.setModificationDate(LocalDateTime.now());
         save(userEntity);
     }
 }

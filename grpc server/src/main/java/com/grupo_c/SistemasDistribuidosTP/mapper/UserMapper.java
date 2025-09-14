@@ -17,6 +17,21 @@ public class UserMapper {
         return rolesDTO;
     }
 
+    public static UserServiceClass.UserSimpleDTO userEntityToUserSimpleDTO(User userEntity) {
+        return UserServiceClass.UserSimpleDTO
+                .newBuilder()
+                .setId(userEntity.getId())
+                .setUsername(userEntity.getUsername())
+                .build();
+    }
+
+    public static List<UserServiceClass.UserSimpleDTO> usersEntityToUsersSimpleDTO(List<User> usersEntity) {
+        List<UserServiceClass.UserSimpleDTO> usersSimpleDTO = new ArrayList<>();
+        for(User userEntity : usersEntity)
+            usersSimpleDTO.add(userEntityToUserSimpleDTO(userEntity));
+        return usersSimpleDTO;
+    }
+
     public static UserServiceClass.UserWithRolesDTO userEntityToUserWithRolesDTO(User userEntity) {
         return UserServiceClass.UserWithRolesDTO
                 .newBuilder()
@@ -27,6 +42,14 @@ public class UserMapper {
                 .setEmail(userEntity.getEmail())
                 .setIsActive(userEntity.getIsActive())
                 .addAllRoles(roleEntityToRoleDTO((userEntity.getRolesAsStrings())))
+                .build();
+    }
+
+    public static UserServiceClass.UserWithIdAndRolesDTO userEntityToUserWithIdAndRolesDTO(User userEntity) {
+        return UserServiceClass.UserWithIdAndRolesDTO
+                .newBuilder()
+                .setUserWithRolesDTO(userEntityToUserWithRolesDTO(userEntity))
+                .setId(userEntity.getId())
                 .build();
     }
 
@@ -54,14 +77,14 @@ public class UserMapper {
     }
 
     public static UserServiceClass.UserListResponse usersToUserListResponse(List<User> users) {
-        List<UserServiceClass.UserWithRolesDTO> usersWithRolesDTO = new ArrayList<>();
+        List<UserServiceClass.UserWithIdAndRolesDTO> usersWithIdAndRolesDTO = new ArrayList<>();
         for(User user : users) {
-            usersWithRolesDTO.add(UserMapper.userEntityToUserWithRolesDTO(user));
+            usersWithIdAndRolesDTO.add(UserMapper.userEntityToUserWithIdAndRolesDTO(user));
         }
 
         return UserServiceClass.UserListResponse
                 .newBuilder()
-                .addAllUsers(usersWithRolesDTO)
+                .addAllUsers(usersWithIdAndRolesDTO)
                 .build();
     }
 

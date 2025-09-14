@@ -72,6 +72,7 @@ public class GrpcServerInterceptor implements ServerInterceptor {
                         "UserService/ModifyUser",
                         "UserService/DeleteUser",
                         "UserService/GetUserList",
+                        "UserService/GetActiveUsersList",
                         "UserService/GetUser"
                 )
         );

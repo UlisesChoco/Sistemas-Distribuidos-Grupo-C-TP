@@ -32,7 +32,13 @@ public interface IUserRepository extends JpaRepository<User, Long> {
     boolean existsByEmail(String email);
     
     boolean existsByPhoneNumber(String phoneNumber);
-    
+
+    boolean existsByUsernameAndIdNot(String username, long id);
+
+    boolean existsByEmailAndIdNot(String email, long id);
+
+    boolean existsByPhoneNumberAndIdNot(String phoneNumber, long id);
+
     @Query("SELECT u FROM User u WHERE u.email = :email AND u.username <> :username")
     boolean existsByEmailAndUsernameNot(@Param("email") String email, 
                                       @Param("username") String username);

@@ -77,15 +77,15 @@ public class UserServiceGrpcImpl extends UserServiceGrpc.UserServiceImplBase {
 
     @Override
     public void modifyUser(
-            UserServiceClass.UserWithRolesDTO request,
+            UserServiceClass.UserWithIdAndRolesDTO request,
             StreamObserver<UtilsServiceClass.Response> responseObserver
     ) {
         User userEntity;
         try {
-            userEntity = userService.findByUsername(request.getUsername());
-        } catch(UsernameNotFoundException usernameNotFoundException) {
+            userEntity = userService.findById(request.getId());
+        } catch(UserNotFoundException userNotFoundException) {
             responseObserver.onNext(ResponseFactory.createResponse(
-                    "Modification failed. User with specified username does not exist.",
+                    "Modification failed. User with specified ID does not exist.",
                     false
             ));
             responseObserver.onCompleted();
@@ -94,7 +94,7 @@ public class UserServiceGrpcImpl extends UserServiceGrpc.UserServiceImplBase {
 
         try {
             userService.modifyUser(userEntity, request, roleService.findAll());
-        } catch (EmailAlreadyExistsException | PhoneNumberAlreadyExistsException alreadyExistsException) {
+        } catch (UsernameAlreadyExistsException | EmailAlreadyExistsException | PhoneNumberAlreadyExistsException alreadyExistsException) {
             responseObserver.onNext(ResponseFactory.createResponse(
                     alreadyExistsException.getMessage(),
                     false
@@ -109,15 +109,15 @@ public class UserServiceGrpcImpl extends UserServiceGrpc.UserServiceImplBase {
 
     @Override
     public void deleteUser(
-            UserServiceClass.UserRequest request,
+            UserServiceClass.UserIdDTO request,
             StreamObserver<UtilsServiceClass.Response> responseObserver
     ) {
         User userEntity;
         try {
-            userEntity = userService.findByUsername(request.getUsername());
-        } catch(UsernameNotFoundException usernameNotFoundException) {
+            userEntity = userService.findById(request.getId());
+        } catch(UserNotFoundException userNotFoundException) {
             responseObserver.onNext(ResponseFactory.createResponse(
-                    "Deletion failed. User with specified username does not exist.",
+                    userNotFoundException.getMessage(),
                     false
             ));
             responseObserver.onCompleted();
@@ -140,11 +140,27 @@ public class UserServiceGrpcImpl extends UserServiceGrpc.UserServiceImplBase {
     }
 
     @Override
+    public void getActiveUsersList(
+            UtilsServiceClass.Empty request,
+            StreamObserver<UserServiceClass.ActiveUsersListDTO> responseObserver
+    ) {
+        List<User> usersFromDB = userService.findByIsActiveTrue();
+        List<UserServiceClass.UserSimpleDTO> usersSimpleDTO = UserMapper.usersEntityToUsersSimpleDTO(usersFromDB);
+        UserServiceClass.ActiveUsersListDTO activeUsersListDTO = UserServiceClass.ActiveUsersListDTO
+                .newBuilder()
+                .addAllUsers(usersSimpleDTO)
+                .build();
+        responseObserver.onNext(activeUsersListDTO);
+        responseObserver.onCompleted();
+    }
+
+    @Override
     public void getUser(
-            UserServiceClass.UserRequest request,
-            StreamObserver<UserServiceClass.UserWithRolesDTO> responseObserver
+            UserServiceClass.UserUsernameDTO request,
+            StreamObserver<UserServiceClass.UserWithIdAndRolesDTO> responseObserver
     ) {
         User userEntity;
+
         try {
             userEntity = userService.findByUsername(request.getUsername());
         } catch(UsernameNotFoundException usernameNotFoundException) {
@@ -152,7 +168,7 @@ public class UserServiceGrpcImpl extends UserServiceGrpc.UserServiceImplBase {
             return;
         }
 
-        responseObserver.onNext(UserMapper.userEntityToUserWithRolesDTO(userEntity));
+        responseObserver.onNext(UserMapper.userEntityToUserWithIdAndRolesDTO(userEntity));
         responseObserver.onCompleted();
     }
 
