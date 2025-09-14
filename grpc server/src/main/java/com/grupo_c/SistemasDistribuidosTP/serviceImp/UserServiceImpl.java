@@ -2,7 +2,7 @@ package com.grupo_c.SistemasDistribuidosTP.serviceImp;
 
 import com.grupo_c.SistemasDistribuidosTP.entity.Role;
 import com.grupo_c.SistemasDistribuidosTP.entity.User;
-import com.grupo_c.SistemasDistribuidosTP.exception.*;
+import com.grupo_c.SistemasDistribuidosTP.exception.user.*;
 import com.grupo_c.SistemasDistribuidosTP.mapper.UserMapper;
 import com.grupo_c.SistemasDistribuidosTP.repository.IUserRepository;
 import com.grupo_c.SistemasDistribuidosTP.service.IUserService;

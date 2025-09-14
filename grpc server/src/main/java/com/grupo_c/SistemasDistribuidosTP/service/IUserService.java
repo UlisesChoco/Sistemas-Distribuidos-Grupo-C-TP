@@ -2,7 +2,7 @@ package com.grupo_c.SistemasDistribuidosTP.service;
 
 import com.grupo_c.SistemasDistribuidosTP.entity.Role;
 import com.grupo_c.SistemasDistribuidosTP.entity.User;
-import com.grupo_c.SistemasDistribuidosTP.exception.*;
+import com.grupo_c.SistemasDistribuidosTP.exception.user.*;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
 import java.util.List;

@@ -20,13 +20,13 @@ message RoleDTO {
 }
 
 message UserWithRolesDTO {
-  string username = 2;
-  string name = 3;
-  string surname = 4;
-  string phoneNumber = 5;
-  string email = 6;
-  bool isActive = 7;
-  repeated RoleDTO roles = 8;
+  string username = 1;
+  string name = 2;
+  string surname = 3;
+  string phoneNumber = 4;
+  string email = 5;
+  bool isActive = 6;
+  repeated RoleDTO roles = 7;
 }
 
 message UserWithIdAndRolesDTO {

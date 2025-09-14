@@ -2,7 +2,7 @@ package com.grupo_c.SistemasDistribuidosTP.serviceImp;
 
 import com.grupo_c.SistemasDistribuidosTP.configuration.security.JwtUtils;
 import com.grupo_c.SistemasDistribuidosTP.entity.User;
-import com.grupo_c.SistemasDistribuidosTP.exception.*;
+import com.grupo_c.SistemasDistribuidosTP.exception.user.*;
 import com.grupo_c.SistemasDistribuidosTP.factory.ResponseFactory;
 import com.grupo_c.SistemasDistribuidosTP.mapper.UserMapper;
 import com.grupo_c.SistemasDistribuidosTP.service.*;
@@ -66,7 +66,8 @@ public class UserServiceGrpcImpl extends UserServiceGrpc.UserServiceImplBase {
 
         try {
             userService.createUser(request, roleService.findAll());
-        } catch (UsernameAlreadyExistsException | EmailAlreadyExistsException | PhoneNumberAlreadyExistsException alreadyExistsException) {
+        } catch (UsernameAlreadyExistsException | EmailAlreadyExistsException |
+                 PhoneNumberAlreadyExistsException alreadyExistsException) {
             sendGrpcError(responseObserver, Status.ALREADY_EXISTS, alreadyExistsException.getMessage());
             return;
         }
