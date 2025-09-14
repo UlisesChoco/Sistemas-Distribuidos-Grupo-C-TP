@@ -49,7 +49,7 @@ public class EventServiceImpl extends EventServiceGrpc.EventServiceImplBase impl
 
         UtilsServiceClass.Response response = UtilsServiceClass.Response
                 .newBuilder()
-                .setMessage("Event created.")
+                .setMessage("Evento Creado")
                 .setSucceeded(true)
                 .build();
         responseStreamObserver.onNext(response);
@@ -63,7 +63,7 @@ public class EventServiceImpl extends EventServiceGrpc.EventServiceImplBase impl
         if(eventRepository.findById(event.getId()).orElse(null) == null){
             UtilsServiceClass.Response response = UtilsServiceClass.Response
                     .newBuilder()
-                    .setMessage("Event does not exists.")
+                    .setMessage("El Evento no existe")
                     .setSucceeded(false)
                     .build();
             responseStreamObserver.onNext(response);
@@ -83,7 +83,7 @@ public class EventServiceImpl extends EventServiceGrpc.EventServiceImplBase impl
 
         UtilsServiceClass.Response response = UtilsServiceClass.Response
                 .newBuilder()
-                .setMessage("Event modified.")
+                .setMessage("Evento Modificado")
                 .setSucceeded(true)
                 .build();
         responseStreamObserver.onNext(response);
@@ -122,7 +122,7 @@ public class EventServiceImpl extends EventServiceGrpc.EventServiceImplBase impl
 
         UtilsServiceClass.Response response = UtilsServiceClass.Response
                 .newBuilder()
-                .setMessage("Event deleted.")
+                .setMessage("Evento Borrado")
                 .setSucceeded(true)
                 .build();
         responseStreamObserver.onNext(response);

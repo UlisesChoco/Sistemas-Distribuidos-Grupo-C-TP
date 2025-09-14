@@ -45,4 +45,9 @@ public interface IInventoryRepository extends JpaRepository<Inventory, Long> {
     
     @Query("SELECT i FROM Inventory i WHERE i.isDetected = false ORDER BY i.category, i.description")
     List<Inventory> findAllAvailableOrdered();
+    
+    // Método agregado para filtrar por categoría y estado de detección
+    @Query("SELECT i FROM Inventory i WHERE i.category = :category AND i.isDetected = :isDetected")
+    List<Inventory> findByCategoryAndIsDetected(@Param("category") Category category, 
+                                              @Param("isDetected") Boolean isDetected);
 }
