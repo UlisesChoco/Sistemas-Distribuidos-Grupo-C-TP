@@ -21,7 +21,7 @@ para mejor organizacion
 const userRouter = require('./router/user-router');
 app.use("/user", userRouter);
 
-const eventRouter = require("./router/events");
+const eventRouter = require("./router/event-router");
 app.use("/events", eventRouter); // todas las rutas de eventos van a empezar con /events
 
 //IMPORTANTE dejar este get al final para que no reemplace a los routers

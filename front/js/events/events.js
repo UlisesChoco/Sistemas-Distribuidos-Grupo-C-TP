@@ -1,4 +1,51 @@
 //variables utiles
+
+function modifyEvent(eventId) {
+    window.location.replace(`/events/edit/${eventId}`);
+}
+
+function deleteEvent(eventId) {
+
+    if (!confirm("¿Está seguro que desea eliminar este evento?")) {
+        return;
+    }
+
+    const headers = new Headers({
+        "Content-Type": "application/json",
+        "Authorization": "Bearer " + "token123" // Simulando un token de autenticación
+    });
+
+    fetch(`http://localhost:9091/events/deleteEvent/${parseInt(eventId)}`, {
+        method: 'DELETE',
+        headers: headers
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error(response.statusText);
+        }
+        return response.json();
+    })
+    .then(data => {           
+        alert('Evento eliminado correctamente');
+
+        // recargo la pagina
+        window.location.replace(`/events`);
+
+    }).catch(error => {
+        console.error('Error:', error);
+        alert('Error al eliminar el evento: ' + error.message);
+    });
+}
+
+//TODO funciones para unirse o dejar un evento
+//se necesita tener el usuario logueado
+function joinEvent() {
+}
+
+function leaveEvent() {
+}
+
+/*
 const table = document.getElementById('eventsList');
 
 async function loadEvents() {
@@ -79,8 +126,8 @@ function deleteEvent(eventId) {
     .then(data => {           
         alert('Evento eliminado correctamente');
 
-        // recargo la lista de eventos
-        reloadEvents();
+        // recargo la pagina
+        window.location.replace(`/events`);
 
     }).catch(error => {
         console.error('Error:', error);
@@ -93,16 +140,8 @@ function reloadEvents() {
     loadEvents();
 }
 
-// provisional, para probar modificar evento
-// habría que usar controladores
 function modifyEvent(eventId) {
-    window.location.href = `editEvent.html?id=${eventId}`;
+    window.location.replace(`/events/edit/${eventId}`);
 }
-
-//TODO funciones para unirse o dejar un evento
-//se necesita tener el usuario logueado
-function joinEvent() {
-}
-
-function leaveEvent() {
-}
+*/
+    

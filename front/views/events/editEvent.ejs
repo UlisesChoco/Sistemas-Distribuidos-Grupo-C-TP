@@ -10,10 +10,10 @@
 
 <body>
     <nav>
-        <a href="events.ejs">ver eventos</a>
-        <a href="createEvent.ejs">crear evento</a>
-        <a href="#">volver a inicio</a>
-        <a href="#">cerrar sesión</a>
+        <a href="/events">ver eventos</a>
+        <a href="/events/create">crear evento</a>
+        <a href="/home">volver a inicio</a>
+        <a href="/">cerrar sesión</a>
     </nav>
 
     <section>
@@ -47,7 +47,9 @@
         </div>
 
     </section>
-
+    <script>
+        window.eventId = <%= id %>;
+    </script>
     <script src="../../js/events/editEvent.js"></script>
 </body>
 

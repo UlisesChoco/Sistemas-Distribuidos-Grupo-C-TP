@@ -85,7 +85,8 @@ router.put('/modifyEvent', (req, res) => {
 
 router.delete('/deleteEvent/:id', (req, res) => {
     const eventId = req.params.id;
-    const token = req.headers.authorization?.replace('Bearer ', '');
+    //const token = req.headers.authorization?.replace('Bearer ', '');
+    const token = "token123";
 
     if (!eventId) {
         return res.status(400).json({ error: 'Falta el ID del evento' });
@@ -194,8 +195,34 @@ router.get('/getEventsWithParticipants', (req, res) => {
 
 //-------------------------- rutas de vistas -------------------------------
 
-router.get('/events', (req, res) => {
-    res.render('events/events', {});
+
+router.get('/edit/:id', (req, res) => {
+    res.render('events/editEvent', {id: req.params.id});
+});
+
+router.get('/create', (req, res) => {
+    res.render('events/createEvent', {});
+});
+
+router.get('/', (req, res) => {
+
+    //extraigo el token desde una cookie
+    //const token = req.cookies.token;
+    const token = "Token123"
+
+    //const token = req.headers.authorization?.replace('Bearer ', '');
+
+    const requestBody = {};
+
+    const metadata = new grpc.Metadata();
+    metadata.add('Authorization', 'Bearer ' + token);
+
+    eventClient.GetEventsWithoutParticipantsList(requestBody, metadata, (err, response) => {
+        if (err) return res.status(500).json({ error: err.message });
+        //res.json(response);
+        res.render('events/events', {events: response.events});
+    });
+
 });
 
 module.exports = router;

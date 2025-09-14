@@ -10,10 +10,10 @@
 
 <body>
     <nav>
-        <a href="events.ejs">ver eventos</a>
-        <a href="createEvent.ejs">crear evento</a>
-        <a href="#">volver a inicio</a>
-        <a href="#">cerrar sesión</a>
+        <a href="/events">ver eventos</a>
+        <a href="/events/create">crear evento</a>
+        <a href="/home">volver a inicio</a>
+        <a href="/">cerrar sesión</a>
     </nav>
 
     <section>
@@ -30,6 +30,28 @@
                     <th>Finalizado</th>
                     <th>Opciones</th>
                 </tr>
+
+                <% events.forEach(event => { %>
+                    <tr>
+                        <td><%= event.id %></td>
+                        <td><%= event.name %></td> 
+                        <td><%= event.description %></td>
+                        <td>
+                            <%= new Date(event.date.seconds * 1000).toLocaleDateString() %>
+                            <br>
+                            <%= new Date(event.date.seconds * 1000).toLocaleTimeString() %>
+                        </td>
+                        <td><%= event.is_completed %></td> 
+                        <td>
+                            <!-- falta validar el rol del usuario
+                            if(user.role == PRESIDENTE || user.role == COORDINADOR){ -->
+                                <button onclick="modifyEvent(<%= event.id %>)">modificar</button>
+                                <button onclick="deleteEvent(<%= event.id %>)" <% if(event.is_completed){ %>disabled<% } %> >eliminar</button>
+                            <!-- } -->
+                            <button onclick="joinEvent()">unirme</button>
+                        </td>
+                    </tr>
+                <% }) %>
             </table>
 
         </div>
