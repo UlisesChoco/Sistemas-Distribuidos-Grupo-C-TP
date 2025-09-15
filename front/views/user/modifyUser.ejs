@@ -1,11 +1,13 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="../../css/eventsStyles.css">
+    <link rel="stylesheet" href="../../css/userStyles.css">
     <title>Modificando User</title>
 </head>
+
 <body>
     <h1>ONG Empuje Comunitario - Gestión de Usuarios</h1>
     <nav>
@@ -17,33 +19,49 @@
     <section>
         <div class="container">
             <h3>Modificando Usuario</h1>
-            <div id="error"></div>
-            <form id="modifyUserForm">
-                <label>Nombre de usuario</label><input id="username" type="text" name="username"><br>
-                <label>Nombre</label><input id="name" type="text" name="name"><br>
-                <label>Apellido</label><input id="surname" type="text" name="surname"><br>
-                <label>Celular</label><input id="phoneNumber" type="text" name="phoneNumber"><br>
-                <label>Email</label><input id="email" type="text" name="email"><br>
-                <label>Activo</label>
-                <label for="active">¿El usuario estará activo?</label><input type="checkbox" id="active" name="active">
-                <br>
-                <label>Roles</label>
-                <input type="checkbox" id="presidente" name="presidente" value="PRESIDENTE">
-                <label for="presidente">Presidente</label><br>
-                <input type="checkbox" id="coordinador" name="coordinador" value="COORDINADOR">
-                <label for="coordinador">Coordinador</label><br>
-                <input type="checkbox" id="vocal" name="vocal" value="VOCAL">
-                <label for="vocal">Vocal</label><br>
-                <input type="checkbox" id="voluntario" name="voluntario" value="VOLUNTARIO">
-                <label for="voluntario">Voluntario</label><br>
-                <input type="text" hidden="true" id="originalUsername" name="originalUsername" value=<%= username %>>
-                <input type="text" hidden="true" id="id" name="id">
-                <button type="submit">Confirmar</button>
-            </form>
-            <button id="btnCancel">Cancelar</button>
+                <div id="error"></div>
+                <form id="modifyUserForm">
+                    <label>Nombre de usuario</label><input id="username" type="text" name="username"><br>
+                    <label>Nombre</label><input id="name" type="text" name="name"><br>
+                    <label>Apellido</label><input id="surname" type="text" name="surname"><br>
+                    <label>Celular</label><input id="phoneNumber" type="text" name="phoneNumber"><br>
+                    <label>Email</label><input id="email" type="text" name="email"><br>
+                    <label>Activo</label>
+                    <div class="checkbox-wrapper">
+                        <input type="checkbox" id="active" name="active">
+                        <label for="active">¿El usuario estará activo?</label>
+                    </div>
+                    <br>
+                    <label>Modifique los roles del usuario</label>
+                    <div class="checkbox-wrapper">
+                        <input type="checkbox" id="presidente" name="presidente" value="PRESIDENTE">
+                        <label for="presidente">Presidente</label>
+                    </div>
+
+                    <div class="checkbox-wrapper">
+                        <input type="checkbox" id="coordinador" name="coordinador" value="COORDINADOR">
+                        <label for="coordinador">Coordinador</label>
+                    </div>
+
+                    <div class="checkbox-wrapper">
+                        <input type="checkbox" id="vocal" name="vocal" value="VOCAL">
+                        <label for="vocal">Vocal</label>
+                    </div>
+
+                    <div class="checkbox-wrapper">
+                        <input type="checkbox" id="voluntario" name="voluntario" value="VOLUNTARIO">
+                        <label for="voluntario">Voluntario</label>
+                    </div>
+
+                    <input type="text" hidden="true" id="originalUsername" name="originalUsername" value=<%=username %>>
+                    <input type="text" hidden="true" id="id" name="id">
+                    <button type="submit">Confirmar</button>
+                </form>
+                <button id="btnCancel">Cancelar</button>
         </div>
     </section>
     <script type="module" src="../../js/user/modifyUser.js"></script>
     <script src="../../js/user/logout.js"></script>
 </body>
+
 </html>

@@ -93,7 +93,7 @@ async function populateUserTable() {
             <td>${user.userWithRolesDTO.surname}</td>
             <td>${user.userWithRolesDTO.phoneNumber}</td>
             <td>${user.userWithRolesDTO.email}</td>
-            <td>${user.userWithRolesDTO.isActive}</td>
+            <td>${user.userWithRolesDTO.isActive ? 'Sí' : 'No'}</td>
             <td>
                 <button onclick="modifyUser('${user.userWithRolesDTO.username}')">Modificar</button>
                 ${user.userWithRolesDTO.isActive
