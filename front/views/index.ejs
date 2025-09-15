@@ -3,9 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../../css/eventsStyles.css">
     <title>Login</title>
 </head>
 <body>
-    <h1>Login</h1>
+    <h1>Iniciar Sesión</h1>
+    <div id="error"></div>
+    <form id="loginForm">
+        <label>Nombre de usuario</label><br><input type="text" name="username"><br>
+        <label>Contraseña</label><br><input type="text" name="password"><br>
+        <button type="submit">Iniciar Sesión</button>
+    </form>
+    <script type="module" src="../js/user/login.js"></script>
 </body>
 </html>
