@@ -1,23 +1,67 @@
 const express = require('express');
+const jwtAuth = require("../auth/jwt-auth");
 const userRouter = express.Router();
 const grpc = require('@grpc/grpc-js');
 const grpcUserService = require('../../clients/userClient');
-userRouter.use(express.json());
 
+//-------------------------- rutas de vistas -------------------------------
+//estoy repitiendo codigo en las vistas (verificar rol presidente) pero es algo temporal, despues refactorizo
+userRouter.get("/", jwtAuth, (req, res) => {
+    if(!req.user.roles.includes("PRESIDENTE")) {
+        res.render("error/error-403");
+        return;
+    }
+    res.render("user/user");
+});
+
+userRouter.get("/create", jwtAuth, (req, res) => {
+    if(!req.user.roles.includes("PRESIDENTE")) {
+        res.render("error/error-403");
+        return;
+    }
+    res.render("user/createUser");
+});
+
+userRouter.get("/modify/:username", jwtAuth, (req, res) => {
+    if(!req.user.roles.includes("PRESIDENTE")) {
+        res.render("error/error-403");
+        return;
+    }
+    res.render("user/modifyUser", {username: req.params.username});
+});
+
+//-------------------------- rutas de la api -------------------------------
 userRouter.post("/login", (req, res) => {
     const username = req.body.username;
     const password = req.body.password;
     const requestData = {username: username, password: password};
 
     grpcUserService.Login(requestData, (err, response) => {
-        onServerResponse(res, err, response, (response) =>
-            res.send({user: response.userWithRolesDTO, token: response.token})
+        onServerResponse(res, err, response, (response) => {
+            res.cookie('token', response.token, {
+                httpOnly: true,
+                secure: process.env.NODE_ENV === 'production',
+                sameSite: 'strict',
+                maxAge: 1800000 //tiempo de vida de esta cookie. le ponemos la misma del token
+            });
+            res.send({user: response.userWithRolesDTO, token: response.token});
+        }
         )
     });
 });
 
+userRouter.post("/logout", (req, res) => {
+    res.clearCookie('token', {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === 'production',
+        sameSite: 'strict',
+        path: '/'
+    });
+    res.send();
+});
+
 userRouter.post("/create", (req, res) => {
-    const metadata = buildMetadata(req);
+    const metadata = buildMetadataWithToken(req);
     
     const requestData = {
         username: req.body.username,
@@ -39,7 +83,7 @@ userRouter.post("/create", (req, res) => {
 userRouter.post("/modify", (req, res) => {
     const id = req.body.id;
     const userWithRolesDTO = req.body.userWithRolesDTO;
-    const metadata = buildMetadata(req);
+    const metadata = buildMetadataWithToken(req);
 
     const requestData = {id: id, userWithRolesDTO: userWithRolesDTO};
 
@@ -52,7 +96,7 @@ userRouter.post("/modify", (req, res) => {
 
 userRouter.post("/delete", (req, res) => {
     const id = req.body.id;
-    const metadata = buildMetadata(req);
+    const metadata = buildMetadataWithToken(req);
 
     const requestData = {id: id};
 
@@ -64,7 +108,7 @@ userRouter.post("/delete", (req, res) => {
 });
 
 userRouter.get("/list", (req, res) => {
-    const metadata = buildMetadata(req);
+    const metadata = buildMetadataWithToken(req);
 
     const requestData = {};
 
@@ -74,7 +118,7 @@ userRouter.get("/list", (req, res) => {
 });
 
 userRouter.get("/active-list", (req, res) => {
-    const metadata = buildMetadata(req);
+    const metadata = buildMetadataWithToken(req);
 
     const requestData = {};
 
@@ -85,7 +129,7 @@ userRouter.get("/active-list", (req, res) => {
 
 userRouter.get("/:username", (req, res) => {
     const username = req.params.username;
-    const metadata = buildMetadata(req);
+    const metadata = buildMetadataWithToken(req);
 
     const requestData = {username: username};
 
@@ -104,11 +148,11 @@ function onServerResponse(res, err, response, sendResponse) {
     sendResponse(response);
 }
 
-function buildMetadata(req) {
-    const token = req.headers.authorization;
+function buildMetadataWithToken(req) {
+    const token = req.cookies.token;
     const metadata = new grpc.Metadata();
     if(token != null) {
-        metadata.add('Authorization', token);
+        metadata.add('Authorization', 'Bearer '+token);
     }
     return metadata;
 }
