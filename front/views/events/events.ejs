@@ -37,9 +37,21 @@
                         <td><%= event.name %></td> 
                         <td><%= event.description %></td>
                         <td>
-                            <%= new Date(event.date.seconds * 1000).toLocaleDateString() %>
+                            <% 
+                                <!-- formateo la fecha a gmt -3 -->
+                                const timestamp = event.date.seconds * 1000;
+                                const date = new Date(timestamp + 3 * 60 * 60 * 1000);
+                            %>
+                            
+                            <%= date.toLocaleDateString('es-AR') %>
                             <br>
-                            <%= new Date(event.date.seconds * 1000).toLocaleTimeString() %>
+                            <%= 
+                                date.toLocaleTimeString('es-AR', {
+                                    hour: '2-digit',
+                                    minute: '2-digit',
+                                    hour12: false
+                                }) 
+                            %>
                         </td>
                         <td><%= event.is_completed %></td> 
                         <td>
@@ -54,6 +66,11 @@
                             <%} else {%>
                                 <button onclick="joinEvent(<%= event.id %>, 1)">participar</button>
                             <% } %>
+                            <!-- falta registrar donaciones de eventos pasados
+                                if(event.is_completed){
+                                    <button onclick="leaveEvent(<%= event.id %>, 1)">registrar donaciones</button>
+                                }
+                            -->
                         </td>
                     </tr>
                 <% }) %>
@@ -61,7 +78,6 @@
 
         </div>
     </section>
-
     <script src="../../js/events/events.js"></script>
 </body>
 

@@ -54,14 +54,8 @@ router.put('/modifyEvent', (req, res) => {
         return res.status(400).json({ error: 'Faltan campos obligatorios' });
     }
 
-    // validacion fecha no anterior a hoy
     const eventSeconds = Math.floor(new Date(date).getTime() / 1000);
-    const currentDateSeconds = Math.floor(new Date().getTime() / 1000);
-
-    if (eventSeconds < currentDateSeconds) {
-        return res.status(400).json({ error: 'La fecha no puede ser anterior a la actual' });
-    }
-
+    
     const requestBody = {
         id,
         name,
@@ -225,7 +219,6 @@ router.get('/', (req, res) => {
 
     eventClient.GetEventsWithoutParticipantsList(requestBody, metadata, (err, response) => {
         if (err) return res.status(500).json({ error: err.message });
-        //res.json(response);
         res.render('events/events', {events: response.events});
     });
 

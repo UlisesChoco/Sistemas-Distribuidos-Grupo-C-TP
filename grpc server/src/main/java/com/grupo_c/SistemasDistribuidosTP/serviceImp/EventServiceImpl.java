@@ -60,7 +60,9 @@ public class EventServiceImpl extends EventServiceGrpc.EventServiceImplBase impl
     public void modifyEvent (EventServiceClass.EventWithParticipantsDto event,
                              StreamObserver<UtilsServiceClass.Response> responseStreamObserver){
 
-        if(eventRepository.findById(event.getId()).orElse(null) == null){
+        Event e = eventRepository.findById(event.getId()).orElse(null);
+
+        if(e == null){
             UtilsServiceClass.Response response = UtilsServiceClass.Response
                     .newBuilder()
                     .setMessage("El Evento no existe")
@@ -77,7 +79,17 @@ public class EventServiceImpl extends EventServiceGrpc.EventServiceImplBase impl
 
         Set<User> participants = new HashSet<>(userRepository.findAllById(ids));
 
-        Event e = em.toEntityWithParticipants(event,participants);
+        e.setName(event.getName());
+        e.setDescription(event.getDescription());
+
+        //si la fecha es distinta se cambia
+        if (!e.getDate().equals(em.toLocalDateTime(event.getDate()))){
+
+            e.setDate(em.toLocalDateTime(event.getDate()));
+        }
+
+        e.setIsCompleted(event.getIsCompleted());
+        e.setParticipants(participants);
 
         eventRepository.save(e);
 
