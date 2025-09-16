@@ -30,7 +30,7 @@ public class MailSenderServiceImpl implements IMailSenderService {
         try {
             javaMailSender.send(message);
         } catch(MailException mailException) {
-            mailException.printStackTrace();
+            mailException.printStackTrace(); //temporal. realmente deberiamos intentar reenviar el correo si por lo que sea falla
         }
     }
 }
