@@ -56,6 +56,10 @@ async function populateForm() {
     });
 }
 
+const deleteErrorDiv = (errorDiv) => {
+    setTimeout(() => errorDiv.remove(), 5000);
+}
+
 document.getElementById('modifyUserForm').addEventListener('submit', async (e) => {
     e.preventDefault(); //con esto, al enviar el form, la pagina no se recarga sola
     const formData = new FormData(e.target);
@@ -70,6 +74,7 @@ document.getElementById('modifyUserForm').addEventListener('submit', async (e) =
         errorDiv.className = "error";
         errorDiv.innerHTML = data.message;
         document.getElementById('error').appendChild(errorDiv);
+        deleteErrorDiv(errorDiv);
         return;
     }
     window.location.href = "http://localhost:9091/user/";
