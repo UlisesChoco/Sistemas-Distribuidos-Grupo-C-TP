@@ -55,9 +55,11 @@ public class UserServiceGrpcImpl extends UserServiceGrpc.UserServiceImplBase {
             UserServiceClass.UserWithRolesDTO request,
             StreamObserver<UtilsServiceClass.Response> responseObserver
     ) {
-        if(!UserValidator.isUserValid(request)) {
+        try {
+            UserValidator.isUserValid(request);
+        } catch (UserNotValidException userNotValidException) {
             responseObserver.onNext(ResponseFactory.createResponse(
-                    "Registration failed.",
+                    "Registration failed. "+userNotValidException.getMessage(),
                     false
             ));
             responseObserver.onCompleted();
@@ -68,7 +70,11 @@ public class UserServiceGrpcImpl extends UserServiceGrpc.UserServiceImplBase {
             userService.createUser(request, roleService.findAll());
         } catch (UsernameAlreadyExistsException | EmailAlreadyExistsException |
                  PhoneNumberAlreadyExistsException alreadyExistsException) {
-            sendGrpcError(responseObserver, Status.ALREADY_EXISTS, alreadyExistsException.getMessage());
+            responseObserver.onNext(ResponseFactory.createResponse(
+                    alreadyExistsException.getMessage(),
+                    false
+            ));
+            responseObserver.onCompleted();
             return;
         }
 
@@ -87,6 +93,17 @@ public class UserServiceGrpcImpl extends UserServiceGrpc.UserServiceImplBase {
         } catch(UserNotFoundException userNotFoundException) {
             responseObserver.onNext(ResponseFactory.createResponse(
                     "Modification failed. User with specified ID does not exist.",
+                    false
+            ));
+            responseObserver.onCompleted();
+            return;
+        }
+
+        try {
+            UserValidator.isUserValid(request.getUserWithRolesDTO());
+        } catch (UserNotValidException userNotValidException) {
+            responseObserver.onNext(ResponseFactory.createResponse(
+                    "Modification failed. "+userNotValidException.getMessage(),
                     false
             ));
             responseObserver.onCompleted();

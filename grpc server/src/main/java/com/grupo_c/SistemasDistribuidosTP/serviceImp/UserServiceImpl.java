@@ -5,6 +5,7 @@ import com.grupo_c.SistemasDistribuidosTP.entity.User;
 import com.grupo_c.SistemasDistribuidosTP.exception.user.*;
 import com.grupo_c.SistemasDistribuidosTP.mapper.UserMapper;
 import com.grupo_c.SistemasDistribuidosTP.repository.IUserRepository;
+import com.grupo_c.SistemasDistribuidosTP.service.IMailSenderService;
 import com.grupo_c.SistemasDistribuidosTP.service.IUserService;
 import com.grupo_c.SistemasDistribuidosTP.service.UserServiceClass;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -17,13 +18,16 @@ import java.util.*;
 public class UserServiceImpl implements IUserService {
     private final IUserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+    private final IMailSenderService mailSenderService;
 
     public UserServiceImpl(
             IUserRepository userRepository,
-            PasswordEncoder passwordEncoder
+            PasswordEncoder passwordEncoder,
+            IMailSenderService mailSenderService
     ) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
+        this.mailSenderService = mailSenderService;
     }
 
     @Override
@@ -155,11 +159,10 @@ public class UserServiceImpl implements IUserService {
 
         User userEntity = new User();
         String generatedPassword = UUID.randomUUID().toString();
-        //todo: REMOVER ESTE PRINT EN LA VERSION FINAL. simplemente lo dejo para saber que password esta generando para facilitar pruebas
-        System.out.println("Creating new user with this password: "+generatedPassword);
         UserMapper.userWithRolesDTOToUser(userWithRolesDTO, userEntity, rolesFromDB);
         userEntity.setPassword(passwordEncoder.encode(generatedPassword));
-        save(userEntity);
+        User savedUser = save(userEntity);
+        mailSenderService.send(savedUser, generatedPassword);
     }
 
     @Override
