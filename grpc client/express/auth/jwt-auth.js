@@ -9,7 +9,7 @@ const authenticateToken = (req, res, next) => {
     if (err) {
         return res.render("index", {});//si el token no es valido lo mandamos al login
     };
-    req.user = {username: payload.sub, roles: payload.roles};
+    req.user = {username: payload.sub, id: payload.id, roles: payload.roles};
     next();
   });
 };
