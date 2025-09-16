@@ -68,12 +68,23 @@ public class GrpcServerInterceptor implements ServerInterceptor {
         rolesAndMethods.put(
                 RoleEnum.PRESIDENTE.name(),
                 List.of(
+                        //user
                         "UserService/CreateUser",
                         "UserService/ModifyUser",
                         "UserService/DeleteUser",
                         "UserService/GetUserList",
                         "UserService/GetActiveUsersList",
-                        "UserService/GetUser"
+                        "UserService/GetUser",
+
+                        //event
+                        "EventService/CreateEvent",
+                        "EventService/ModifyEvent",
+                        "EventService/DeleteEvent",
+                        "EventService/AssignUserToEvent",
+                        "EventService/DeleteUserFromEvent",
+                        "EventService/GetEvent",
+                        "EventService/GetEventsWithParticipantsList",
+                        "EventService/GetEventsWithoutParticipantsList"
                 )
         );
         rolesAndMethods.put(
@@ -82,11 +93,29 @@ public class GrpcServerInterceptor implements ServerInterceptor {
         );
         rolesAndMethods.put(
                 RoleEnum.COORDINADOR.name(),
-                List.of()
+                List.of(
+                        //user
+                        "UserService/GetActiveUsersList",
+
+                        //event
+                        "EventService/CreateEvent",
+                        "EventService/ModifyEvent",
+                        "EventService/DeleteEvent",
+                        "EventService/AssignUserToEvent",
+                        "EventService/DeleteUserFromEvent",
+                        "EventService/GetEvent",
+                        "EventService/GetEventsWithParticipantsList",
+                        "EventService/GetEventsWithoutParticipantsList"
+                )
         );
         rolesAndMethods.put(
                 RoleEnum.VOLUNTARIO.name(),
-                List.of()
+                List.of(
+                        //events
+                        "EventService/AssignUserToEvent",
+                        "EventService/DeleteUserFromEvent",
+                        "EventService/GetEventsWithoutParticipantsList"
+                )
         );
 
         return rolesAndMethods;
@@ -102,16 +131,7 @@ public class GrpcServerInterceptor implements ServerInterceptor {
                 ,"InventoryService/GetInventoryById"
                 ,"InventoryService/GetInventoryByCategory"
                 ,"InventoryService/UpdateInventory"
-                ,"InventoryService/DeleteInventory",
-                "EventService/CreateEvent",
-                "EventService/ModifyEvent",
-                "EventService/DeleteEvent",
-                "EventService/AssignUserToEvent",
-                "EventService/DeleteUserFromEvent",
-                "EventService/GetEvent",
-                "EventService/GetEventsWithParticipantsList",
-                "EventService/GetEventsWithoutParticipantsList",
-                "UserService/GetActiveUsersList"
+                ,"InventoryService/DeleteInventory"
         );
     }
 }
