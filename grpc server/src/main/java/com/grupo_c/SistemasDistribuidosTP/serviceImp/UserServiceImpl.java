@@ -33,14 +33,14 @@ public class UserServiceImpl implements IUserService {
     @Override
     public User findById(long id) throws UserNotFoundException {
         return userRepository.findById(id).orElseThrow(() ->
-                new UserNotFoundException("User with specified ID does not exist.")
+                new UserNotFoundException("No existe ningún usuario con el ID específicado.")
         );
     }
 
     @Override
     public User findByUsername(String username) throws UsernameNotFoundException {
         return userRepository.findByUsername(username).orElseThrow(() ->
-                new UsernameNotFoundException("User with specified username does not exist.")
+                new UsernameNotFoundException("No existe ningún usuario registrado con ese nombre de usuario.")
         );
     }
 
@@ -146,16 +146,16 @@ public class UserServiceImpl implements IUserService {
 
     @Override
     public void isUserValid(User userEntity, String password) throws UsernameNotFoundException, InvalidPasswordException, UserNotActiveException {
-        if(userEntity == null) throw new UsernameNotFoundException("User with specified username does not exist.");
-        if(!passwordEncoder.matches(password, userEntity.getPassword())) throw new InvalidPasswordException("Invalid password.");
-        if(!userEntity.getIsActive()) throw new UserNotActiveException("This user has been marked as inactive.");
+        if(userEntity == null) throw new UsernameNotFoundException("No existe ningún usuario registrado con ese nombre de usuario.");
+        if(!passwordEncoder.matches(password, userEntity.getPassword())) throw new InvalidPasswordException("Contraseña incorrecta.");
+        if(!userEntity.getIsActive()) throw new UserNotActiveException("Este usuario fue eliminado.");
     }
 
     @Override
     public void createUser(UserServiceClass.UserWithRolesDTO userWithRolesDTO, List<Role> rolesFromDB) throws UsernameAlreadyExistsException, EmailAlreadyExistsException, PhoneNumberAlreadyExistsException {
-        if(existsByUsername(userWithRolesDTO.getUsername())) throw new UsernameAlreadyExistsException("Registration failed. Username already taken.");
-        if(existsByEmail(userWithRolesDTO.getEmail())) throw new EmailAlreadyExistsException("Registration failed. Email already taken.");
-        if(existsByPhoneNumber(userWithRolesDTO.getPhoneNumber())) throw new PhoneNumberAlreadyExistsException("Registration failed. Phone number already taken.");
+        if(existsByUsername(userWithRolesDTO.getUsername())) throw new UsernameAlreadyExistsException("El nombre de usuario indicado ya está en uso.");
+        if(existsByEmail(userWithRolesDTO.getEmail())) throw new EmailAlreadyExistsException("El correo electrónico indicado ya está en uso.");
+        if(existsByPhoneNumber(userWithRolesDTO.getPhoneNumber())) throw new PhoneNumberAlreadyExistsException("El número de telefono indicado ya está en uso.");
 
         User userEntity = new User();
         String generatedPassword = UUID.randomUUID().toString();
@@ -168,9 +168,9 @@ public class UserServiceImpl implements IUserService {
     @Override
     public void modifyUser(User userEntity, UserServiceClass.UserWithIdAndRolesDTO userWithIdAndRolesDTO, List<Role> rolesFromDB) throws UsernameAlreadyExistsException, EmailAlreadyExistsException, PhoneNumberAlreadyExistsException {
         UserServiceClass.UserWithRolesDTO userWithRolesDTO = userWithIdAndRolesDTO.getUserWithRolesDTO();
-        if(existsByUsernameAndIdNot(userWithRolesDTO.getUsername(), userEntity.getId())) throw new UsernameAlreadyExistsException("Modification failed. Username already taken.");
-        if(existsByEmailAndIdNot(userWithRolesDTO.getEmail(), userEntity.getId())) throw new EmailAlreadyExistsException("Modification failed. Email already taken.");
-        if(existsByPhoneNumberAndIdNot(userWithRolesDTO.getPhoneNumber(), userEntity.getId())) throw new PhoneNumberAlreadyExistsException("Modification failed. Phone number already taken.");
+        if(existsByUsernameAndIdNot(userWithRolesDTO.getUsername(), userEntity.getId())) throw new UsernameAlreadyExistsException("El nombre de usuario indicado ya está en uso.");
+        if(existsByEmailAndIdNot(userWithRolesDTO.getEmail(), userEntity.getId())) throw new EmailAlreadyExistsException("El correo electrónico indicado ya está en uso.");
+        if(existsByPhoneNumberAndIdNot(userWithRolesDTO.getPhoneNumber(), userEntity.getId())) throw new PhoneNumberAlreadyExistsException("El número de telefono indicado ya está en uso.");
 
         UserMapper.userWithRolesDTOToUser(userWithRolesDTO, userEntity, rolesFromDB);
         userEntity.setModificationDate(LocalDateTime.now());
