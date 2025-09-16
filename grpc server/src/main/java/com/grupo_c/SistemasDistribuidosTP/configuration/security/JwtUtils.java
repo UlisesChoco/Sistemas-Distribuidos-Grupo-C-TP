@@ -30,6 +30,7 @@ public class JwtUtils {
                     .withIssuer(userGenerator) //usuario que genera el token (nuestro backend)
                     .withSubject(userEntity.getUsername()) //usuario al que le genero el token
                     .withClaim("roles", userEntity.getRolesSeparatedByCommaAsString()) //incluyo los roles del usuario en el token
+                    .withClaim("id", userEntity.getId()) //se incluye el id del usuario en el token
                     .withIssuedAt(new Date()) //fecha de emision del token (ahora mismo)
                     .withExpiresAt(new Date(System.currentTimeMillis() + expirationTimeInMillis)) //fecha de expiracion del token. En media hora
                     .withJWTId(UUID.randomUUID().toString())
