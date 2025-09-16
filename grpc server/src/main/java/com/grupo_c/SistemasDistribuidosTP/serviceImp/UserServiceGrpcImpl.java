@@ -29,17 +29,18 @@ public class UserServiceGrpcImpl extends UserServiceGrpc.UserServiceImplBase {
             UserServiceClass.LoginRequest request,
             StreamObserver<UserServiceClass.UserWithTokenDTO> responseObserver
     ) {
-        User userEntity = userService.findByUsername(request.getUsername());
+        User userEntity;
         try {
+            userEntity = userService.findByUsername(request.getUsername());
             userService.isUserValid(userEntity, request.getPassword());
         } catch (UsernameNotFoundException usernameNotFoundException) {
-            sendGrpcError(responseObserver, Status.NOT_FOUND, usernameNotFoundException.getMessage());
+            sendGrpcError(responseObserver, Status.NOT_FOUND, "ERROR: Inicio de sesión fallido. "+usernameNotFoundException.getMessage());
             return;
         } catch (InvalidPasswordException invalidPasswordException) {
-            sendGrpcError(responseObserver, Status.INVALID_ARGUMENT, invalidPasswordException.getMessage());
+            sendGrpcError(responseObserver, Status.INVALID_ARGUMENT, "ERROR: Inicio de sesión fallido. "+invalidPasswordException.getMessage());
             return;
         } catch (UserNotActiveException userNotActiveException) {
-            sendGrpcError(responseObserver, Status.FAILED_PRECONDITION, userNotActiveException.getMessage());
+            sendGrpcError(responseObserver, Status.FAILED_PRECONDITION, "ERROR: Inicio de sesión fallido. "+userNotActiveException.getMessage());
             return;
         }
 
@@ -55,9 +56,11 @@ public class UserServiceGrpcImpl extends UserServiceGrpc.UserServiceImplBase {
             UserServiceClass.UserWithRolesDTO request,
             StreamObserver<UtilsServiceClass.Response> responseObserver
     ) {
-        if(!UserValidator.isUserValid(request)) {
+        try {
+            UserValidator.isUserValid(request);
+        } catch (UserNotValidException userNotValidException) {
             responseObserver.onNext(ResponseFactory.createResponse(
-                    "Registration failed.",
+                    "ERROR: No se pudo registrar al usuario. "+userNotValidException.getMessage(),
                     false
             ));
             responseObserver.onCompleted();
@@ -68,11 +71,15 @@ public class UserServiceGrpcImpl extends UserServiceGrpc.UserServiceImplBase {
             userService.createUser(request, roleService.findAll());
         } catch (UsernameAlreadyExistsException | EmailAlreadyExistsException |
                  PhoneNumberAlreadyExistsException alreadyExistsException) {
-            sendGrpcError(responseObserver, Status.ALREADY_EXISTS, alreadyExistsException.getMessage());
+            responseObserver.onNext(ResponseFactory.createResponse(
+                    "ERROR: No se pudo registrar al usuario. "+alreadyExistsException.getMessage(),
+                    false
+            ));
+            responseObserver.onCompleted();
             return;
         }
 
-        responseObserver.onNext(ResponseFactory.createResponse("Registration succeeded.", true));
+        responseObserver.onNext(ResponseFactory.createResponse("Registro exitoso.", true));
         responseObserver.onCompleted();
     }
 
@@ -86,7 +93,18 @@ public class UserServiceGrpcImpl extends UserServiceGrpc.UserServiceImplBase {
             userEntity = userService.findById(request.getId());
         } catch(UserNotFoundException userNotFoundException) {
             responseObserver.onNext(ResponseFactory.createResponse(
-                    "Modification failed. User with specified ID does not exist.",
+                    "ERROR: Modificación fallida. "+userNotFoundException.getMessage(),
+                    false
+            ));
+            responseObserver.onCompleted();
+            return;
+        }
+
+        try {
+            UserValidator.isUserValid(request.getUserWithRolesDTO());
+        } catch (UserNotValidException userNotValidException) {
+            responseObserver.onNext(ResponseFactory.createResponse(
+                    "ERROR: Modificación fallida. "+userNotValidException.getMessage(),
                     false
             ));
             responseObserver.onCompleted();
@@ -97,14 +115,14 @@ public class UserServiceGrpcImpl extends UserServiceGrpc.UserServiceImplBase {
             userService.modifyUser(userEntity, request, roleService.findAll());
         } catch (UsernameAlreadyExistsException | EmailAlreadyExistsException | PhoneNumberAlreadyExistsException alreadyExistsException) {
             responseObserver.onNext(ResponseFactory.createResponse(
-                    alreadyExistsException.getMessage(),
+                    "ERROR: Modificación fallida. "+alreadyExistsException.getMessage(),
                     false
             ));
             responseObserver.onCompleted();
             return;
         }
 
-        responseObserver.onNext(ResponseFactory.createResponse("Modification succeeded.", true));
+        responseObserver.onNext(ResponseFactory.createResponse("Modificación exitosa.", true));
         responseObserver.onCompleted();
     }
 
@@ -118,7 +136,7 @@ public class UserServiceGrpcImpl extends UserServiceGrpc.UserServiceImplBase {
             userEntity = userService.findById(request.getId());
         } catch(UserNotFoundException userNotFoundException) {
             responseObserver.onNext(ResponseFactory.createResponse(
-                    userNotFoundException.getMessage(),
+                    "ERROR: Eliminación fallida. "+userNotFoundException.getMessage(),
                     false
             ));
             responseObserver.onCompleted();
@@ -127,7 +145,7 @@ public class UserServiceGrpcImpl extends UserServiceGrpc.UserServiceImplBase {
 
         userService.deleteUser(userEntity);
 
-        responseObserver.onNext(ResponseFactory.createResponse("Deletion succeeded.", true));
+        responseObserver.onNext(ResponseFactory.createResponse("Eliminación exitosa.", true));
         responseObserver.onCompleted();
     }
 
