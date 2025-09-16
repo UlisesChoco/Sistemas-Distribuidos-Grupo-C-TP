@@ -1,5 +1,9 @@
 import { UNAUTHENTICATED, INVALID_ARGUMENT, NOT_FOUND, FAILED_PRECONDITION } from "../constants/rpc-codes.js";
 
+const deleteErrorDiv = (errorDiv) => {
+    setTimeout(() => errorDiv.remove(), 5000);
+}
+
 document.getElementById('loginForm').addEventListener('submit', async (e) => {
     e.preventDefault(); //con esto, al enviar el form, la pagina no se recarga sola
     const formData = new FormData(e.target);
@@ -14,6 +18,7 @@ document.getElementById('loginForm').addEventListener('submit', async (e) => {
         errorDiv.className = "error";
         errorDiv.innerHTML = data.details;
         document.getElementById('error').appendChild(errorDiv);
+        deleteErrorDiv(errorDiv);
         return;
     }
     window.location.href = "http://localhost:9091/home";
