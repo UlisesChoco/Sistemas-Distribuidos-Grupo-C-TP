@@ -8,14 +8,10 @@ function deleteEvent(eventId) {
         return;
     }
 
-    const headers = new Headers({
-        "Content-Type": "application/json",
-        "Authorization": "Bearer " + "token123" // Simulando un token de autenticación
-    });
-
     fetch(`http://localhost:9091/events/deleteEvent/${parseInt(eventId)}`, {
         method: 'DELETE',
-        headers: headers
+        headers: {"Content-Type": "application/json"},
+        credentials: 'include'
     })
     .then(response => {
         if (!response.ok) {
@@ -36,19 +32,15 @@ function deleteEvent(eventId) {
 }
 
 //se necesita tener el usuario logueado
-function joinEvent(eventId, userId) {
+function joinEvent(eventId) {
 
-    const requestData = {eventId, userId};
-
-    const headers = new Headers({
-        "Content-Type": "application/json",
-        "Authorization": "Bearer " + "token123" // Simulando un token de autenticación
-    });
+    const requestData = {eventId};
 
     fetch(`http://localhost:9091/events/assignUserToEvent`, {
         method: 'POST',
-        headers: headers,
-        body: JSON.stringify(requestData)
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify(requestData),
+        credentials: 'include'
     })
     .then(response => {
         if (!response.ok) {
@@ -57,7 +49,6 @@ function joinEvent(eventId, userId) {
         return response.json();
     })
     .then(data => {
-        console.log('Success:', data);
         // recargo la pagina
         window.location.replace(`/events`);
     }).catch(error => {
@@ -65,19 +56,15 @@ function joinEvent(eventId, userId) {
     });
 }
 
-function leaveEvent(eventId, userId) {
+function leaveEvent(eventId) {
 
-    const requestData = {eventId, userId};
-
-    const headers = new Headers({
-        "Content-Type": "application/json",
-        "Authorization": "Bearer " + "token123" // Simulando un token de autenticación
-    });
+    const requestData = {eventId};
 
     fetch(`http://localhost:9091/events/deleteUserFromEvent`, {
         method: 'POST',
-        headers: headers,
-        body: JSON.stringify(requestData)
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify(requestData),
+        credentials: 'include'
     })
     .then(response => {
         if (!response.ok) {
@@ -86,7 +73,6 @@ function leaveEvent(eventId, userId) {
         return response.json();
     })
     .then(data => {
-        console.log('Success:', data);
         // recargo la pagina
         window.location.replace(`/events`);
     }).catch(error => {

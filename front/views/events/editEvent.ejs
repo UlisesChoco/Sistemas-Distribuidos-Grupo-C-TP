@@ -9,11 +9,12 @@
 </head>
 
 <body>
+    <h1>ONG Empuje Comunitario</h1>
     <nav>
-        <a href="/events">ver eventos</a>
-        <a href="/events/create">crear evento</a>
-        <a href="/home">volver a inicio</a>
-        <a href="/">cerrar sesión</a>
+        <a href="/events">Ver eventos</a>
+        <a href="/events/create">Crear evento</a>
+        <a href="/home">Volver a inicio</a>
+        <a href="#" onclick="logout(); return false;">Cerrar sesión</a>
     </nav>
 
     <section>
@@ -44,13 +45,15 @@
 
                 <button type="submit">Aceptar</button>
             </form>
+            <button onclick="window.location.replace('/events')">Cancelar</button>
         </div>
 
     </section>
     <script>
-        window.eventId = <%= id %>;
+        window.eventId = <%= eventId %>;
     </script>
     <script src="../../js/events/editEvent.js"></script>
+    <script src="../js/user/logout.js"></script>
 </body>
 
 </html>

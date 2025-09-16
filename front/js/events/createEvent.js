@@ -1,3 +1,6 @@
+// recibo el id del usuario creador
+const userId = window.userId;
+
 /*
 al entrar al form se deben cargar los usuarios activos
 para poder agregarlos como participantes
@@ -5,17 +8,15 @@ para poder agregarlos como participantes
 async function loadActiveUsers() {
     const usersSelect = document.getElementById('participants');
     usersSelect.innerHTML = ' '; // limpia el select
-
     //carga de usuarios activos
-
-    const headers = new Headers({
-        "Content-Type": "application/json",
-        "Authorization": "Bearer " + "token123" // Simulando un token de autenticación
-    });
 
     fetch(`http://localhost:9091/user/active-list`, {
         method: 'GET',
-        headers: headers,
+        headers: {
+            "Content-Type": "application/json",
+            'Accept': 'application/json'
+        },
+        credentials: 'include'
     })
     .then(response => {
         if (!response.ok) {
@@ -24,12 +25,11 @@ async function loadActiveUsers() {
         return response.json();
     })
     .then(data => {
-        
         data.users.forEach(user => {
-            //falta marcar como checkeado al usuario creador
+            //se incluye al usuario creador al evento
             usersSelect.innerHTML += `     
             <div>
-                <input type="checkbox" id="user${user.id}" name="participants" value="${user.id}">
+                <input type="checkbox" id="user${user.id}" name="participants" value="${user.id}"${user.id == userId? 'checked' : ''}>
                 <label for="user${user.id}">${user.username}</label>
             </div> 
         `;
@@ -48,9 +48,7 @@ window.addEventListener('DOMContentLoaded', loadActiveUsers);
 
 function createNewEvent() {
     const form = document.getElementById("form");
-
     const formData = new FormData(form);
-
     const name = formData.get("name");
     const description = formData.get("description");
     const date = formData.get("date");
@@ -68,15 +66,11 @@ function createNewEvent() {
         participants: participants
     };
 
-    const headers = new Headers({
-        "Content-Type": "application/json",
-        "Authorization": "Bearer " + "token123" // Simulando un token de autenticación
-    });
-
     fetch(`http://localhost:9091/events/create`, {
         method: 'POST',
-        headers: headers,
-        body: JSON.stringify(eventData)
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify(eventData),
+        credentials: 'include'
     })
     .then(response => {
         return response.json().then(data => {
@@ -87,7 +81,6 @@ function createNewEvent() {
         });
     })
     .then(data => {
-        console.log('Success:', data);
         alert("Evento creado con éxito");
         form.reset();
     }).catch(error => {
