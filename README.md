@@ -1,5 +1,5 @@
 # Sistemas Distribuidos - Grupo C - TP
-Este proyecto implementa un sistema distribuido con **gRPC (Java/Spring Boot)**, **API Gateway (Node/Express)**, **MySQL** y **Mailhog** para pruebas de envío de correos.
+Este proyecto implementa un sistema con **gRPC (Java/Spring Boot)**, **API Gateway (Node/Express)**, **MySQL** y **Mailhog** para pruebas de envío de correos.
 
 ---
 
