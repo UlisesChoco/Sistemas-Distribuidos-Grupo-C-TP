@@ -10,6 +10,7 @@ import com.grupo_c.SistemasDistribuidosTP.validator.UserValidator;
 import io.grpc.Status;
 import io.grpc.StatusRuntimeException;
 import io.grpc.stub.StreamObserver;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import java.util.*;
@@ -19,6 +20,8 @@ public class UserServiceGrpcImpl extends UserServiceGrpc.UserServiceImplBase {
     private final JwtUtils jwtUtils;
     private final IRoleService roleService;
     private final IUserService userService;
+    @Autowired
+    private EventServiceImpl eventService;
     public UserServiceGrpcImpl(JwtUtils jwtUtils, IRoleService roleService, IUserService userService) {
         this.jwtUtils = jwtUtils;
         this.roleService = roleService;
@@ -144,6 +147,7 @@ public class UserServiceGrpcImpl extends UserServiceGrpc.UserServiceImplBase {
         }
 
         userService.deleteUser(userEntity);
+        eventService.removeUserFromUpcomingEvents(userEntity);
 
         responseObserver.onNext(ResponseFactory.createResponse("Eliminación exitosa.", true));
         responseObserver.onCompleted();
