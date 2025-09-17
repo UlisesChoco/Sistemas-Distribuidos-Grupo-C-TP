@@ -64,11 +64,11 @@
                         <td>
                             <!-- se valida el rol del usuario -->
                             <% if(roles && (roles.includes("PRESIDENTE") || roles.includes("COORDINADOR"))){ %>
-                                <button onclick="modifyEvent(<%= event.id %>)">modificar</button>
                                 <% if(event.is_completed) {%>
                                     <!-- falta registrar donaciones de eventos pasados -->
                                     <button onclick="donationsRegistry(<%= event.id %>, '<%= event.name %>')">registro de donaciones</button>
                                 <%} else {%>
+                                    <button onclick="modifyEvent(<%= event.id %>)">modificar</button>
                                     <button onclick="deleteEvent(<%= event.id %>)" >eliminar</button>
                                 <% } %>
                             <% } %> 

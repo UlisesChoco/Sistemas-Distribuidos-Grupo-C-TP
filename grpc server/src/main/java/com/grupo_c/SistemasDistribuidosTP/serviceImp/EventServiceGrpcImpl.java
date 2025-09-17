@@ -15,6 +15,7 @@ import java.util.*;
 @Service
 public class EventServiceGrpcImpl extends EventServiceGrpc.EventServiceImplBase{
 
+    private final IEventService eventService;
     private final IEventRepository eventRepository;
     private final IUserRepository userRepository;
     private final EventMapper eventMapper;
@@ -22,13 +23,14 @@ public class EventServiceGrpcImpl extends EventServiceGrpc.EventServiceImplBase{
     @Autowired
     public EventServiceGrpcImpl(
             IEventRepository eventRepository,
-            IUserRepository userRepository
+            IUserRepository userRepository,
+            IEventService eventService
     ) {
+        this.eventService = eventService;
         this.eventRepository = eventRepository;
         this.userRepository = userRepository;
         this.eventMapper = new EventMapper();
     }
-
 
 
     //recibe el evento y la lista de ids de los participantes
@@ -222,6 +224,8 @@ public class EventServiceGrpcImpl extends EventServiceGrpc.EventServiceImplBase{
     public void getEventsWithParticipantsList (UtilsServiceClass.Empty request,
                                                StreamObserver<EventServiceClass.EventsWithParticipantsList> responseStreamObserver){
 
+        eventService.markPastEventsAsCompleted();
+
         List<Event> events = eventRepository.findAllJoinParticipants();
         List<EventServiceClass.EventWithParticipantsDto> eventsWithParticipantsDto = new ArrayList<>();
 
@@ -240,6 +244,8 @@ public class EventServiceGrpcImpl extends EventServiceGrpc.EventServiceImplBase{
     @Override
     public void getEventsWithoutParticipantsList (EventServiceClass.EventRequest request,
                                                StreamObserver<EventServiceClass.EventsWithoutParticipantsList> responseStreamObserver){
+
+        eventService.markPastEventsAsCompleted();
 
         List<Event> events = eventRepository.findAllJoinParticipants();
         List<EventServiceClass.EventWithoutParticipantsDto> eventsWithoutParticipantsDto = new ArrayList<>();

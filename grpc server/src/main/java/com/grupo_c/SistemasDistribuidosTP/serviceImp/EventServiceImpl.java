@@ -37,4 +37,11 @@ public class EventServiceImpl implements IEventService {
             eventRepository.save(e);
         }
     }
+
+    @Override
+    public void markPastEventsAsCompleted() {
+        eventRepository.markPastEventsAsCompleted();
+    }
+
+
 }
