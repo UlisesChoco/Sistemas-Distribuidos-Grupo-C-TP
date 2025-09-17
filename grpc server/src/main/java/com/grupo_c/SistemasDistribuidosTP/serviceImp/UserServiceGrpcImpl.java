@@ -20,12 +20,12 @@ public class UserServiceGrpcImpl extends UserServiceGrpc.UserServiceImplBase {
     private final JwtUtils jwtUtils;
     private final IRoleService roleService;
     private final IUserService userService;
-    @Autowired
-    private EventServiceImpl eventService;
-    public UserServiceGrpcImpl(JwtUtils jwtUtils, IRoleService roleService, IUserService userService) {
+    private final IEventService eventService;
+    public UserServiceGrpcImpl(JwtUtils jwtUtils, IRoleService roleService, IUserService userService, IEventService eventService) {
         this.jwtUtils = jwtUtils;
         this.roleService = roleService;
         this.userService = userService;
+        this.eventService = eventService;
     }
     @Override
     public void login(
@@ -116,6 +116,7 @@ public class UserServiceGrpcImpl extends UserServiceGrpc.UserServiceImplBase {
 
         try {
             userService.modifyUser(userEntity, request, roleService.findAll());
+            if(!userEntity.getIsActive()) eventService.removeUserFromUpcomingEvents(userEntity);
         } catch (UsernameAlreadyExistsException | EmailAlreadyExistsException | PhoneNumberAlreadyExistsException alreadyExistsException) {
             responseObserver.onNext(ResponseFactory.createResponse(
                     "ERROR: Modificación fallida. "+alreadyExistsException.getMessage(),
