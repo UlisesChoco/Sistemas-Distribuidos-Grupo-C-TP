@@ -1,0 +1,24 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8"/>
+  <title>Crear Inventario</title>
+</head>
+<body>
+  <h1>Crear Inventario</h1>
+  <form action="/inventories" method="post">
+    <label>Categoría:
+      <select name="category" required>
+        <option value="ROPA">ROPA</option>
+        <option value="ALIMENTOS">ALIMENTOS</option>
+        <option value="JUGUETES">JUGUETES</option>
+        <option value="UTILES_ESCOLARES">UTILES_ESCOLARES</option>
+      </select>
+    </label><br/>
+    <label>Descripción: <input name="description" /></label><br/>
+    <label>Cantidad: <input type="number" name="quantity" value="0" min="0" /></label><br/>
+    <button type="submit">Crear</button>
+  </form>
+  <a href="/inventories">Volver</a>
+</body>
+</html>

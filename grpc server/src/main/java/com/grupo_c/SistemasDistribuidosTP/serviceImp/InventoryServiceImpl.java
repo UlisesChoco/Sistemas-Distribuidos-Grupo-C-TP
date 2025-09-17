@@ -42,10 +42,10 @@ public class InventoryServiceImpl implements IInventoryService {
     }
 
     @Override
-    public List<Inventory> findByIsDetected(Boolean isDetected) {
-        return isDetected ?
-                inventoryRepository.findByIsDetectedTrue() :
-                inventoryRepository.findByIsDetectedFalse();
+    public List<Inventory> findByisDeleted(Boolean isDeleted) {
+        return isDeleted ?
+                inventoryRepository.findByisDeletedTrue() :
+                inventoryRepository.findByisDeletedFalse();
     }
 
     @Override
@@ -67,7 +67,7 @@ public class InventoryServiceImpl implements IInventoryService {
     @Override
     public void deleteById(Long id, User currentUser) {
         inventoryRepository.findById(id).ifPresent(inventory -> {
-            inventory.setIsDetected(true);
+            inventory.setisDeleted(true);
             inventory.setUserModify(currentUser);
             inventory.setModificationDate(java.time.LocalDateTime.now());
             inventoryRepository.save(inventory);

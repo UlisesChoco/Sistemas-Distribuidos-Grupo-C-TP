@@ -46,7 +46,7 @@ public class Inventory {
     private Integer quantity = 0;
     
     @Column(nullable = false)
-    private Boolean isDetected = false;
+    private Boolean isDeleted = false;
     
     @Column(nullable = false)
     private LocalDateTime creationDate;
@@ -85,8 +85,8 @@ public class Inventory {
         this.quantity = quantity; 
     }
     
-    public Boolean getIsDetected() { return isDetected; }
-    public void setIsDetected(Boolean isDetected) { this.isDetected = isDetected; }
+    public Boolean getisDeleted() { return isDeleted; }
+    public void setisDeleted(Boolean isDeleted) { this.isDeleted = isDeleted; }
     
     public LocalDateTime getCreationDate() { return creationDate; }
     public void setCreationDate(LocalDateTime creationDate) { this.creationDate = creationDate; }

@@ -1,0 +1,17 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8"/>
+  <title>Editar Inventario</title>
+</head>
+<body>
+  <h1>Editar inventario <%= inventory.idInventory %></h1>
+  <form action="/inventories/<%= inventory.idInventory %>/update" method="post">
+    <label>Categoría: <input name="category" value="<%= inventory.category %>" readonly/></label><br/>
+    <label>Descripción: <input name="description" value="<%= inventory.description %>" /></label><br/>
+    <label>Cantidad: <input type="number" name="quantity" value="<%= inventory.quantity %>" min="0" /></label><br/>
+    <button type="submit">Guardar</button>
+  </form>
+  <a href="/inventories">Volver</a>
+</body>
+</html>

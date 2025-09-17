@@ -13,7 +13,7 @@ message InventoryDTO{
 	string category = 4;
 	string description = 5;
 	int32 quantity = 6;
-	bool isDetected = 7;
+	bool isDeleted = 7;
 	int64 creationDate = 8;
   int64 modificationDate = 9;
  }
@@ -28,7 +28,7 @@ message InventoryRequest {
 
 message InventoryCategory {
 	string category = 1;
-	bool isDetected = 2;
+	bool isDeleted = 2;
 }
 
 service InventoryService {
