@@ -1,11 +1,13 @@
 package com.grupo_c.SistemasDistribuidosTP.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import com.grupo_c.SistemasDistribuidosTP.entity.Event;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -43,7 +45,7 @@ public interface IEventRepository extends JpaRepository<Event, Long> {
     @Query("SELECT e FROM Event e JOIN e.participants u WHERE u.id = :userId")
     List<Event> findByParticipantId(@Param("userId") Long userId);
     
-    @Query("SELECT e FROM Event e JOIN FETCH e.participants u WHERE u.id = :userId AND e.isCompleted = false")
+    @Query("SELECT e FROM Event e JOIN e.participants u JOIN FETCH e.participants WHERE u.id = :userId AND e.isCompleted = false")
     List<Event> findUpcomingEventsByParticipant(@Param("userId") Long userId);
     
     @Query("SELECT COUNT(e) FROM Event e WHERE e.isCompleted = false AND e.date > CURRENT_TIMESTAMP")
@@ -51,4 +53,9 @@ public interface IEventRepository extends JpaRepository<Event, Long> {
     
     @Query("SELECT e FROM Event e ORDER BY e.date ASC")
     List<Event> findAllOrderByDate();
+
+    @Modifying
+    @Transactional
+    @Query("UPDATE Event e SET e.isCompleted = true WHERE e.date < CURRENT_TIMESTAMP AND e.isCompleted = false")
+    void markPastEventsAsCompleted();
 }

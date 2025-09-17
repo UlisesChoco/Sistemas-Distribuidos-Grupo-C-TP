@@ -3,7 +3,7 @@ function modifyEvent(eventId) {
 }
 
 function donationsRegistry(eventId, eventName){
-    const url = `events/donationsRegistry/${eventId}/${encodeURIComponent(eventName)}`
+    const url = `/events/donationsRegistry/${eventId}/${encodeURIComponent(eventName)}`
     window.location.href = url;
 }
 

@@ -5,4 +5,5 @@ import com.grupo_c.SistemasDistribuidosTP.entity.User;
 
 public interface IEventService {
     void removeUserFromUpcomingEvents(User user);
+    void markPastEventsAsCompleted();
 }
