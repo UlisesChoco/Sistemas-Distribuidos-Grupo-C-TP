@@ -215,6 +215,14 @@ router.get('/create', jwtAuth, (req, res) => {
     res.render('events/createEvent', {userId: req.user.id});
 });
 
+router.get('/donationsRegistry/:id/:name', jwtAuth, (req, res) => {
+    if(!req.user.roles.includes("PRESIDENTE") && !req.user.roles.includes("COORDINADOR")){
+        res.render("error/error-403");
+        return;
+    }
+    res.render('events/donations', {eventId: req.params.id, eventName: req.params.name});
+});
+
 router.get('/', jwtAuth ,(req, res) => {
     if(!req.user.roles.includes("PRESIDENTE") && !req.user.roles.includes("COORDINADOR") && !req.user.roles.includes("VOLUNTARIO")){
         res.render("error/error-403");

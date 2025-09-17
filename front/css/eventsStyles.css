@@ -47,7 +47,8 @@ th, td {
 }
 
 input,
-button {
+button,
+select {
     padding: 10px;
     margin: 5px 0;
     border: #333 1px solid;
@@ -98,4 +99,9 @@ form {
     text-align: center;
     padding: 20px;
     justify-self: center;
+}
+
+.quantity-selector{
+    display: flex;
+    flex-direction: column;
 }

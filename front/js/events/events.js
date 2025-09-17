@@ -2,6 +2,11 @@ function modifyEvent(eventId) {
     window.location.replace(`/events/edit/${eventId}`);
 }
 
+function donationsRegistry(eventId, eventName){
+    const url = `events/donationsRegistry/${eventId}/${encodeURIComponent(eventName)}`
+    window.location.href = url;
+}
+
 function deleteEvent(eventId) {
 
     if (!confirm("¿Está seguro que desea eliminar este evento?")) {
