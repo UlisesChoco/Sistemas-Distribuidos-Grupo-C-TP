@@ -77,11 +77,11 @@ document.getElementById('modifyUserForm').addEventListener('submit', async (e) =
         deleteErrorDiv(errorDiv);
         return;
     }
-    window.location.href = "http://localhost:9091/user/";
+    window.location.href = "/user";
 });
 
 document.getElementById("btnCancel").onclick = () => {
-    window.location.href = "http://localhost:9091/user/";
+    window.location.href = "/user";
 }
 
 populateForm();

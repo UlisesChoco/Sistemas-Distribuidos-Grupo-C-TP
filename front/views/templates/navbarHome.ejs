@@ -1,0 +1,15 @@
+<head>
+    <link rel="stylesheet" href="/css/navbar.css">
+</head>
+<body>
+    <nav>
+        <% if(roles && roles.includes("PRESIDENTE")){ %>
+        <a href="/user/">Gestión de Usuarios</a>
+        <% } %>
+        <% if(roles && (roles.includes("PRESIDENTE") || roles.includes("COORDINADOR") || roles.includes("VOLUNTARIO"))){ %>
+        <a href="/events/">Eventos</a>
+        <% } %>
+        <a href="#" onclick="logout(); return false;">Cerrar sesión</a>
+    </nav>
+    <script src="/js/user/logout.js"></script>
+</body>

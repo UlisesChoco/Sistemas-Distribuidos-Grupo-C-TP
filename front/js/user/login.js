@@ -21,7 +21,7 @@ document.getElementById('loginForm').addEventListener('submit', async (e) => {
         deleteErrorDiv(errorDiv);
         return;
     }
-    window.location.href = "http://localhost:9091/home";
+    window.location.href = "/home";
 });
 
 async function loginRequest(body) {

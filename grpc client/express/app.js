@@ -38,6 +38,18 @@ app.get('/home', jwtAuth, (req, res) => {
     res.render('home', {username: req.user.username, roles: req.user.roles});
 });
 
+app.get("/about", jwtAuth, (req, res) => {
+    res.render('about', {username: req.user.username, roles: req.user.roles});
+});
+
+app.get("/contact", jwtAuth, (req, res) => {
+    res.render('contact', {username: req.user.username, roles: req.user.roles});
+});
+
+app.get("/privacy", jwtAuth, (req, res) => {
+    res.render('privacy', {username: req.user.username, roles: req.user.roles});
+});
+
 // ruta para archivos estáticos
 app.use(express.static("../../front"));
 

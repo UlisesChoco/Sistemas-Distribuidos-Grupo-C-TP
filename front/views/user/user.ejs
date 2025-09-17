@@ -3,17 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Users</title>
-    <link rel="stylesheet" href="../../css/userStyles.css">
+    <title>Usuarios</title>
+    <link rel="stylesheet" href="/css/userStyles.css">
+    <link rel="icon" type="image/png" sizes="16x16" href="/img/favicon-16x16.png">
 </head>
 <body>
     <h1>ONG Empuje Comunitario - Gestión de Usuarios</h1>
-    <nav>
-        <a href="/home">Home Page</a>
-        <a href="/user">Ver usuarios</a>
-        <a href="/user/create">Crear usuario</a>
-        <button onclick="logout()">Cerrar Sesión</button>
-    </nav>
+    <p class="slogan">“Trabajamos juntos por una comunidad más fuerte y solidaria.”</p>
+    <%- include('../templates/navbarUser') %>
     <section>
         <div class="container">
             <h1>Usuarios</h1>
@@ -30,8 +27,8 @@
             </table>
         </div>
     </section>
-    <script type="module" src="../../js/user/users.js"></script>
-    <script src="../../js/user/logout.js"></script>
+    <%- include('../templates/footer') %>
+    <script type="module" src="/js/user/users.js"></script>
 </body>
 
 </html>

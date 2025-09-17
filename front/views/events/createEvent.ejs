@@ -5,7 +5,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Create event</title>
-    <link rel="stylesheet" href="../../css/eventsStyles.css">
+    <link rel="stylesheet" href="/css/eventsStyles.css">
+    <link rel="stylesheet" href="/css/navbar.css">
+    <link rel="icon" type="image/png" sizes="16x16" href="../img/favicon-16x16.png">
 </head>
 
 <body>
@@ -44,7 +46,7 @@
         </div>
 
     </section>
-
+    <%- include('../templates/footer') %>
     <script> window.userId = <%= userId %>; </script>
     <script src="../../js/events/createEvent.js"></script>
     <script src="../js/user/logout.js"></script>
