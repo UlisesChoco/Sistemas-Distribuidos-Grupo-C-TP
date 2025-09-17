@@ -9,11 +9,14 @@
 </head>
 
 <body>
+    <h1>ONG Empuje Comunitario</h1>
     <nav>
-        <a href="events.ejs">ver eventos</a>
-        <a href="createEvent.ejs">crear evento</a>
-        <a href="#">volver a inicio</a>
-        <a href="#">cerrar sesión</a>
+        <a href="/events">Ver eventos</a>
+        <% if(roles && (roles.includes("PRESIDENTE") || roles.includes("COORDINADOR"))){ %>
+            <a href="/events/create">Crear evento</a>
+        <% } %>
+        <a href="/home">Volver a inicio</a>
+        <a href="#" onclick="logout(); return false;">Cerrar sesión</a>
     </nav>
 
     <section>
@@ -23,19 +26,70 @@
 
             <table id="eventsList">
                 <tr>
-                    <th>Id</th>
                     <th>Nombre</th>
                     <th>Descripción</th>
                     <th>Fecha</th>
                     <th>Finalizado</th>
                     <th>Opciones</th>
                 </tr>
+
+                <% events.forEach(event => { %>
+                    <tr>
+                        <td><%= event.name %></td> 
+                        <td><%= event.description %></td>
+                        <td>
+                            <% 
+                                <!-- formateo la fecha a gmt -3 -->
+                                const timestamp = event.date.seconds * 1000;
+                                const date = new Date(timestamp + 3 * 60 * 60 * 1000);
+                            %>
+                            
+                            <%= date.toLocaleDateString('es-AR') %>
+                            <br>
+                            <%= 
+                                date.toLocaleTimeString('es-AR', {
+                                    hour: '2-digit',
+                                    minute: '2-digit',
+                                    hour12: false
+                                }) 
+                            %>
+                        </td>
+                        <td>
+                            <% if(event.is_completed) {%>
+                                Sí
+                            <% } else{ %>
+                                No
+                            <% } %> 
+                        </td> 
+                        <td>
+                            <!-- se valida el rol del usuario -->
+                            <% if(roles && (roles.includes("PRESIDENTE") || roles.includes("COORDINADOR"))){ %>
+                                <button onclick="modifyEvent(<%= event.id %>)">modificar</button>
+                                <% if(event.is_completed) {%>
+                                    <!-- falta registrar donaciones de eventos pasados -->
+                                    <button onclick="donationsRegistry(<%= event.id %>, '<%= event.name %>')">registro de donaciones</button>
+                                <%} else {%>
+                                    <button onclick="deleteEvent(<%= event.id %>)" >eliminar</button>
+                                <% } %>
+                            <% } %> 
+                            
+                            <% if(!event.is_completed) {%>
+                                <% if(event.joined){ %>
+                                    <button onclick="leaveEvent(<%= event.id %>)">abandonar</button>
+                                <%} else {%>
+                                    <button onclick="joinEvent(<%= event.id %>)">participar</button>
+                                <% } %>
+                            <% } %> 
+                            
+                        </td>
+                    </tr>
+                <% }) %>
             </table>
 
         </div>
     </section>
-
     <script src="../../js/events/events.js"></script>
+    <script src="../js/user/logout.js"></script>
 </body>
 
 </html>

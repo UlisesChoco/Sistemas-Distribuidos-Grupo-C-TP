@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../../css/userStyles.css">
+    <title>Home</title>
+</head>
+<body>
+    <h1>ONG Empuje Comunitario</h1>
+    <nav>
+        <% if(roles && roles.includes("PRESIDENTE")){ %>
+        <a href="/user/">Gestión de Usuarios</a>
+        <% } %>
+        <% if(roles && (roles.includes("PRESIDENTE") || roles.includes("COORDINADOR") || roles.includes("VOLUNTARIO"))){ %>
+        <a href="/events/">Eventos</a>
+        <% } %>
+        <button onclick="logout()">Cerrar Sesión</button>
+    </nav>
+    <script src="../js/user/logout.js"></script>
+</body>
+</html>
