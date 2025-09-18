@@ -65,8 +65,8 @@ app.use(express.static("../../front"));
 
 // ========== COMENTARIO: ESTE BLOQUE ES EL PROBLEMA ==========
 // ========== TU ARCHIVO `server.js` YA HACE ESTO ==========
-// app.listen(port, () => {
-//     console.log("Express app listening on port", port,".");
-// });
+ app.listen(port, () => {
+     console.log("Express app listening on port", port,".");
+ });
 
 module.exports = app;
