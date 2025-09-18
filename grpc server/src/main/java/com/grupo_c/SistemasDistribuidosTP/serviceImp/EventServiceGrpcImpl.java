@@ -288,8 +288,8 @@ public class EventServiceGrpcImpl extends EventServiceGrpc.EventServiceImplBase{
         Inventory inventory = inventoryService.findById(request.getInventoryId());
         User user = null;
 
-        if (event == null || inventory == null){
-            responseStreamObserver.onError(new StatusRuntimeException(Status.NOT_FOUND.withDescription("No existe el evento o el inventario")));
+        if (event == null){
+            responseStreamObserver.onError(new StatusRuntimeException(Status.NOT_FOUND.withDescription("No existe el evento")));
             return;
         }
 
@@ -305,13 +305,13 @@ public class EventServiceGrpcImpl extends EventServiceGrpc.EventServiceImplBase{
             return;
         }
 
-        if(request.getQuantity() > inventory.getQuantity()){
-            responseStreamObserver.onError(new StatusRuntimeException(Status.INVALID_ARGUMENT.withDescription("El inventario no posee suficiente stock")));
+        try {
+            inventoryService.decreaseStock(request.getInventoryId(),request.getQuantity());
+        }catch (Exception e){
+            responseStreamObserver.onError(new StatusRuntimeException(Status.INTERNAL.withDescription(e.getMessage())));
             return;
         }
-
-        //deberia usar una funcion del inventory service
-        inventory.setQuantity( inventory.getQuantity() - request.getQuantity() );
+        //registrar usuario que hizo la modificación
         inventoryService.save(inventory, user);
 
         event.addDistributedInventory(inventory, user, request.getQuantity());
