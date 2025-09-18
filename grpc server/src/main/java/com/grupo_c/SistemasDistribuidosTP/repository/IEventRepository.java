@@ -58,4 +58,7 @@ public interface IEventRepository extends JpaRepository<Event, Long> {
     @Transactional
     @Query("UPDATE Event e SET e.isCompleted = true WHERE e.date < CURRENT_TIMESTAMP AND e.isCompleted = false")
     void markPastEventsAsCompleted();
+
+    @Query("SELECT e FROM Event e LEFT JOIN FETCH e.distributedInventories WHERE e.id = :eventId")
+    Event findByIdJoinEventInventory(@Param("eventId") Long eventId);
 }

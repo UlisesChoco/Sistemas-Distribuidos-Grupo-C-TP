@@ -97,9 +97,11 @@ public class Event {
         this.participants.remove(user);
         user.getEvents().remove(this);
     }
-    
-    public void addDistributedInventory(Inventory inventory, Integer quantity) {
-        EventInventory eventInventory = new EventInventory(this, inventory, quantity);
+
+
+    public void addDistributedInventory(Inventory inventory, User user, Integer quantity) {
+        EventInventory eventInventory = new EventInventory(this, inventory, user, quantity);
         this.distributedInventories.add(eventInventory);
     }
+
 }

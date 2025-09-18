@@ -1,10 +1,13 @@
 package com.grupo_c.SistemasDistribuidosTP.serviceImp;
 
 import com.grupo_c.SistemasDistribuidosTP.entity.Event;
+import com.grupo_c.SistemasDistribuidosTP.entity.EventInventory;
 import com.grupo_c.SistemasDistribuidosTP.entity.User;
 import com.grupo_c.SistemasDistribuidosTP.mapper.EventMapper;
+import com.grupo_c.SistemasDistribuidosTP.repository.IEventInventoryRepository;
 import com.grupo_c.SistemasDistribuidosTP.repository.IEventRepository;
 import com.grupo_c.SistemasDistribuidosTP.repository.IUserRepository;
+import com.grupo_c.SistemasDistribuidosTP.service.IEventInventoryService;
 import com.grupo_c.SistemasDistribuidosTP.service.IEventService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -12,19 +15,22 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Service
-public class EventServiceImpl implements IEventService {
+public class EventServiceImpl implements IEventService, IEventInventoryService {
 
     private final IEventRepository eventRepository;
     private final IUserRepository userRepository;
+    private final IEventInventoryRepository eventInventoryRepository;
     private final EventMapper eventMapper;
 
     @Autowired
     public EventServiceImpl(
             IEventRepository eventRepository,
+            IEventInventoryRepository eventInventoryRepository,
             IUserRepository userRepository
     ) {
         this.eventRepository = eventRepository;
         this.userRepository = userRepository;
+        this.eventInventoryRepository = eventInventoryRepository;
         this.eventMapper = new EventMapper();
     }
 
@@ -43,5 +49,24 @@ public class EventServiceImpl implements IEventService {
         eventRepository.markPastEventsAsCompleted();
     }
 
+    @Override
+    public Event findById(Long id) {
+        return eventRepository.findById(id).orElse(null);
+    }
 
+    @Override
+    public Event findByIdJoinEventInventory(Long eventId) {
+        return eventRepository.findByIdJoinEventInventory(eventId);
+    }
+
+
+    @Override
+    public List<EventInventory> findByEventId(Long eventId) {
+        return eventInventoryRepository.findByEventId(eventId);
+    }
+
+    @Override
+    public List<EventInventory> findByEventIdOrdered(Long eventId) {
+        return eventInventoryRepository.findByEventIdOrdered(eventId);
+    }
 }

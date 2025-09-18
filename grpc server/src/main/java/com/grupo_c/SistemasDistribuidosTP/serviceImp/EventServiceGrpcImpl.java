@@ -1,11 +1,17 @@
 package com.grupo_c.SistemasDistribuidosTP.serviceImp;
 
 import com.grupo_c.SistemasDistribuidosTP.entity.Event;
+import com.grupo_c.SistemasDistribuidosTP.entity.EventInventory;
+import com.grupo_c.SistemasDistribuidosTP.entity.Inventory;
 import com.grupo_c.SistemasDistribuidosTP.entity.User;
+import com.grupo_c.SistemasDistribuidosTP.exception.user.UserNotFoundException;
+import com.grupo_c.SistemasDistribuidosTP.mapper.EventInventoryMapper;
 import com.grupo_c.SistemasDistribuidosTP.mapper.EventMapper;
 import com.grupo_c.SistemasDistribuidosTP.repository.IEventRepository;
 import com.grupo_c.SistemasDistribuidosTP.repository.IUserRepository;
 import com.grupo_c.SistemasDistribuidosTP.service.*;
+import io.grpc.Status;
+import io.grpc.StatusRuntimeException;
 import io.grpc.stub.StreamObserver;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -15,21 +21,30 @@ import java.util.*;
 @Service
 public class EventServiceGrpcImpl extends EventServiceGrpc.EventServiceImplBase{
 
-    private final IEventService eventService;
+    @Autowired
+    private final EventServiceImpl eventService;
     private final IEventRepository eventRepository;
     private final IUserRepository userRepository;
+    private final IUserService userService;
+    private final IInventoryService inventoryService;
     private final EventMapper eventMapper;
+    private final EventInventoryMapper eventInventoryMapper;
 
     @Autowired
     public EventServiceGrpcImpl(
+            EventServiceImpl eventService,
             IEventRepository eventRepository,
             IUserRepository userRepository,
-            IEventService eventService
+            IUserService userService,
+            IInventoryService inventoryService
     ) {
         this.eventService = eventService;
         this.eventRepository = eventRepository;
         this.userRepository = userRepository;
+        this.userService = userService;
+        this.inventoryService = inventoryService;
         this.eventMapper = new EventMapper();
+        this.eventInventoryMapper = new EventInventoryMapper();
     }
 
 
@@ -260,6 +275,76 @@ public class EventServiceGrpcImpl extends EventServiceGrpc.EventServiceImplBase{
         EventServiceClass.EventsWithoutParticipantsList response = EventServiceClass.EventsWithoutParticipantsList.
                 newBuilder()
                 .addAllEvents(eventsWithoutParticipantsDto)
+                .build();
+        responseStreamObserver.onNext(response);
+        responseStreamObserver.onCompleted();
+    }
+
+    @Override
+    public void registerEventInventory(EventServiceClass.RegisterEventInventoryRequest request,
+                                       StreamObserver<UtilsServiceClass.Response> responseStreamObserver){
+
+        Event event = eventService.findByIdJoinEventInventory(request.getEventId());
+        Inventory inventory = inventoryService.findById(request.getInventoryId());
+        User user = null;
+
+        if (event == null || inventory == null){
+            responseStreamObserver.onError(new StatusRuntimeException(Status.NOT_FOUND.withDescription("No existe el evento o el inventario")));
+            return;
+        }
+
+        try{
+            user = userService.findById(request.getUserId());
+        }catch (UserNotFoundException e){
+            responseStreamObserver.onError(new StatusRuntimeException(Status.NOT_FOUND.withDescription(e.getMessage())));
+            return;
+        }
+
+        if(!event.getIsCompleted()){
+            responseStreamObserver.onError(new StatusRuntimeException(Status.FAILED_PRECONDITION.withDescription("El evento aún no finalizó")));
+            return;
+        }
+
+        if(request.getQuantity() > inventory.getQuantity()){
+            responseStreamObserver.onError(new StatusRuntimeException(Status.INVALID_ARGUMENT.withDescription("El inventario no posee suficiente stock")));
+            return;
+        }
+
+        //deberia usar una funcion del inventory service
+        inventory.setQuantity( inventory.getQuantity() - request.getQuantity() );
+        inventoryService.save(inventory, user);
+
+        event.addDistributedInventory(inventory, user, request.getQuantity());
+        eventRepository.save(event);
+
+        UtilsServiceClass.Response response = UtilsServiceClass.Response
+                .newBuilder()
+                .setMessage("Donación registrada exitosamente")
+                .setSucceeded(true)
+                .build();
+        responseStreamObserver.onNext(response);
+        responseStreamObserver.onCompleted();
+    }
+
+    @Override
+    public void getEventInventory(EventServiceClass.EventRequest request,
+                                  StreamObserver<EventServiceClass.EventInventoryList> responseStreamObserver){
+
+        if (eventService.findById(request.getId()) == null){
+            responseStreamObserver.onError(new StatusRuntimeException(Status.NOT_FOUND.withDescription("No existe el evento")));
+            return;
+        }
+
+        List<EventInventory> inventories = eventService.findByEventIdOrdered(request.getId());
+
+        List<EventServiceClass.DonationDto> donations = new ArrayList<>();
+
+        for(EventInventory eventInventory: inventories){
+            donations.add(eventInventoryMapper.toDonationDto(eventInventory));
+        }
+
+        EventServiceClass.EventInventoryList response = EventServiceClass.EventInventoryList.newBuilder()
+                .addAllDonations(donations)
                 .build();
         responseStreamObserver.onNext(response);
         responseStreamObserver.onCompleted();
