@@ -11,6 +11,7 @@ public interface IUserService {
     User findById(long id) throws UserNotFoundException;
     User findByUsername(String username) throws UsernameNotFoundException;
     User findByEmail(String email);
+    User findByUsernameOrEmail(String usernameOrEmail) throws UserNotFoundException;
     User findByUsernameOrEmail(String username, String email);
     List<User> findByIsActiveTrue();
     List<User> findByIsActiveFalse();

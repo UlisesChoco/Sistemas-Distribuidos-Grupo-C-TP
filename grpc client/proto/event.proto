@@ -36,6 +36,7 @@ message EventWithoutParticipantsDto{
     string description = 3;
     google.protobuf.Timestamp date = 4;
     bool is_completed = 5;
+    bool joined = 6;
 }
 
 message EventAssignOrDeleteRequest {
@@ -63,6 +64,6 @@ service EventService{
     rpc DeleteUserFromEvent (EventAssignOrDeleteRequest) returns (Response);
     rpc GetEvent (EventRequest) returns (EventWithParticipantsDto);
     rpc GetEventsWithParticipantsList (Empty) returns(EventsWithParticipantsList);
-    rpc GetEventsWithoutParticipantsList (Empty) returns(EventsWithoutParticipantsList);
+    rpc GetEventsWithoutParticipantsList (EventRequest) returns(EventsWithoutParticipantsList);
 
 }

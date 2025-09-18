@@ -16,8 +16,12 @@ import java.util.Set;
 @Component
 public class ApplicationRunner implements CommandLineRunner {
     private final IRoleService roleService;
-    public ApplicationRunner(IRoleService roleService) {
+    private final IUserService userService;
+    private final PasswordEncoder passwordEncoder;
+    public ApplicationRunner(IRoleService roleService, IUserService userService, PasswordEncoder passwordEncoder) {
         this.roleService = roleService;
+        this.userService = userService;
+        this.passwordEncoder = passwordEncoder;
     }
     @Override
     public void run(String... args) throws Exception {
@@ -28,6 +32,19 @@ public class ApplicationRunner implements CommandLineRunner {
             roles.add(new Role(RoleEnum.VOCAL.name()));
             roles.add(new Role(RoleEnum.PRESIDENTE.name()));
             roleService.saveAll(roles);
+        }
+        if(userService.findAll().isEmpty()) {
+            Role role = roleService.findByName(RoleEnum.PRESIDENTE.name());
+            User user = new User();
+            user.setUsername("Presidente");
+            user.setName("Tomás");
+            user.setSurname("Lopez");
+            user.setPhoneNumber("1143763389");
+            user.setPassword(passwordEncoder.encode("admin"));
+            user.setEmail("tomaslopez1987@gmail.com");
+            user.setIsActive(true);
+            user.setRoles(Set.of(role));
+            userService.save(user);
         }
     }
 }

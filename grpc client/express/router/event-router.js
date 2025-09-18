@@ -2,13 +2,10 @@ const express = require('express');
 const router = express.Router();
 const eventClient = require('../../clients/eventClient');
 const grpc = require('@grpc/grpc-js');
-
+const jwtAuth = require("../auth/jwt-auth");
 
 router.post('/create', (req, res) => {
     const { name, description, date, participants } = req.body;
-
-    //extraigo el token desde headers
-    const token = req.headers.authorization?.replace('Bearer ', '');
 
     //validaciones basicas
     if (!name || !description || !date) {
@@ -35,8 +32,11 @@ router.post('/create', (req, res) => {
     };
 
     //agrego el token a los metadata
+    const token = req.cookies.token;
     const metadata = new grpc.Metadata();
-    metadata.add('Authorization', 'Bearer ' + token);
+    if(token != null){
+        metadata.add('Authorization', 'Bearer ' + token);
+    }
 
     //llamo a la función
     eventClient.CreateEvent(requestBody, metadata, (err, response) => {
@@ -48,20 +48,12 @@ router.post('/create', (req, res) => {
 router.put('/modifyEvent', (req, res) => {
     const { id, name, description, date, participants, is_completed } = req.body;
 
-    const token = req.headers.authorization?.replace('Bearer ', '');
-
     if (!name || !description || !date) {
         return res.status(400).json({ error: 'Faltan campos obligatorios' });
     }
 
-    // validacion fecha no anterior a hoy
     const eventSeconds = Math.floor(new Date(date).getTime() / 1000);
-    const currentDateSeconds = Math.floor(new Date().getTime() / 1000);
-
-    if (eventSeconds < currentDateSeconds) {
-        return res.status(400).json({ error: 'La fecha no puede ser anterior a la actual' });
-    }
-
+    
     const requestBody = {
         id,
         name,
@@ -74,8 +66,11 @@ router.put('/modifyEvent', (req, res) => {
         is_completed: is_completed || false, // si no se especifica, por defecto es false
     };
 
+    const token = req.cookies.token;
     const metadata = new grpc.Metadata();
-    metadata.add('Authorization', 'Bearer ' + token);
+    if(token != null){
+        metadata.add('Authorization', 'Bearer ' + token);
+    }
 
     eventClient.ModifyEvent(requestBody, metadata, (err, response) => {
         if (err) return res.status(500).json({ error: err.message });
@@ -85,7 +80,6 @@ router.put('/modifyEvent', (req, res) => {
 
 router.delete('/deleteEvent/:id', (req, res) => {
     const eventId = req.params.id;
-    const token = req.headers.authorization?.replace('Bearer ', '');
 
     if (!eventId) {
         return res.status(400).json({ error: 'Falta el ID del evento' });
@@ -93,8 +87,11 @@ router.delete('/deleteEvent/:id', (req, res) => {
 
     const requestBody = { id: eventId };
 
+    const token = req.cookies.token;
     const metadata = new grpc.Metadata();
-    metadata.add('Authorization', 'Bearer ' + token);
+    if(token != null){
+        metadata.add('Authorization', 'Bearer ' + token);
+    }
 
     eventClient.DeleteEvent(requestBody, metadata, (err, response) => {
         if (err) return res.status(500).json({ error: err.message });
@@ -102,19 +99,20 @@ router.delete('/deleteEvent/:id', (req, res) => {
     });
 });
 
-router.post('/assignUserToEvent', (req, res) => {
-    const { eventId, userId } = req.body;
+router.post('/assignUserToEvent', jwtAuth, (req, res) => {
+    const { eventId } = req.body;
 
-    const token = req.headers.authorization?.replace('Bearer ', '');
-
-    if (!eventId || !userId) {
+    if (!eventId) {
         return res.status(400).json({ error: 'Faltan campos obligatorios' });
     }
 
-    const requestBody = { event_id: eventId, user_id: userId };
+    const requestBody = { event_id: eventId, user_id: req.user.id };
 
+    const token = req.cookies.token;
     const metadata = new grpc.Metadata();
-    metadata.add('Authorization', 'Bearer ' + token);
+    if(token != null){
+        metadata.add('Authorization', 'Bearer ' + token);
+    }
 
     eventClient.AssignUserToEvent(requestBody, metadata, (err, response) => {
         if (err) return res.status(500).json({ error: err.message });
@@ -123,19 +121,20 @@ router.post('/assignUserToEvent', (req, res) => {
 });
 
 
-router.post('/deleteUserFromEvent', (req, res) => {
-    const { eventId, userId } = req.body;
+router.post('/deleteUserFromEvent', jwtAuth, (req, res) => {
+    const { eventId } = req.body;
 
-    const token = req.headers.authorization?.replace('Bearer ', '');
-
-    if (!eventId || !userId) {
+    if (!eventId) {
         return res.status(400).json({ error: 'Faltan campos obligatorios' });
     }
 
-    const requestBody = { event_id: eventId, user_id: userId };
+    const requestBody = { event_id: eventId, user_id: req.user.id };
 
+    const token = req.cookies.token;
     const metadata = new grpc.Metadata();
-    metadata.add('Authorization', 'Bearer ' + token);
+    if(token != null){
+        metadata.add('Authorization', 'Bearer ' + token);
+    }
 
     eventClient.DeleteUserFromEvent(requestBody, metadata, (err, response) => {
         if (err) return res.status(500).json({ error: err.message });
@@ -145,7 +144,6 @@ router.post('/deleteUserFromEvent', (req, res) => {
 
 router.get('/getEvent/:id', (req, res) => {
     const eventId = req.params.id;
-    const token = req.headers.authorization?.replace('Bearer ', '');
 
     if (!eventId) {
         return res.status(400).json({ error: 'Falta el ID del evento' });
@@ -153,8 +151,11 @@ router.get('/getEvent/:id', (req, res) => {
 
     const requestBody = { id: eventId };
 
+    const token = req.cookies.token;
     const metadata = new grpc.Metadata();
-    metadata.add('Authorization', 'Bearer ' + token);
+    if(token != null){
+        metadata.add('Authorization', 'Bearer ' + token);
+    }
 
     eventClient.GetEvent(requestBody, metadata, (err, response) => {
         if (err) return res.status(500).json({ error: err.message });
@@ -162,14 +163,16 @@ router.get('/getEvent/:id', (req, res) => {
     });
 });
 
-router.get('/getEventsWithoutParticipants', (req, res) => {
+router.get('/getEventsWithoutParticipants', jwtAuth, (req, res) => {
 
-    const token = req.headers.authorization?.replace('Bearer ', '');
+    const id = req.user.id;
+    const requestBody = {id}; 
 
-    const requestBody = {}; // No se necesitan parámetros para este request
-
+    const token = req.cookies.token;
     const metadata = new grpc.Metadata();
-    metadata.add('Authorization', 'Bearer ' + token);
+    if(token != null){
+        metadata.add('Authorization', 'Bearer ' + token);
+    }
 
     eventClient.GetEventsWithoutParticipantsList(requestBody, metadata, (err, response) => {
         if (err) return res.status(500).json({ error: err.message });
@@ -179,12 +182,13 @@ router.get('/getEventsWithoutParticipants', (req, res) => {
 
 router.get('/getEventsWithParticipants', (req, res) => {
 
-    const token = req.headers.authorization?.replace('Bearer ', '');
+    const requestBody = {}; // No se necesitan parámetros para este request
 
-    const requestBody = {};
-
+    const token = req.cookies.token;
     const metadata = new grpc.Metadata();
-    metadata.add('Authorization', 'Bearer ' + token);
+    if(token != null){
+        metadata.add('Authorization', 'Bearer ' + token);
+    }
 
     eventClient.GetEventsWithParticipantsList(requestBody, metadata, (err, response) => {
         if (err) return res.status(500).json({ error: err.message });
@@ -194,8 +198,51 @@ router.get('/getEventsWithParticipants', (req, res) => {
 
 //-------------------------- rutas de vistas -------------------------------
 
-router.get('/events', (req, res) => {
-    res.render('events/events', {});
+
+router.get('/edit/:id', jwtAuth ,(req, res) => {
+    if(!req.user.roles.includes("PRESIDENTE") && !req.user.roles.includes("COORDINADOR")){
+        res.render("error/error-403");
+        return;
+    }
+    res.render('events/editEvent', {eventId: req.params.id});
+});
+
+router.get('/create', jwtAuth, (req, res) => {
+    if(!req.user.roles.includes("PRESIDENTE") && !req.user.roles.includes("COORDINADOR")){
+        res.render("error/error-403");
+        return;
+    }
+    res.render('events/createEvent', {userId: req.user.id});
+});
+
+router.get('/donationsRegistry/:id/:name', jwtAuth, (req, res) => {
+    if(!req.user.roles.includes("PRESIDENTE") && !req.user.roles.includes("COORDINADOR")){
+        res.render("error/error-403");
+        return;
+    }
+    res.render('events/donations', {eventId: req.params.id, eventName: req.params.name});
+});
+
+router.get('/', jwtAuth ,(req, res) => {
+    if(!req.user.roles.includes("PRESIDENTE") && !req.user.roles.includes("COORDINADOR") && !req.user.roles.includes("VOLUNTARIO")){
+        res.render("error/error-403");
+        return;
+    }
+
+    const id = req.user.id;
+    const requestBody = {id}; 
+
+    const token = req.cookies.token;
+    const metadata = new grpc.Metadata();
+    if(token != null){
+        metadata.add('Authorization', 'Bearer ' + token);
+    }
+
+    eventClient.GetEventsWithoutParticipantsList(requestBody, metadata, (err, response) => {
+        if (err) return res.status(500).json({ error: err.message });
+        res.render('events/events', {events: response.events, roles: req.user.roles});
+    });
+
 });
 
 module.exports = router;

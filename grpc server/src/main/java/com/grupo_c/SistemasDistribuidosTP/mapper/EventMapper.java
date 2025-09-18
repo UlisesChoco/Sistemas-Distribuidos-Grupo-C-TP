@@ -16,7 +16,7 @@ import java.util.stream.Collectors;
 
 public class EventMapper {
 
-    public EventServiceClass.EventWithoutParticipantsDto toEventWithoutParticipantsDto (Event e){
+    public EventServiceClass.EventWithoutParticipantsDto toEventWithoutParticipantsDto (Event e, boolean joined){
 
         return EventServiceClass.EventWithoutParticipantsDto.newBuilder()
                 .setId(e.getId())
@@ -24,6 +24,7 @@ public class EventMapper {
                 .setDescription(e.getDescription())
                 .setDate(toTimestamp(e.getDate()))
                 .setIsCompleted(e.getIsCompleted())
+                .setJoined(joined)
                 .build();
     }
 

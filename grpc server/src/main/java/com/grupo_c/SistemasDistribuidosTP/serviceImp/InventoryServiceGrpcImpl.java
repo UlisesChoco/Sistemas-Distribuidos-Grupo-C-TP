@@ -137,7 +137,7 @@ public void updateInventory(InventoryServiceClass.InventoryDTO request,
             return;
         }
 
-        // Solo permitir modificar descripción y cantidad
+        // Solo permite modificar descripción y cantidad
         existingInventory.setDescription(request.getDescription());
         existingInventory.setQuantity(request.getQuantity());
 

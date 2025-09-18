@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Donations</title>
+    <link rel="stylesheet" href="/css/eventsStyles.css">
+    <link rel="stylesheet" href="/css/navbar.css">
+    <link rel="icon" type="image/png" sizes="16x16" href="../img/favicon-16x16.png">
+</head>
+
+<body>
+    <h1>ONG Empuje Comunitario</h1>
+    <nav>
+        <a href="/events">Ver eventos</a>
+        <a href="/events/create">Crear evento</a>
+        <a href="/home">Volver a inicio</a>
+        <a href="#" onclick="logout(); return false;">Cerrar sesión</a>
+    </nav>
+
+    <section>
+
+        <div class="container">
+            <h1><%= eventName %> - Donaciones</h1>
+
+            <table id="donations-list">
+                <tr>
+                    <th>Registrado por</th>
+                    <th>Donación</th>
+                    <th>Cantidad</th>
+                </tr>
+                
+            </table>
+        </div>
+
+        <div class="container">
+            <h1>Registrar donación</h1>
+
+            <form id="form" onsubmit="event.preventDefault(); registerDonation(<%= eventId %>);">
+
+                <label for="donation-select">Donación:</label>
+                <select name="donation-select" id="donation-select">
+                </select>
+                
+                <div class="quantity-selector">
+                    <label for="quantity" id="quantity-label">Cantidad: (10 en inventario)</label>
+                    <input type="number" id="quantity" name="quantity" min="0" max="10" step="1" value="1">
+                </div>
+
+                <button type="submit">Registrar</button>
+            </form>
+        </div>
+
+    </section>
+    <%- include('../templates/footer') %>
+    <script src="/js/events/donations.js"></script>
+    <script src="/js/user/logout.js"></script>
+</body>
+
+</html>
