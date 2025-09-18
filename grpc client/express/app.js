@@ -1,38 +1,50 @@
+require("dotenv").config(); // cargar variables de entorno desde .env
 const express = require("express");
 const cors = require("cors");
-const app = express(); // con esto creamos la app express
+const jwtAuth = require("./auth/jwt-auth.js");
+const cookieParser = require("cookie-parser");
+const path = require("path");
+
+const app = express();
 const port = 9091;
-app.use(cors()); // esto es para el front, para poder usar fetch() de js sin que el navegador llore
-app.use(express.json()); // permitirle a express que pueda parsear requests y respones a json
 
-//para renderizar vistas
-app.set('view engine', 'ejs');
-app.set('views', '../../front/views');
+// Rutas a los recursos del front (dentro del contenedor en /app/front)
+const frontPath = path.join(__dirname, "../front");       // /app/front
+const viewsPath = path.join(frontPath, "views");          // /app/front/views
 
-/*
-aca entremedio agregamos nuestros routers segun la funcionalidad. por ej:
-const userRouter = require("./router/userRouter");
-app.use(userRouter);
-IMPORTANTE: los routers los creamos en la carpetita router que cree al mismo nivel de este script,
-para mejor organizacion
-*/
+// Middlewares globales
+app.use(cors({ credentials: true }));
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+app.use(cookieParser());
 
-// routers
-const userRouter = require('./router/user-router');
+// Configuración del motor de vistas
+app.set("view engine", "ejs");
+app.set("views", viewsPath);
+
+// Routers
+const userRouter = require("./router/user-router");
 app.use("/user", userRouter);
 
-const eventRouter = require("./router/events");
-app.use("/events", eventRouter); // todas las rutas de eventos van a empezar con /events
+const eventRouter = require("./router/event-router");
+app.use("/events", eventRouter);
 
-//IMPORTANTE dejar este get al final para que no reemplace a los routers
-app.get('/', (req, res) => {
-    res.render('index', {});
+// Rutas principales
+app.get("/", (req, res) => {
+  res.render("index"); // busca en /app/front/views/index.ejs
 });
 
+app.get("/home", jwtAuth, (req, res) => {
+  res.render("home", { username: req.user.username, roles: req.user.roles });
+});
 
-// ruta para archivos estáticos
-app.use(express.static("../../front"));
+// Archivos estáticos (CSS, JS, imágenes, etc.)
+app.use("/css", express.static(path.join(frontPath, "css")));
+app.use("/js", express.static(path.join(frontPath, "js")));
+app.use("/img", express.static(path.join(frontPath, "img"))); // es opcional pero lo agregué
 
+// Arrancar servidor
 app.listen(port, () => {
-    console.log("Express app listening on port", port,".");
-})
+  console.log("Express app listening on port", port, ".");
+});
+
