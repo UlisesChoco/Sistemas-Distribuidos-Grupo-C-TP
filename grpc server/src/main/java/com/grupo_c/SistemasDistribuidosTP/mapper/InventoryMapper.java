@@ -32,7 +32,7 @@ public class InventoryMapper {
         builder.setCategory(inventory.getCategory() != null ? inventory.getCategory().name() : "");
         builder.setDescription(inventory.getDescription() != null ? inventory.getDescription() : "");
         builder.setQuantity(inventory.getQuantity() != null ? inventory.getQuantity() : 0);
-        builder.setIsDetected(inventory.getIsDetected() != null ? inventory.getIsDetected() : false);
+        builder.setIsDeleted(inventory.getisDeleted() != null ? inventory.getisDeleted() : false);
 
         if (inventory.getCreationDate() != null) {
             long epoch = inventory.getCreationDate().atZone(ZoneOffset.UTC).toEpochSecond();
@@ -67,7 +67,7 @@ public class InventoryMapper {
 
         inventory.setDescription(dto.getDescription() != null ? dto.getDescription() : "");
         inventory.setQuantity(dto.getQuantity());
-        inventory.setIsDetected(dto.getIsDetected());
+        inventory.setisDeleted(dto.getIsDeleted());
 
         if (dto.getCreationDate() != 0) {
             inventory.setCreationDate(LocalDateTime.ofInstant(Instant.ofEpochSecond(dto.getCreationDate()), ZoneId.systemDefault()));

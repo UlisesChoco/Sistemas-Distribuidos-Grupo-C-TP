@@ -1,0 +1,18 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8"/>
+  <title>Detalle Inventario</title>
+</head>
+<body>
+  <h1>Detalle Inventario</h1>
+  <ul>
+    <li><strong>Categoría:</strong> <%= inventory.category %></li>
+    <li><strong>Descripción:</strong> <%= inventory.description %></li>
+    <li><strong>Cantidad:</strong> <%= inventory.quantity %></li>
+    <li><strong>Eliminado:</strong> <%= inventory.isDeleted ? 'Sí' : 'No' %></li>
+  </ul>
+
+  <a href="/inventories">Volver a lista</a>
+</body>
+</html>

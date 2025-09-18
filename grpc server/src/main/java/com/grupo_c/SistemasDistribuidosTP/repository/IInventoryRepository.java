@@ -16,9 +16,9 @@ public interface IInventoryRepository extends JpaRepository<Inventory, Long> {
     
     List<Inventory> findByCategory(Category category);
     
-    List<Inventory> findByIsDetectedTrue();
+    List<Inventory> findByisDeletedTrue();
     
-    List<Inventory> findByIsDetectedFalse();
+    List<Inventory> findByisDeletedFalse();
     
     List<Inventory> findByQuantityGreaterThan(Integer quantity);
     
@@ -34,20 +34,20 @@ public interface IInventoryRepository extends JpaRepository<Inventory, Long> {
     List<Inventory> findByCreationDateBetween(@Param("startDate") LocalDateTime startDate, 
                                             @Param("endDate") LocalDateTime endDate);
     
-    @Query("SELECT i FROM Inventory i WHERE i.category = :category AND i.isDetected = false")
+    @Query("SELECT i FROM Inventory i WHERE i.category = :category AND i.isDeleted = false")
     List<Inventory> findAvailableByCategory(@Param("category") Category category);
     
-    @Query("SELECT i FROM Inventory i WHERE i.quantity > 0 AND i.isDetected = false")
+    @Query("SELECT i FROM Inventory i WHERE i.quantity > 0 AND i.isDeleted = false")
     List<Inventory> findAvailableInventory();
     
     @Query("SELECT SUM(i.quantity) FROM Inventory i WHERE i.category = :category")
     Integer sumQuantityByCategory(@Param("category") Category category);
     
-    @Query("SELECT i FROM Inventory i WHERE i.isDetected = false ORDER BY i.category, i.description")
+    @Query("SELECT i FROM Inventory i WHERE i.isDeleted = false ORDER BY i.category, i.description")
     List<Inventory> findAllAvailableOrdered();
     
     // Método agregado para filtrar por categoría y estado de detección
-    @Query("SELECT i FROM Inventory i WHERE i.category = :category AND i.isDetected = :isDetected")
-    List<Inventory> findByCategoryAndIsDetected(@Param("category") Category category, 
-                                              @Param("isDetected") Boolean isDetected);
+    @Query("SELECT i FROM Inventory i WHERE i.category = :category AND i.isDeleted = :isDeleted")
+    List<Inventory> findByCategoryAndisDeleted(@Param("category") Category category, 
+                                              @Param("isDeleted") Boolean isDeleted);
 }

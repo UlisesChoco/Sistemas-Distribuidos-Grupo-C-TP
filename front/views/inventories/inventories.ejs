@@ -1,0 +1,38 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8"/>
+  <title>Inventario</title>
+</head>
+<body>
+  <h1>Inventario</h1>
+  <a href="/inventories/create">Crear nuevo</a>
+  <table border="1" cellpadding="6">
+    <thead>
+      <tr>
+        <th>Categoría</th>
+        <th>Descripción</th>
+        <th>Cantidad</th>
+        <th>Eliminado</th>
+        <th>Acciones</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% inventories.forEach(function(inv){ %>
+        <tr>
+          <td><%= inv.category %></td>
+          <td><%= inv.description %></td>
+          <td><%= inv.quantity %></td>
+          <td><%= inv.isDeleted ? 'Sí' : 'No' %></td>
+          <td>
+            <a href="/inventories/<%= inv.idInventory %>/edit">Editar</a>
+            <form style="display:inline" method="post" action="/inventories/<%= inv.idInventory %>/delete">
+              <button type="submit" onclick="return confirm('Confirmar baja?')">Eliminar</button>
+            </form>
+          </td>
+        </tr>
+      <% }) %>
+    </tbody>
+  </table>
+</body>
+</html>
