@@ -292,27 +292,27 @@ public class EventServiceGrpcImpl extends EventServiceGrpc.EventServiceImplBase{
             responseStreamObserver.onError(new StatusRuntimeException(Status.NOT_FOUND.withDescription("No existe el evento")));
             return;
         }
-
+        if (inventory == null){
+            responseStreamObserver.onError(new StatusRuntimeException(Status.NOT_FOUND.withDescription("No existe el inventario")));
+            return;
+        }
         try{
             user = userService.findById(request.getUserId());
         }catch (UserNotFoundException e){
             responseStreamObserver.onError(new StatusRuntimeException(Status.NOT_FOUND.withDescription(e.getMessage())));
             return;
         }
-
         if(!event.getIsCompleted()){
             responseStreamObserver.onError(new StatusRuntimeException(Status.FAILED_PRECONDITION.withDescription("El evento aún no finalizó")));
             return;
         }
 
         try {
-            inventoryService.decreaseStock(request.getInventoryId(),request.getQuantity());
+            inventoryService.decreaseStock(inventory, user, request.getQuantity());
         }catch (Exception e){
             responseStreamObserver.onError(new StatusRuntimeException(Status.INTERNAL.withDescription(e.getMessage())));
             return;
         }
-        //registrar usuario que hizo la modificación
-        inventoryService.save(inventory, user);
 
         event.addDistributedInventory(inventory, user, request.getQuantity());
         eventRepository.save(event);

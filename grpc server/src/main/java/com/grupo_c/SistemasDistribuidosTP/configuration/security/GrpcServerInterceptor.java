@@ -107,9 +107,7 @@ public class GrpcServerInterceptor implements ServerInterceptor {
                         "EventService/DeleteUserFromEvent",
                         "EventService/GetEvent",
                         "EventService/GetEventsWithParticipantsList",
-                        "EventService/GetEventsWithoutParticipantsList",
-                        "EventService/RegisterEventInventory",
-                        "EventService/GetEventInventory"
+                        "EventService/GetEventsWithoutParticipantsList"
                 )
         );
         rolesAndMethods.put(
