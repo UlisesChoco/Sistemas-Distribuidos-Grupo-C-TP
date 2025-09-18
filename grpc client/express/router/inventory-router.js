@@ -9,6 +9,15 @@ const {
     deleteAsync
 } = require('../../clients/inventoryClient');
 
+// Middleware para pasar los roles a todas las vistas
+router.use((req, res, next) => {
+    // Esto asume que los roles del usuario están en req.user.roles
+    // Si la información está en otro lugar, como req.session, ajusta el código.
+    const roles = req.user ? req.user.roles : []; 
+    res.locals.roles = roles;
+    next();
+});
+
 // Rutas de Vistas (GET)
 router.get('/', async (req, res) => {
     try {
@@ -22,7 +31,6 @@ router.get('/', async (req, res) => {
 });
 
 router.get('/create', (req, res) => {
-    
     res.render('inventories/createInventory');
 });
 
