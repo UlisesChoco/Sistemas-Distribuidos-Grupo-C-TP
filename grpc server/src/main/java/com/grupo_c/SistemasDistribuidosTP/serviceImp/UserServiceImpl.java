@@ -50,6 +50,13 @@ public class UserServiceImpl implements IUserService {
     }
 
     @Override
+    public User findByUsernameOrEmail(String usernameOrEmail) throws UserNotFoundException {
+        return userRepository.findByUsernameOrEmail(usernameOrEmail).orElseThrow(() ->
+                new UserNotFoundException("No existe ningún usuario registrado con ese nombre de usuario o correo electrónico.")
+        );
+    }
+
+    @Override
     public User findByUsernameOrEmail(String username, String email) {
         return userRepository.findByUsernameOrEmail(username, email).orElse(null);
     }
@@ -146,7 +153,7 @@ public class UserServiceImpl implements IUserService {
 
     @Override
     public void isUserValid(User userEntity, String password) throws UsernameNotFoundException, InvalidPasswordException, UserNotActiveException {
-        if(userEntity == null) throw new UsernameNotFoundException("No existe ningún usuario registrado con ese nombre de usuario.");
+        if(userEntity == null) throw new UsernameNotFoundException("No existe ningún usuario registrado con ese nombre de usuario o correo electrónico.");
         if(!passwordEncoder.matches(password, userEntity.getPassword())) throw new InvalidPasswordException("Contraseña incorrecta.");
         if(!userEntity.getIsActive()) throw new UserNotActiveException("Este usuario fue eliminado.");
     }

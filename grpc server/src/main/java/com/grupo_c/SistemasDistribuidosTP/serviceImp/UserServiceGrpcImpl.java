@@ -34,9 +34,9 @@ public class UserServiceGrpcImpl extends UserServiceGrpc.UserServiceImplBase {
     ) {
         User userEntity;
         try {
-            userEntity = userService.findByUsername(request.getUsername());
+            userEntity = userService.findByUsernameOrEmail(request.getUsername());
             userService.isUserValid(userEntity, request.getPassword());
-        } catch (UsernameNotFoundException usernameNotFoundException) {
+        } catch (UsernameNotFoundException | UserNotFoundException usernameNotFoundException) {
             sendGrpcError(responseObserver, Status.NOT_FOUND, "ERROR: Inicio de sesión fallido. "+usernameNotFoundException.getMessage());
             return;
         } catch (InvalidPasswordException invalidPasswordException) {
