@@ -10,9 +10,7 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZoneOffset;
 
-/**
- * Mapper para convertir entre entity Inventory y los DTOs generados por protobuf.
- */
+
 public class InventoryMapper {
 
     public InventoryServiceClass.InventoryDTO toInventoryDTO(Inventory inventory,

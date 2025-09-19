@@ -29,7 +29,6 @@ app.use("/user", userRouter);
 const eventRouter = require("./router/event-router");
 app.use("/events", eventRouter); // todas las rutas de eventos van a empezar con /events
 
-// ==================== INVENTORY (gRPC Client integrado) ==================== //
 // A partir de ahora, todas las rutas de inventario se gestionan en el router dedicado.
 // Se eliminan los endpoints REST duplicados para evitar conflictos de enrutamiento.
 // =========================================================================== //
@@ -63,8 +62,6 @@ app.get("/privacy", jwtAuth, (req, res) => {
 // ruta para archivos estáticos
 app.use(express.static("../../front"));
 
-// ========== COMENTARIO: ESTE BLOQUE ES EL PROBLEMA ==========
-// ========== TU ARCHIVO `server.js` YA HACE ESTO ==========
  app.listen(port, () => {
      console.log("Express app listening on port", port,".");
  });

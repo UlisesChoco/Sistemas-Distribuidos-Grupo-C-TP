@@ -3,7 +3,7 @@ syntax = "proto3";
 option java_outer_classname = "InventoryServiceClass";
 option java_package = "com.grupo_c.SistemasDistribuidosTP.service";
 
-import "google/protobuf/empty.proto"; // <-- FALTA ESTA LÍNEA
+import "google/protobuf/empty.proto"; 
 import "utils.proto";
 import "user.proto";
 

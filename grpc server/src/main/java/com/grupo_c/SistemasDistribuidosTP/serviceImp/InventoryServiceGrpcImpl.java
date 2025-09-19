@@ -179,7 +179,7 @@ public void updateInventory(InventoryServiceClass.InventoryDTO request,
         }
     }
 
-     // ===================== NUEVO: devuelve sólo inventarios activos (isDeleted = false) =====================
+     
     @Override
     public void getAvailableInventory(UtilsServiceClass.Empty request,
                                       StreamObserver<InventoryServiceClass.InventoryListResponse> responseObserver) {
@@ -212,7 +212,7 @@ public void updateInventory(InventoryServiceClass.InventoryDTO request,
                     .withDescription("Error al recuperar inventarios activos: " + e.getMessage())));
         }
     }
-    // ============================================================================================
+    
     @Override
     public void getInventoryByCategory(InventoryServiceClass.InventoryCategory request,
                                        StreamObserver<InventoryServiceClass.InventoryListResponse> responseObserver) {

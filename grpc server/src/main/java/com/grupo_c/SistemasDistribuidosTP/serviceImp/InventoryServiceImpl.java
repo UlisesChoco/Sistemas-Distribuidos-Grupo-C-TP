@@ -98,7 +98,6 @@ public class InventoryServiceImpl implements IInventoryService {
         }
 
         inventory.setQuantity(inventory.getQuantity() - quantityToDecrease);
-        // no cambiamos usuario/fechas aquí: es una operación interna. Si querés auditoría, se podría extender.
         return inventoryRepository.save(inventory);
     }
 }

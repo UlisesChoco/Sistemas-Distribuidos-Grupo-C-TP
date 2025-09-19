@@ -75,7 +75,6 @@ function deleteInventory(id) {
   });
 }
 
-// ==================== NUEVA RPC: Inventarios disponibles ==================== //
 
 // Callback-style (para pruebas rápidas)
 function getAvailableInventory() {
@@ -115,6 +114,5 @@ module.exports = {
   createAsync: (dto) => promisify(inventoryClient.CreateInventory.bind(inventoryClient), dto),
   updateAsync: (dto) => promisify(inventoryClient.UpdateInventory.bind(inventoryClient), dto),
   deleteAsync: (id) => promisify(inventoryClient.DeleteInventory.bind(inventoryClient), { idInventory: Number(id) }),
-  // nuevo wrapper async para inventarios disponibles
   getAvailableAsync: () => promisify(inventoryClient.GetAvailableInventory.bind(inventoryClient), {}),
 };
