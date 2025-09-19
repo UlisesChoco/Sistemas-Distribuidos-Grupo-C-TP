@@ -73,13 +73,25 @@ Este cliente gRPC cuenta con:
 
 | Endpoint | Respuesta |
 |----------|--------------|
-| `GET /` | a |
+| `GET /events` | Devuelve una vista que muestra todos los eventos. |
+| `GET /events/edit/{id}` | Devuelve una vista que permite modificar el evento con el id enviado como parámetro en la URL. |
+| `GET /events/create` | Devuelve una vista que permite crear un evento nuevo. |
+| `GET /donationsRegistry/{id}/{name}` | Devuelve una vista que muestra el registro de donaciones del evento con el id y el nombre enviados como parámetro en la URL. |
 
 ### Endpoints de la API
 
 | Endpoint | Body de la request | Respuesta |
 |----------|--------------|--------------|
-| `GET /` | a | a | 
+| `GET /events/getEvent/{id}` | Enviar `id`. | Devuelve todos los datos del evento con el id enviado por parámetro en la URL. | 
+| `GET /events/getEventsWithParticipants` | No requiere parámetros. | Devuelve una lista con todos los eventos con sus respectivos participantes. | 
+| `GET /events/getEventsWithoutParticipants/{id}` | Enviar `id` | Devuelve una lista con todos los eventos sin participantes. Cada evento está acompañado de un boolean que indica si el usuario con el id enviado por parámetro en la URL forma parte del mismo. | 
+| `GET /events/getEventInventory/{id}` | Enviar `id`. | Devuelve la lista de donaciones del evento con el id enviado como parámetro en la URL. | 
+| `POST /events/create` | Enviar `name`, `description`, `date`, `participants[]`. | Devuelve un boolean `succeeded` junto a una string `message` indicando si la creación del evento fue exitosa o no. | 
+| `PUT /events/modifyEvent` | Enviar `id`, `name`, `description`, `date`, `participants[]`, `is_completed` | Devuelve un boolean `succeeded` junto a una string `message` indicando si la modificación del evento fue exitosa o no. | 
+| `DELETE /events/deleteEvent/{id}` | Enviar `id` | Devuelve un boolean `succeeded` junto a una string `message` indicando si la eliminación fue exitosa o no. |
+| `POST /events/assignUserToEvent` | Enviar `event_id`, `user_id`. | Devuelve un boolean `succeeded` junto a una string `message` indicando si el alta del usuario al evento fue exitoso o no. | 
+| `POST /events/deleteUserFromEvent` | Enviar `event_id`, `user_id`. | Devuelve un boolean `succeeded` junto a una string `message` indicando si la baja del usuario al evento fue exitosa o no. |
+| `POST /events/registerEventInventory` | Enviar `user_id`, `event_id`, `inventory_id`, `quantity`. | Devuelve un boolean `succeeded` junto a una string `message` indicando el registro de donaciones fue exitoso o no. |
 
 ## Inventory Router
 
