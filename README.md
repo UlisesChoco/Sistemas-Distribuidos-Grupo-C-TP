@@ -26,7 +26,7 @@ Antes de comenzar, se debe tener instalado:
 ## 1. Clonar el repositorio
 
 ```bash
-git clone https://github.com/<tu-repo>/Sistemas-Distribuidos-Grupo-C-TP.git
+git clone https://github.com/UlisesChoco/Sistemas-Distribuidos-Grupo-C-TP.git
 cd Sistemas-Distribuidos-Grupo-C-TP
 ```
 
