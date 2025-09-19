@@ -3,10 +3,11 @@ syntax = "proto3";
 option java_outer_classname = "InventoryServiceClass";
 option java_package = "com.grupo_c.SistemasDistribuidosTP.service";
 
+import "google/protobuf/empty.proto"; 
 import "utils.proto";
 import "user.proto";
 
-message InventoryDTO{
+message InventoryDTO {
   int64 idInventory = 1;
   UserSimpleDTO userCreate = 2;
   UserSimpleDTO userModify = 3;
@@ -18,7 +19,7 @@ message InventoryDTO{
   int64 modificationDate = 9;
 }
 
-message InventoryListResponse{
+message InventoryListResponse {
   repeated InventoryDTO inventories = 1;
 }
 
@@ -38,4 +39,5 @@ service InventoryService {
   rpc CreateInventory(InventoryDTO) returns (InventoryDTO);
   rpc UpdateInventory(InventoryDTO) returns (InventoryDTO);
   rpc DeleteInventory(InventoryRequest) returns (Empty);
+  rpc GetAvailableInventory (google.protobuf.Empty) returns (InventoryListResponse);
 }
