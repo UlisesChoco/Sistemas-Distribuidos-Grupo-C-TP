@@ -25,7 +25,7 @@ document.getElementById('loginForm').addEventListener('submit', async (e) => {
 });
 
 async function loginRequest(body) {
-    const res = await fetch('http://localhost:9091/user/login', {
+    const res = await fetch('http://localhost:8080/user/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(body),

@@ -21,7 +21,7 @@ async function modifyRequest(body) {
         }),
         credentials: 'include'
     }
-    const res = await fetch('http://localhost:9091/user/modify', req);
+    const res = await fetch('http://localhost:8080/user/modify', req);
     return await res.json();
 }
 
@@ -38,7 +38,7 @@ async function populateForm() {
             'Accept': 'application/json',
         }
     };
-    const getUserResponse = await fetch("http://localhost:9091/user/"+originalUsername, getUserRequest);
+    const getUserResponse = await fetch("http://localhost:8080/user/"+originalUsername, getUserRequest);
     const getUserData = await getUserResponse.json();
 
     document.getElementById("id").value = getUserData.id;

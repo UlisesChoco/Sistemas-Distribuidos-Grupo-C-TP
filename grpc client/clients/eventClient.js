@@ -22,7 +22,7 @@ const packageDefinition = protoLoader.loadSync([
 const proto = grpc.loadPackageDefinition(packageDefinition);
 
 // crear cliente
-const eventClient = new proto.EventService('localhost:9090', grpc.credentials.createInsecure());
+const eventClient = new proto.EventService('grpc_server:9090', grpc.credentials.createInsecure());
 
 // exportar el cliente
 module.exports = eventClient;

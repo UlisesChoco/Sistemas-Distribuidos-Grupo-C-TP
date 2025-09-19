@@ -5,6 +5,6 @@ async function logout() {
             'Content-Type': 'application/json'
         }
     };
-    await fetch("http://localhost:9091/user/logout", request);
+    await fetch("http://localhost:8080/user/logout", request);
     window.location.href = "/";
 }

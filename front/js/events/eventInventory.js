@@ -6,7 +6,7 @@ const select = document.getElementById("inventory");
 async function loadDonations() {
     const table = document.getElementById("donations-list");
 
-    fetch(`http://localhost:9091/events/getEventInventory/${parseInt(eventId)}`, {
+    fetch(`http://localhost:8080/events/getEventInventory/${parseInt(eventId)}`, {
         method: 'GET',
         headers: {
             "Content-Type": "application/json",
@@ -53,7 +53,7 @@ async function loadInventory() {
 
     //TODO necesito el endpoint
     /*    
-    fetch(`http://localhost:9091/inventories/getActiveInventories`, {
+    fetch(`http://localhost:8080/inventories/getActiveInventories`, {
         method: 'GET',
         headers: {
             "Content-Type": "application/json",
@@ -106,7 +106,7 @@ function registerDonation(event_id){
 
     console.log(data);
 
-    fetch(`http://localhost:9091/events/registerEventInventory`, {
+    fetch(`http://localhost:8080/events/registerEventInventory`, {
         method: 'POST',
         headers: {"Content-Type": "application/json"},
         body: JSON.stringify(data),

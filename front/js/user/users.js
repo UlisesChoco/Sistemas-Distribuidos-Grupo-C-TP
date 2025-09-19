@@ -10,7 +10,7 @@ const restoreUser = async function restoreUser(username) {
             'Accept': 'application/json',
         }
     };
-    const getUserResponse = await fetch("http://localhost:9091/user/"+username, getUserRequest);
+    const getUserResponse = await fetch("http://localhost:8080/user/"+username, getUserRequest);
     const getUserData = await getUserResponse.json();
     console.log(getUserData);
     const restoreUserRequest = {
@@ -32,7 +32,7 @@ const restoreUser = async function restoreUser(username) {
             }
         })
     };
-    const restoreUserResponse = await fetch("http://localhost:9091/user/modify", restoreUserRequest);
+    const restoreUserResponse = await fetch("http://localhost:8080/user/modify", restoreUserRequest);
     const restoreUserData = await restoreUserResponse.json();
     populateUserTable();
     return restoreUserData;
@@ -49,7 +49,7 @@ const deleteUser = async function deleteUser(id) {
             id: id
         })
     };
-    const response = await fetch("http://localhost:9091/user/delete", request);
+    const response = await fetch("http://localhost:8080/user/delete", request);
     const data = await response.json();
     populateUserTable();
     return data;
@@ -66,7 +66,7 @@ async function getUserList() {
         },
         credentials: 'include'
     };
-    const response = await fetch("http://localhost:9091/user/list", request);
+    const response = await fetch("http://localhost:8080/user/list", request);
     const data = await response.json();
     return data;
 }

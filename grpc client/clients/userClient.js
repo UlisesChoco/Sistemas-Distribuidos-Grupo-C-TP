@@ -18,7 +18,7 @@ const packageDefinition = protoLoader.loadSync(PROTO_PATH, {
 const proto = grpc.loadPackageDefinition(packageDefinition);
 
 // crear cliente
-const userClient = new proto.UserService('localhost:9090', grpc.credentials.createInsecure());
+const userClient = new proto.UserService('grpc_server:9090', grpc.credentials.createInsecure());
 
 // exportar el cliente
 module.exports = userClient;
