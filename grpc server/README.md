@@ -3,18 +3,18 @@
 Este documento describe los servicios gRPC disponibles, sus métodos, parámetros y respuestas. Además de breves explicaciones sobre ciertas funcionalidades.
 
 ## Tecnologías
-- Java 17
-- Spring Boot 3.5.5
+- [Java 17](https://docs.oracle.com/en/java/javase/17/docs/api/index.html)
+- [Spring Boot 3.5.5](https://spring.io/blog/2025/08/21/spring-boot-3-5-5-available-now)
 
 ## Dependencias
-- Spring Data JPA
-- Spring Security
-- Spring gRPC
-- Spring Boot Starter Mail
-- Auth Java JWT
-- Lombok
-- MySQL Connector
-- Google Protobuf
+- [Spring Data JPA](https://docs.spring.io/spring-data/jpa/reference/index.html)
+- [Spring Security](https://docs.spring.io/spring-security/reference/index.html)
+- [Spring gRPC](https://docs.spring.io/spring-grpc/reference/getting-started.html)
+- [Spring Boot Starter Mail](https://docs.spring.io/spring-boot/reference/io/email.html)
+- [Auth Java JWT](https://github.com/auth0/java-jwt)
+- [Lombok](https://projectlombok.org/)
+- [MySQL Connector](https://dev.mysql.com/doc/connector-j/en/)
+- [Google Protobuf](https://protobuf.dev/)
 
 ## Funcionalidades
 
