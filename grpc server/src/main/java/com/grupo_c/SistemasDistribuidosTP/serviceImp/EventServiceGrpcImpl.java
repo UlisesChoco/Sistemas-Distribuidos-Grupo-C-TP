@@ -135,25 +135,13 @@ public class EventServiceGrpcImpl extends EventServiceGrpc.EventServiceImplBase{
 
         Event event = eventRepository.findById(request.getId()).orElse(null);
 
-        if (event == null){
-            UtilsServiceClass.Response response = UtilsServiceClass.Response
-                    .newBuilder()
-                    .setMessage("El evento con id: " + request.getId() + " no existe")
-                    .setSucceeded(false)
-                    .build();
-            responseStreamObserver.onNext(response);
-            responseStreamObserver.onCompleted();
+        if(event == null){
+            responseStreamObserver.onError(new StatusRuntimeException(Status.NOT_FOUND.withDescription("El evento no existe.")));
             return;
         }
 
         if (event.getIsCompleted()){
-            UtilsServiceClass.Response response = UtilsServiceClass.Response
-                    .newBuilder()
-                    .setMessage("El evento ya finalizó, no se puede eliminar")
-                    .setSucceeded(false)
-                    .build();
-            responseStreamObserver.onNext(response);
-            responseStreamObserver.onCompleted();
+            responseStreamObserver.onError(new StatusRuntimeException(Status.FAILED_PRECONDITION.withDescription("El evento ya finalizó.")));
             return;
         }
 
@@ -161,7 +149,7 @@ public class EventServiceGrpcImpl extends EventServiceGrpc.EventServiceImplBase{
 
         UtilsServiceClass.Response response = UtilsServiceClass.Response
                 .newBuilder()
-                .setMessage("Evento Borrado")
+                .setMessage("Evento Eliminado")
                 .setSucceeded(true)
                 .build();
         responseStreamObserver.onNext(response);
@@ -176,14 +164,12 @@ public class EventServiceGrpcImpl extends EventServiceGrpc.EventServiceImplBase{
         Event e = eventRepository.findByIdJoinParticipants(request.getEventId()).orElse(null);
         User u = userRepository.findById(request.getUserId()).orElse(null);
 
-        if(e==null || u==null){
-            UtilsServiceClass.Response response = UtilsServiceClass.Response
-                    .newBuilder()
-                    .setMessage("Id del evento o del participante invalido")
-                    .setSucceeded(false)
-                    .build();
-            responseStreamObserver.onNext(response);
-            responseStreamObserver.onCompleted();
+        if(e==null){
+            responseStreamObserver.onError(new StatusRuntimeException(Status.NOT_FOUND.withDescription("No se encontró el evento.")));
+            return;
+        }
+        if(u==null){
+            responseStreamObserver.onError(new StatusRuntimeException(Status.NOT_FOUND.withDescription("No se encontró el usuario.")));
             return;
         }
 
@@ -207,14 +193,12 @@ public class EventServiceGrpcImpl extends EventServiceGrpc.EventServiceImplBase{
         Event e = eventRepository.findByIdJoinParticipants(request.getEventId()).orElse(null);
         User u = userRepository.findByIdJoinEvents(request.getUserId()).orElse(null);
 
-        if(e==null || u==null){
-            UtilsServiceClass.Response response = UtilsServiceClass.Response
-                    .newBuilder()
-                    .setMessage("Id del evento o del participante invalido")
-                    .setSucceeded(false)
-                    .build();
-            responseStreamObserver.onNext(response);
-            responseStreamObserver.onCompleted();
+        if(e==null){
+            responseStreamObserver.onError(new StatusRuntimeException(Status.NOT_FOUND.withDescription("No se encontró el evento.")));
+            return;
+        }
+        if(u==null){
+            responseStreamObserver.onError(new StatusRuntimeException(Status.NOT_FOUND.withDescription("No se encontró el usuario.")));
             return;
         }
 
@@ -235,7 +219,12 @@ public class EventServiceGrpcImpl extends EventServiceGrpc.EventServiceImplBase{
     public void getEvent (EventServiceClass.EventRequest request,
                           StreamObserver<EventServiceClass.EventWithParticipantsDto> responseStreamObserver){
 
-        Event e = eventRepository.findByIdJoinParticipants(request.getId()).orElse(null);
+        Event e = eventService.findByIdJoinParticipants(request.getId());
+
+        if(e==null){
+            responseStreamObserver.onError(new StatusRuntimeException(Status.NOT_FOUND.withDescription("No se encontró el evento.")));
+            return;
+        }
 
         EventServiceClass.EventWithParticipantsDto response = eventMapper.toEventWithParticipantsDto(e);
 
@@ -247,7 +236,8 @@ public class EventServiceGrpcImpl extends EventServiceGrpc.EventServiceImplBase{
     public void getEventsWithParticipantsList (UtilsServiceClass.Empty request,
                                                StreamObserver<EventServiceClass.EventsWithParticipantsList> responseStreamObserver){
 
-        eventService.markPastEventsAsCompleted();
+        //desactivado hasta solucionar problemas con la zona horaria de docker
+        //eventService.markPastEventsAsCompleted();
 
         List<Event> events = eventRepository.findAllJoinParticipants();
         List<EventServiceClass.EventWithParticipantsDto> eventsWithParticipantsDto = new ArrayList<>();
@@ -268,7 +258,7 @@ public class EventServiceGrpcImpl extends EventServiceGrpc.EventServiceImplBase{
     public void getEventsWithoutParticipantsList (EventServiceClass.EventRequest request,
                                                StreamObserver<EventServiceClass.EventsWithoutParticipantsList> responseStreamObserver){
 
-        // desactivado hasta solucionar problemas con la zona horaria de docker
+        //desactivado hasta solucionar problemas con la zona horaria de docker
         //eventService.markPastEventsAsCompleted();
 
         List<Event> events = eventRepository.findAllJoinParticipants();
@@ -319,7 +309,7 @@ public class EventServiceGrpcImpl extends EventServiceGrpc.EventServiceImplBase{
         try {
             inventoryService.decreaseStock(inventory, user, request.getQuantity());
         }catch (Exception e){
-            responseStreamObserver.onError(new StatusRuntimeException(Status.INTERNAL.withDescription(e.getMessage())));
+            responseStreamObserver.onError(new StatusRuntimeException(Status.INVALID_ARGUMENT.withDescription(e.getMessage())));
             return;
         }
 

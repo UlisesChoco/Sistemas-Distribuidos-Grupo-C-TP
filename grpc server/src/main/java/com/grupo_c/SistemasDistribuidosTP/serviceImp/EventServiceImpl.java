@@ -55,6 +55,11 @@ public class EventServiceImpl implements IEventService, IEventInventoryService {
     }
 
     @Override
+    public Event findByIdJoinParticipants(Long eventId) {
+        return eventRepository.findByIdJoinParticipants(eventId).orElse(null);
+    }
+
+    @Override
     public Event findByIdJoinEventInventory(Long eventId) {
         return eventRepository.findByIdJoinEventInventory(eventId);
     }

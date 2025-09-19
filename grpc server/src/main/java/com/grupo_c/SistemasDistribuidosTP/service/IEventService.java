@@ -8,6 +8,7 @@ public interface IEventService {
     void removeUserFromUpcomingEvents(User user);
     void markPastEventsAsCompleted();
     Event findById(Long id);
+    Event findByIdJoinParticipants(Long eventId);
     Event findByIdJoinEventInventory(Long eventId);
 
 }
