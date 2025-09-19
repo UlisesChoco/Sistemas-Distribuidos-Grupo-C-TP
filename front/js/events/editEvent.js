@@ -6,7 +6,7 @@ al entrar a la página, cargo el evento a editar
 */
 async function getEvent() {
 
-    fetch(`http://localhost:9091/events/getEvent/${selectedEventId}`, {
+    fetch(`http://localhost:8080/events/getEvent/${selectedEventId}`, {
         method: 'GET',
         headers: {
             "Content-Type": "application/json",
@@ -47,7 +47,7 @@ async function loadActiveUsers(participants) {
     usersSelect.innerHTML = ' '; // limpia el select
     //carga de usuarios activos
     
-    fetch(`http://localhost:9091/user/active-list`, {
+    fetch(`http://localhost:8080/user/active-list`, {
         method: 'GET',
         headers: {
             "Content-Type": "application/json",
@@ -106,7 +106,7 @@ function modifyEvent() {
         is_completed: is_completed
     };
 
-    fetch(`http://localhost:9091/events/modifyEvent`, {
+    fetch(`http://localhost:8080/events/modifyEvent`, {
         method: 'PUT',
         headers: {"Content-Type": "application/json"},
         body: JSON.stringify(eventData),

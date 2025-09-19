@@ -13,7 +13,7 @@ function deleteEvent(eventId) {
         return;
     }
 
-    fetch(`http://localhost:9091/events/deleteEvent/${parseInt(eventId)}`, {
+    fetch(`http://localhost:8080/events/deleteEvent/${parseInt(eventId)}`, {
         method: 'DELETE',
         headers: {"Content-Type": "application/json"},
         credentials: 'include'
@@ -41,7 +41,7 @@ function joinEvent(eventId) {
 
     const requestData = {eventId};
 
-    fetch(`http://localhost:9091/events/assignUserToEvent`, {
+    fetch(`http://localhost:8080/events/assignUserToEvent`, {
         method: 'POST',
         headers: {"Content-Type": "application/json"},
         body: JSON.stringify(requestData),
@@ -65,7 +65,7 @@ function leaveEvent(eventId) {
 
     const requestData = {eventId};
 
-    fetch(`http://localhost:9091/events/deleteUserFromEvent`, {
+    fetch(`http://localhost:8080/events/deleteUserFromEvent`, {
         method: 'POST',
         headers: {"Content-Type": "application/json"},
         body: JSON.stringify(requestData),

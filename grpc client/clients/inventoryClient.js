@@ -19,7 +19,7 @@ const proto = grpc.loadPackageDefinition(packageDefinition);
 
 // Crear cliente del InventoryService
 const inventoryClient = new proto.InventoryService(
-  'localhost:9090',
+  'grpc_server:9090',
   grpc.credentials.createInsecure()
 );
 

@@ -1,6 +1,7 @@
 package com.grupo_c.SistemasDistribuidosTP.entity;
 
 import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -70,7 +71,7 @@ public class Event {
     
     public LocalDateTime getDate() { return date; }
     public void setDate(LocalDateTime date) { 
-        if (date.isBefore(LocalDateTime.now())) {
+        if (date.isBefore(LocalDateTime.now(ZoneOffset.ofHours(-3)))) {
             throw new IllegalArgumentException("La fecha del evento no puede ser en el pasado");
         }
         this.date = date; 
@@ -97,9 +98,11 @@ public class Event {
         this.participants.remove(user);
         user.getEvents().remove(this);
     }
-    
-    public void addDistributedInventory(Inventory inventory, Integer quantity) {
-        EventInventory eventInventory = new EventInventory(this, inventory, quantity);
+
+
+    public void addDistributedInventory(Inventory inventory, User user, Integer quantity) {
+        EventInventory eventInventory = new EventInventory(this, inventory, user, quantity);
         this.distributedInventories.add(eventInventory);
     }
+
 }

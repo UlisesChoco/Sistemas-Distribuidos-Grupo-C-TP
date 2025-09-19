@@ -56,6 +56,25 @@ message EventsWithoutParticipantsList{
     repeated EventWithoutParticipantsDto events = 1;
 }
 
+message RegisterEventInventoryRequest{
+    int64 user_id = 1;
+    int64 event_id = 2;
+    int64 inventory_id = 3;
+    int32 quantity = 4;
+}
+
+message DonationDto{
+    string username = 1;
+    string description = 2;
+    int32 quantity = 3;
+    google.protobuf.Timestamp distribution_date = 4;
+}
+
+message EventInventoryList{
+    repeated DonationDto donations = 1;
+}
+
+
 service EventService{
     rpc CreateEvent (EventDto) returns (Response);
     rpc ModifyEvent (EventWithParticipantsDto) returns (Response);
@@ -65,5 +84,6 @@ service EventService{
     rpc GetEvent (EventRequest) returns (EventWithParticipantsDto);
     rpc GetEventsWithParticipantsList (Empty) returns(EventsWithParticipantsList);
     rpc GetEventsWithoutParticipantsList (EventRequest) returns(EventsWithoutParticipantsList);
-
+    rpc RegisterEventInventory (RegisterEventInventoryRequest) returns (Response);
+    rpc GetEventInventory (EventRequest) returns (EventInventoryList);
 }

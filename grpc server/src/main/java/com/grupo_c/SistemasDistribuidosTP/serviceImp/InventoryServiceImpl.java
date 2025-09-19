@@ -81,23 +81,21 @@ public class InventoryServiceImpl implements IInventoryService {
     }
 
     @Override
-    public Inventory decreaseStock(Long id, int quantityToDecrease) {
-        // Buscar inventario por id
-        Inventory inventory = inventoryRepository.findById(id).orElse(null);
-
-        if (inventory == null) {
-            throw new RuntimeException("Inventario no encontrado con id: " + id);
-        }
+    public void decreaseStock(Inventory inventory, User user, int quantityToDecrease) {
 
         if (quantityToDecrease <= 0) {
             throw new IllegalArgumentException("La cantidad a descontar debe ser mayor a 0.");
         }
-
+      
         if (inventory.getQuantity() < quantityToDecrease) {
-            throw new RuntimeException("Stock insuficiente en inventario con id: " + id);
+            throw new IllegalArgumentException("Stock insuficiente en inventario");
+        }
+      
+        if (inventory.getisDeleted()) {
+            throw new IllegalArgumentException("El inventario fue eliminado");
         }
 
         inventory.setQuantity(inventory.getQuantity() - quantityToDecrease);
-        return inventoryRepository.save(inventory);
+        save(inventory, user);
     }
 }

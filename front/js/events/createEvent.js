@@ -10,7 +10,7 @@ async function loadActiveUsers() {
     usersSelect.innerHTML = ' '; // limpia el select
     //carga de usuarios activos
 
-    fetch(`http://localhost:9091/user/active-list`, {
+    fetch(`http://localhost:8080/user/active-list`, {
         method: 'GET',
         headers: {
             "Content-Type": "application/json",
@@ -66,7 +66,7 @@ function createNewEvent() {
         participants: participants
     };
 
-    fetch(`http://localhost:9091/events/create`, {
+    fetch(`http://localhost:8080/events/create`, {
         method: 'POST',
         headers: {"Content-Type": "application/json"},
         body: JSON.stringify(eventData),

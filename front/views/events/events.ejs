@@ -39,21 +39,14 @@
                     <tr>
                         <td><%= event.name %></td> 
                         <td><%= event.description %></td>
-                        <td>
-                            <% 
-                                <!-- formateo la fecha a gmt -3 -->
-                                const timestamp = event.date.seconds * 1000;
-                                const date = new Date(timestamp + 3 * 60 * 60 * 1000);
-                            %>
-                            
-                            <%= date.toLocaleDateString('es-AR') %>
+                        <td>                            
+                            <%= new Date(event.date.seconds * 1000).toLocaleDateString('es-AR') %>
                             <br>
-                            <%= 
-                                date.toLocaleTimeString('es-AR', {
-                                    hour: '2-digit',
-                                    minute: '2-digit',
-                                    hour12: false
-                                }) 
+                            <%= new Date(event.date.seconds * 1000).toLocaleTimeString('es-AR', {
+                                hour: '2-digit',
+                                minute: '2-digit',
+                                hour12: false
+                            })
                             %>
                         </td>
                         <td>

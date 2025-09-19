@@ -29,6 +29,11 @@ app.use("/user", userRouter);
 const eventRouter = require("./router/event-router");
 app.use("/events", eventRouter);
 
+// A partir de ahora, todas las rutas de inventario se gestionan en el router dedicado.
+// Se eliminan los endpoints REST duplicados para evitar conflictos de enrutamiento.
+// =========================================================================== //
+
+// ==================== INVENTORY (Router de vistas EJS) ==================== //
 const inventoryRouter = require("./router/inventory-router");
 app.use("/inventories", inventoryRouter);
 
@@ -58,9 +63,8 @@ app.use("/css", express.static(path.join(frontPath, "css")));
 app.use("/js", express.static(path.join(frontPath, "js")));
 app.use("/img", express.static(path.join(frontPath, "img"))); // opcional
 
-// ================== Arrancar servidor ================== //
-app.listen(port, () => {
-  console.log("✅ Express app listening on port", port);
-});
+ app.listen(port, () => {
+     console.log("Express app listening on port", port,".");
+ });
 
 module.exports = app;

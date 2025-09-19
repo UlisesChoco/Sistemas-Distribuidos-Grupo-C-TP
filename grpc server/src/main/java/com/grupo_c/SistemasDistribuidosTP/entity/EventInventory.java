@@ -1,6 +1,7 @@
 package com.grupo_c.SistemasDistribuidosTP.entity;
 
 import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -26,22 +27,27 @@ public class EventInventory {
     @ManyToOne
     @JoinColumn(name = "idInventory", nullable = false)
     private Inventory inventory;
+
+    @ManyToOne
+    @JoinColumn(name = "idUser", nullable = false)
+    private User user;
     
     @Column(nullable = false)
     private Integer quantityDistributed;
-    
+
     @Column(nullable = false)
     private LocalDateTime distributionDate;
     
     // Constructores
     public EventInventory() {
-        this.distributionDate = LocalDateTime.now();
+        this.distributionDate = LocalDateTime.now(ZoneOffset.ofHours(-3));
     }
     
-    public EventInventory(Event event, Inventory inventory, Integer quantityDistributed) {
+    public EventInventory(Event event, Inventory inventory, User user ,Integer quantityDistributed) {
         this();
         this.event = event;
         this.inventory = inventory;
+        this.user = user;
         this.quantityDistributed = quantityDistributed;
     }
     
@@ -54,6 +60,9 @@ public class EventInventory {
     
     public Inventory getInventory() { return inventory; }
     public void setInventory(Inventory inventory) { this.inventory = inventory; }
+
+    public User getUser() { return user; }
+    public void setUser(User user) { this.user = user; }
     
     public Integer getQuantityDistributed() { return quantityDistributed; }
     public void setQuantityDistributed(Integer quantityDistributed) { 

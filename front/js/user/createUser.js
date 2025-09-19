@@ -18,7 +18,7 @@ async function createRequest(body) {
         }),
         credentials: 'include'
     }
-    const res = await fetch('http://localhost:9091/user/create', req);
+    const res = await fetch('http://localhost:8080/user/create', req);
     return await res.json();
 }
 

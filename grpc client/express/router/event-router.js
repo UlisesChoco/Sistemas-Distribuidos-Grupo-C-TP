@@ -7,25 +7,12 @@ const jwtAuth = require("../auth/jwt-auth");
 router.post('/create', (req, res) => {
     const { name, description, date, participants } = req.body;
 
-    //validaciones basicas
-    if (!name || !description || !date) {
-        return res.status(400).json({ error: 'Faltan campos obligatorios' });
-    }
-
-    // validacion fecha no anterior a hoy
-    const eventSeconds = Math.floor(new Date(date).getTime() / 1000);
-    const currentDateSeconds = Math.floor(new Date().getTime() / 1000);
-
-    if (eventSeconds < currentDateSeconds) {
-        return res.status(400).json({ error: 'La fecha no puede ser anterior a la actual' });
-    }
-
     //estructura del request para gRPC
     const requestBody = {
         name: req.body.name,
         description,
         date: {
-            seconds: eventSeconds,
+            seconds: Math.floor(new Date(date).getTime() / 1000),
             nanos: 0,
         },
         participants: participants || [], // si no hay participantes, se envía una lista vacía
@@ -196,6 +183,44 @@ router.get('/getEventsWithParticipants', (req, res) => {
     });
 });
 
+router.post('/registerEventInventory', jwtAuth, (req, res) =>{
+
+    const requestBody = {
+        user_id: req.user.id,
+        event_id: req.body.event_id,
+        inventory_id: req.body.inventory_id,
+        quantity: req.body.quantity
+    };
+
+    const token = req.cookies.token;
+    const metadata = new grpc.Metadata();
+    if(token != null){
+        metadata.add('Authorization', 'Bearer ' + token);
+    }
+
+    eventClient.RegisterEventInventory(requestBody, metadata, (err, response) => {
+        if (err) return res.status(500).json({ error: err.message });
+        res.json(response);
+    });
+})
+
+router.get('/getEventInventory/:id', (req, res) => {
+
+    const id = req.params.id;
+    const requestBody = {id};
+
+    const token = req.cookies.token;
+    const metadata = new grpc.Metadata();
+    if(token != null){
+        metadata.add('Authorization', 'Bearer ' + token);
+    }
+
+    eventClient.GetEventInventory(requestBody, metadata, (err, response) => {
+        if (err) return res.status(500).json({ error: err.message });
+        res.json(response);
+    });
+});
+
 //-------------------------- rutas de vistas -------------------------------
 
 
@@ -220,7 +245,7 @@ router.get('/donationsRegistry/:id/:name', jwtAuth, (req, res) => {
         res.render("error/error-403");
         return;
     }
-    res.render('events/donations', {eventId: req.params.id, eventName: req.params.name});
+    res.render('events/eventInventory', {eventId: req.params.id, eventName: req.params.name});
 });
 
 router.get('/', jwtAuth ,(req, res) => {
