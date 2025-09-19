@@ -1,6 +1,7 @@
 package com.grupo_c.SistemasDistribuidosTP.entity;
 
 import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -39,7 +40,7 @@ public class EventInventory {
     
     // Constructores
     public EventInventory() {
-        this.distributionDate = LocalDateTime.now();
+        this.distributionDate = LocalDateTime.now(ZoneOffset.ofHours(-3));
     }
     
     public EventInventory(Event event, Inventory inventory, User user ,Integer quantityDistributed) {

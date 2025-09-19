@@ -16,6 +16,8 @@ import io.grpc.stub.StreamObserver;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 import java.util.*;
 
 @Service
@@ -53,8 +55,14 @@ public class EventServiceGrpcImpl extends EventServiceGrpc.EventServiceImplBase{
     public void createEvent (EventServiceClass.EventDto event,
                              StreamObserver<UtilsServiceClass.Response> responseStreamObserver){
 
-        Event e = eventMapper.toEntity(event);
-        e.setIsCompleted(false);
+        Event e = null;
+        try {
+            e = eventMapper.toEntity(event);
+            e.setIsCompleted(false);
+        } catch (Exception exception) {
+            responseStreamObserver.onError(new StatusRuntimeException(Status.INVALID_ARGUMENT.withDescription(exception.getMessage())));
+            return;
+        }
 
         List<Long> ids = new ArrayList<>();
         for (EventServiceClass.ParticipantDto participant : event.getParticipantsList()){
@@ -82,13 +90,8 @@ public class EventServiceGrpcImpl extends EventServiceGrpc.EventServiceImplBase{
         Event e = eventRepository.findById(event.getId()).orElse(null);
 
         if(e == null){
-            UtilsServiceClass.Response response = UtilsServiceClass.Response
-                    .newBuilder()
-                    .setMessage("El Evento no existe")
-                    .setSucceeded(false)
-                    .build();
-            responseStreamObserver.onNext(response);
-            responseStreamObserver.onCompleted();
+            responseStreamObserver.onError(new StatusRuntimeException(Status.NOT_FOUND.withDescription("El evento no existe.")));
+            return;
         }
 
         List<Long> ids = new ArrayList<>();
@@ -101,10 +104,15 @@ public class EventServiceGrpcImpl extends EventServiceGrpc.EventServiceImplBase{
         e.setName(event.getName());
         e.setDescription(event.getDescription());
 
+        LocalDateTime newDate = eventMapper.toLocalDateTime(event.getDate());
         //si la fecha es distinta se cambia
-        if (!e.getDate().equals(eventMapper.toLocalDateTime(event.getDate()))){
-
-            e.setDate(eventMapper.toLocalDateTime(event.getDate()));
+        if (!e.getDate().equals(newDate)){
+            //si la nueva fecha es anterior a hoy tira error
+            if (newDate.isBefore(LocalDateTime.now(ZoneOffset.ofHours(-3)))){
+                responseStreamObserver.onError(new StatusRuntimeException(Status.INVALID_ARGUMENT.withDescription("La fecha del evento no puede ser en el pasado.")));
+                return;
+            }
+            e.setDate(newDate);
         }
 
         e.setIsCompleted(event.getIsCompleted());
@@ -260,7 +268,8 @@ public class EventServiceGrpcImpl extends EventServiceGrpc.EventServiceImplBase{
     public void getEventsWithoutParticipantsList (EventServiceClass.EventRequest request,
                                                StreamObserver<EventServiceClass.EventsWithoutParticipantsList> responseStreamObserver){
 
-        eventService.markPastEventsAsCompleted();
+        // desactivado hasta solucionar problemas con la zona horaria de docker
+        //eventService.markPastEventsAsCompleted();
 
         List<Event> events = eventRepository.findAllJoinParticipants();
         List<EventServiceClass.EventWithoutParticipantsDto> eventsWithoutParticipantsDto = new ArrayList<>();
