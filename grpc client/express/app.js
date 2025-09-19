@@ -1,69 +1,66 @@
-require('dotenv').config(); //cargamos variables de entorno
+require("dotenv").config(); // cargar variables de entorno desde .env
 const express = require("express");
 const cors = require("cors");
-const jwtAuth = require("./auth/jwt-auth.js"); //middleware de autenticacion para proteger endpoints
-const cookieParser = require("cookie-parser"); //lo vamos a usar para extraer el jwt de la cookie
-const app = express(); // con esto creamos la app express
-const port = 9091;
-app.use(cors({credentials: true})); // esto es para el front, para poder usar fetch() de js sin que el navegador llore
-app.use(express.json()); // permitirle a express que pueda parsear requests y respones a json
-app.use(express.urlencoded({extended:true})); //permite a express extraer parametros enviados en forms html
+const jwtAuth = require("./auth/jwt-auth.js"); // middleware de autenticación
+const cookieParser = require("cookie-parser");
+const path = require("path");
+
+const app = express();
+const port = process.env.PORT || 9091;
+
+// ================== Paths del front ================== //
+const frontPath = path.join(__dirname, "../front");  // /app/front
+const viewsPath = path.join(frontPath, "views");     // /app/front/views
+
+// ================== Middlewares globales ================== //
+app.use(cors({ credentials: true }));
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 
-//para renderizar vistas
-app.set('view engine', 'ejs');
-app.set('views', '../../front/views');
+// ================== Configuración de vistas ================== //
+app.set("view engine", "ejs");
+app.set("views", viewsPath);
 
-/*
-aca entremedio agregamos nuestros routers segun la funcionalidad. por ej:
-const userRouter = require("./router/userRouter");
-app.use(userRouter);
-IMPORTANTE: los routers los creamos en la carpetita router que cree al mismo nivel de este script,
-para mejor organizacion
-*/
-
-// routers
-const userRouter = require('./router/user-router');
+// ================== Routers ================== //
+const userRouter = require("./router/user-router");
 app.use("/user", userRouter);
 
 const eventRouter = require("./router/event-router");
-app.use("/events", eventRouter); // todas las rutas de eventos van a empezar con /events
+app.use("/events", eventRouter);
 
-// A partir de ahora, todas las rutas de inventario se gestionan en el router dedicado.
-// Se eliminan los endpoints REST duplicados para evitar conflictos de enrutamiento.
-// =========================================================================== //
-
-// ==================== INVENTORY (Router de vistas EJS) ==================== //
 const inventoryRouter = require("./router/inventory-router");
 app.use("/inventories", inventoryRouter);
-// =========================================================================== //
 
-//IMPORTANTE dejar este get al final para que no reemplace a los routers
-app.get('/', (req, res) => {
- res.render('index', {});
+// ================== Rutas principales ================== //
+app.get("/", (req, res) => {
+  res.render("index"); // busca /app/front/views/index.ejs
 });
 
-app.get('/home', jwtAuth, (req, res) => {
-    res.render('home', {username: req.user.username, roles: req.user.roles});
+app.get("/home", jwtAuth, (req, res) => {
+  res.render("home", { username: req.user.username, roles: req.user.roles });
 });
 
 app.get("/about", jwtAuth, (req, res) => {
-    res.render('about', {username: req.user.username, roles: req.user.roles});
+  res.render("about", { username: req.user.username, roles: req.user.roles });
 });
 
 app.get("/contact", jwtAuth, (req, res) => {
-    res.render('contact', {username: req.user.username, roles: req.user.roles});
+  res.render("contact", { username: req.user.username, roles: req.user.roles });
 });
 
 app.get("/privacy", jwtAuth, (req, res) => {
-    res.render('privacy', {username: req.user.username, roles: req.user.roles});
+  res.render("privacy", { username: req.user.username, roles: req.user.roles });
 });
 
-// ruta para archivos estáticos
-app.use(express.static("../../front"));
+// ================== Archivos estáticos ================== //
+app.use("/css", express.static(path.join(frontPath, "css")));
+app.use("/js", express.static(path.join(frontPath, "js")));
+app.use("/img", express.static(path.join(frontPath, "img"))); // opcional
 
- app.listen(port, () => {
-     console.log("Express app listening on port", port,".");
- });
+// ================== Arrancar servidor ================== //
+app.listen(port, () => {
+  console.log("✅ Express app listening on port", port);
+});
 
 module.exports = app;
