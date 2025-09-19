@@ -38,4 +38,5 @@ rpc GetInventoryByCategory(InventoryCategory) returns (InventoryListResponse);
   rpc CreateInventory(InventoryDTO) returns (InventoryDTO);
   rpc UpdateInventory(InventoryDTO) returns (InventoryDTO);
 	rpc DeleteInventory(InventoryRequest) returns (Empty);
+	rpc GetAvailableInventory(Empty) returns (InventoryListResponse);
 }
