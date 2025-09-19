@@ -7,23 +7,24 @@ services:
     environment:
       MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
       MYSQL_DATABASE: ${MYSQL_DB_NAME}
-      MYSQL_USERNAME: ${MYSQL_DB_USERNAME}
-      MYSQL_PASSWORD: ${MYSQL_DB_PASSWORD}
+      # Esto fue por testing, si se requiere usar un usuario personalizado de SQL se descomentan estas lineas 
+      # MYSQL_USER: ${MYSQL_DB_USERNAME}
+      # MYSQL_PASSWORD: ${MYSQL_DB_PASSWORD}
     ports:
       - "3307:3306"
     volumes:
       - mysql_data:/var/lib/mysql
     healthcheck:
-      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u$$MYSQL_USER", "-p$$MYSQL_PASSWORD"]
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-uroot", "-p$$MYSQL_PASSWORD"]
       interval: 10s
       timeout: 5s
       retries: 10
 
   grpc-server:
-    build: ./grpc server
+    build: "./grpc server"
     container_name: grpc_server
     depends_on:
-       db:
+      db:
         condition: service_healthy
     environment:
       SPRING_DATASOURCE_URL: ${SPRING_DATASOURCE_URL}
@@ -31,21 +32,23 @@ services:
       SPRING_DATASOURCE_PASSWORD: ${SPRING_DATASOURCE_PASSWORD}
       SPRING_MAIL_HOST: ${SPRING_MAIL_HOST}
       SPRING_MAIL_PORT: ${SPRING_MAIL_PORT}
-      SPRING_SECURITY_JWT_PRIVATE_KEY: ${JWT_PRIVATE_KEY}                             
+      SPRING_SECURITY_JWT_PRIVATE_KEY: ${JWT_PRIVATE_KEY}
     ports:
       - "9090:9090"
 
   grpc-client:
-    build: ./grpc client
+    build: "./grpc client"
     container_name: api_gateway
     depends_on:
       - grpc-server
+    ports:
+      - "8080:9091"   # mapea el puerto host 8080 -> contenedor 9091
+    volumes:
+      - ./front:/app/front   # montar front
     environment:
       INVENTORY_SERVICE_ADDR: grpc-server:9090
       USER_SERVICE_ADDR: grpc-server:9090
       EVENT_SERVICE_ADDR: grpc-server:9090
-    ports:
-      - "8080:8080"
 
   mailhog:
     image: mailhog/mailhog
