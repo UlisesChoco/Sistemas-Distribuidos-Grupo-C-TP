@@ -10,7 +10,7 @@ IInventoryService { List<Inventory> findAll();
      List<Inventory> findByisDeleted(Boolean isDeleted); List<Inventory> findByDescriptionContaining(String description);
       Inventory save(Inventory inventory, User currentUser); void deleteById(Long id, User currentUser); 
       List<Inventory> findAvailableInventory(); 
-       void decreaseStock(Inventory inventory, User user, int quantityToDecrease);
-
-    
+      void decreaseStock(Inventory inventory, User user, int quantityToDecrease);
+                   
+                   
     }

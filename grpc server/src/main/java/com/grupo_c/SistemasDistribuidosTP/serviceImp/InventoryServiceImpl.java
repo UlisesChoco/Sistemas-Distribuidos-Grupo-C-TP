@@ -86,11 +86,11 @@ public class InventoryServiceImpl implements IInventoryService {
         if (quantityToDecrease <= 0) {
             throw new IllegalArgumentException("La cantidad a descontar debe ser mayor a 0.");
         }
-
+      
         if (inventory.getQuantity() < quantityToDecrease) {
             throw new IllegalArgumentException("Stock insuficiente en inventario");
         }
-
+      
         if (inventory.getisDeleted()) {
             throw new IllegalArgumentException("El inventario fue eliminado");
         }
