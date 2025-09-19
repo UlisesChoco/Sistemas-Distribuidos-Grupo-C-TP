@@ -6,13 +6,12 @@ const {
     getByIdAsync,
     createAsync,
     updateAsync,
-    deleteAsync
+    deleteAsync,
+    getAvailableAsync
 } = require('../../clients/inventoryClient');
 
 // Middleware para pasar los roles a todas las vistas
 router.use((req, res, next) => {
-    // Esto asume que los roles del usuario están en req.user.roles
-    // Si la información está en otro lugar, como req.session, ajusta el código.
     const roles = req.user ? req.user.roles : []; 
     res.locals.roles = roles;
     next();
@@ -22,7 +21,6 @@ router.use((req, res, next) => {
 router.get('/', async (req, res) => {
     try {
         const response = await getListAsync();
-        
         res.render('inventories/list', { inventories: response.inventories || [] });
     } catch (err) {
         console.error('Error al obtener la lista de inventarios:', err);
@@ -38,11 +36,30 @@ router.get('/:id/edit', async (req, res) => {
     try {
         const id = req.params.id;
         const response = await getByIdAsync(id);
-        
         res.render('inventories/editInventory', { inventory: response });
     } catch (err) {
         console.error('Error al obtener el inventario para editar:', err);
         res.status(404).send('Inventario no encontrado.');
+    }
+});
+
+
+router.get('/available', async (req, res) => {
+    try {
+        const response = await getAvailableAsync();
+        const inventories = (response && response.inventories) ? response.inventories : [];
+
+        // Mapear a formato simple pedido por tu compañero
+        const simplified = inventories.map(inv => ({
+            id: Number(inv.idInventory || 0),
+            description: inv.description || '',
+            quantity: Number(inv.quantity || 0)
+        }));
+
+        res.json(simplified);
+    } catch (err) {
+        console.error('Error al obtener inventarios disponibles:', err);
+        res.status(500).json({ error: 'Error al obtener inventarios disponibles' });
     }
 });
 

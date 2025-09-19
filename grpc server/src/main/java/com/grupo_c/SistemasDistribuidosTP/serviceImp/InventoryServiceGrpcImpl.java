@@ -179,6 +179,40 @@ public void updateInventory(InventoryServiceClass.InventoryDTO request,
         }
     }
 
+     
+    @Override
+    public void getAvailableInventory(UtilsServiceClass.Empty request,
+                                      StreamObserver<InventoryServiceClass.InventoryListResponse> responseObserver) {
+        try {
+            List<Inventory> inventories = inventoryService.findAvailableInventory();
+            InventoryServiceClass.InventoryListResponse.Builder responseBuilder =
+                    InventoryServiceClass.InventoryListResponse.newBuilder();
+
+            for (Inventory inventory : inventories) {
+                User userCreator = inventory.getUserCreator();
+                User userModify = inventory.getUserModify();
+
+                UserServiceClass.UserSimpleDTO userCreatorDTO = userCreator != null ?
+                        inventoryMapper.toUserSimpleDTO(userCreator) :
+                        UserServiceClass.UserSimpleDTO.newBuilder().setId(0L).setUsername("").build();
+
+                UserServiceClass.UserSimpleDTO userModifyDTO = userModify != null ?
+                        inventoryMapper.toUserSimpleDTO(userModify) :
+                        UserServiceClass.UserSimpleDTO.newBuilder().setId(0L).setUsername("").build();
+
+                responseBuilder.addInventories(
+                        inventoryMapper.toInventoryDTO(inventory, userCreatorDTO, userModifyDTO)
+                );
+            }
+
+            responseObserver.onNext(responseBuilder.build());
+            responseObserver.onCompleted();
+        } catch (Exception e) {
+            responseObserver.onError(new StatusRuntimeException(Status.INTERNAL
+                    .withDescription("Error al recuperar inventarios activos: " + e.getMessage())));
+        }
+    }
+    
     @Override
     public void getInventoryByCategory(InventoryServiceClass.InventoryCategory request,
                                        StreamObserver<InventoryServiceClass.InventoryListResponse> responseObserver) {

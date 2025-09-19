@@ -75,6 +75,19 @@ function deleteInventory(id) {
   });
 }
 
+
+// Callback-style (para pruebas rápidas)
+function getAvailableInventory() {
+  // Llama a la RPC GetAvailableInventory en el servidor gRPC
+  inventoryClient.GetAvailableInventory({}, (err, response) => {
+    if (err) {
+      console.error('Error GetAvailableInventory:', err);
+    } else {
+      console.log('Inventarios disponibles:', response.inventories);
+    }
+  });
+}
+
 // ==================== Wrappers Promises (para Express) ==================== //
 
 function promisify(fn, req) {
@@ -94,10 +107,12 @@ module.exports = {
   createInventory,
   updateInventory,
   deleteInventory,
+  getAvailableInventory,
   // promesas (para router Express)
   getListAsync: () => promisify(inventoryClient.GetInventoryList.bind(inventoryClient), {}),
   getByIdAsync: (id) => promisify(inventoryClient.GetInventoryById.bind(inventoryClient), { idInventory: Number(id) }),
   createAsync: (dto) => promisify(inventoryClient.CreateInventory.bind(inventoryClient), dto),
   updateAsync: (dto) => promisify(inventoryClient.UpdateInventory.bind(inventoryClient), dto),
   deleteAsync: (id) => promisify(inventoryClient.DeleteInventory.bind(inventoryClient), { idInventory: Number(id) }),
+  getAvailableAsync: () => promisify(inventoryClient.GetAvailableInventory.bind(inventoryClient), {}),
 };

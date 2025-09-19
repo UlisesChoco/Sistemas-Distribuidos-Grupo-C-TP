@@ -76,6 +76,7 @@ public class InventoryServiceImpl implements IInventoryService {
 
     @Override
     public List<Inventory> findAvailableInventory() {
+        System.out.println("DEBUG: Se ha invocado findAvailableInventory()");
         return inventoryRepository.findAvailableInventory();
     }
 
@@ -93,5 +94,4 @@ public class InventoryServiceImpl implements IInventoryService {
         inventory.setQuantity(inventory.getQuantity() - quantityToDecrease);
         save(inventory, user);
     }
-
 }
