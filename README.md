@@ -73,7 +73,10 @@ Esto levanta:
 * mailhog: servidor SMTP falso para pruebas de correo
 ## 4. Verificar servicios
 
-* Spring Boot (gRPC server):
+* Servidor (gRPC server):
+Corre en http://localhost:9090 (ajustar según config del proyecto).
+
+* Cliente (gRPC client):
 Corre en http://localhost:8080 (ajustar según config del proyecto).
 
 * MySQL:
