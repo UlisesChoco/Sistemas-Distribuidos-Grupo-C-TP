@@ -91,6 +91,10 @@ public class InventoryServiceImpl implements IInventoryService {
             throw new IllegalArgumentException("Stock insuficiente en inventario");
         }
 
+        if (inventory.getisDeleted()) {
+            throw new IllegalArgumentException("El inventario fue eliminado");
+        }
+
         inventory.setQuantity(inventory.getQuantity() - quantityToDecrease);
         save(inventory, user);
     }

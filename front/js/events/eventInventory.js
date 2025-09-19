@@ -50,10 +50,8 @@ async function loadDonations() {
 }
 
 async function loadInventory() {
-
-    //TODO necesito el endpoint
-    /*    
-    fetch(`http://localhost:8080/inventories/getActiveInventories`, {
+ 
+    fetch(`http://localhost:8080/inventories/available`, {
         method: 'GET',
         headers: {
             "Content-Type": "application/json",
@@ -68,16 +66,15 @@ async function loadInventory() {
         return response.json();
     })
     .then(data => {           
-        data.inventories.forEach( inventory => {
+        data.forEach( inventory => {
             const select = document.getElementById("inventory");
             select.innerHTML += `
-                <option value="${inventory.id} data-stock="${inventory.quantity}" >${inventory.description}</option>
+                <option value="${inventory.id}"data-stock="${inventory.quantity}">${inventory.description}</option>
             `
         })
     }).catch(error => {
         console.error('Error:', error);
     });
-    */
 }
 
 window.addEventListener('DOMContentLoaded', () =>{
