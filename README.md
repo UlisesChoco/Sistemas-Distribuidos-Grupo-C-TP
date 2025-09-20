@@ -11,6 +11,13 @@ Este proyecto implementa un sistema con **gRPC (Java/Spring Boot)**, **API Gatew
 - **Docker + Docker Compose** → Orquestación de servicios
 
 ---
+
+## Documentación
+
+- [Documentación del gRPC Server](https://github.com/UlisesChoco/Sistemas-Distribuidos-Grupo-C-TP/blob/master/grpc%20server/README.md)
+- [Documentación del gRPC Client](https://github.com/UlisesChoco/Sistemas-Distribuidos-Grupo-C-TP/blob/master/grpc%20client/README.md)
+
+---
 ## Integrantes
 - Leandro Aranda  
 - Guido Huidobro  
@@ -37,30 +44,25 @@ cp .env.template .env
 ```
 En el archivo .env se debe definir:
 
-Credenciales de MySQL
-
-Configuración de la datasource de Spring Boot
-
-JWT Key
-
-Configuración de Mailhog
+- Credenciales de MySQL
+- Configuración de la datasource de Spring Boot
+- JWT Key (Puede ser cualquier cadena de texto)
+- Configuración de Mailhog
 
 Ejemplo mínimo:
 ```python
 MYSQL_ROOT_PASSWORD=root
 MYSQL_DB_NAME=sist_distribuidos
-MYSQL_DB_USERNAME=admin
-MYSQL_DB_PASSWORD=admin
 
 SPRING_DATASOURCE_URL=jdbc:mysql://db:3306/sist_distribuidos?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
-SPRING_DATASOURCE_USERNAME=admin
-SPRING_DATASOURCE_PASSWORD=admin
+SPRING_DATASOURCE_USERNAME=root
+SPRING_DATASOURCE_PASSWORD=${MYSQL_ROOT_PASSWORD}
 
 JWT_PRIVATE_KEY=secret
 SPRING_SECURITY_JWT_USER_GENERATOR=AUTH-SPRING-BACKEND
 ```
 ## 3. Levantar los servicios
-
+Desde el directorio raíz del proyecto, ejecutar:
 ```bash
 docker compose up --build
 ```
@@ -70,14 +72,16 @@ Esto levanta:
 
 * grpc-server: aplicación Spring Boot
 
+* grpc-server: aplicación NodeJS
+
 * mailhog: servidor SMTP falso para pruebas de correo
 ## 4. Verificar servicios
 
 * Servidor (gRPC server):
-Corre en http://localhost:9090 (ajustar según config del proyecto).
+Corre en http://localhost:9090.
 
 * Cliente (gRPC client):
-Corre en http://localhost:8080 (ajustar según config del proyecto).
+Corre en http://localhost:8080.
 
 * MySQL:
 Puerto 3306. Usuario/clave los definidos en .env.
@@ -91,7 +95,7 @@ Mailhog captura todos los mails enviados desde la app.
 
 * Entrar a http://localhost:8025
 
-* Hacer una petición que envíe mail (ejemplo: endpoint /send-test-mail).
+* Hacer una petición que envíe mail (ejemplo: crear un usuario).
 
 * El mail aparecerá en la UI de Mailhog.
 

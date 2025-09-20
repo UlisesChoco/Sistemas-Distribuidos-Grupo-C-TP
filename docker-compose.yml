@@ -49,6 +49,7 @@ services:
       INVENTORY_SERVICE_ADDR: grpc-server:9090
       USER_SERVICE_ADDR: grpc-server:9090
       EVENT_SERVICE_ADDR: grpc-server:9090
+      JWT_PRIVATE_KEY: ${JWT_PRIVATE_KEY}
 
   mailhog:
     image: mailhog/mailhog
