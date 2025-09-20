@@ -1,5 +1,6 @@
 const express = require('express');
 const router = express.Router();
+const jwtAuth = require("../auth/jwt-auth");
 
 const {
     getListAsync,
@@ -18,7 +19,11 @@ router.use((req, res, next) => {
 });
 
 // Rutas de Vistas (GET)
-router.get('/', async (req, res) => {
+router.get('/', jwtAuth, async (req, res) => {
+    if(!req.user.roles.includes("PRESIDENTE") && !req.user.roles.includes("VOCAL")){
+        res.render("error/error-403");
+        return;
+    }
     try {
         const response = await getListAsync();
         res.render('inventories/list', { inventories: response.inventories || [] });
@@ -28,11 +33,19 @@ router.get('/', async (req, res) => {
     }
 });
 
-router.get('/create', (req, res) => {
+router.get('/create', jwtAuth,(req, res) => {
+    if(!req.user.roles.includes("PRESIDENTE") && !req.user.roles.includes("VOCAL")){
+        res.render("error/error-403");
+        return;
+    }
     res.render('inventories/createInventory');
 });
 
-router.get('/:id/edit', async (req, res) => {
+router.get('/:id/edit', jwtAuth, async (req, res) => {
+    if(!req.user.roles.includes("PRESIDENTE") && !req.user.roles.includes("VOCAL")){
+        res.render("error/error-403");
+        return;
+    }
     try {
         const id = req.params.id;
         const response = await getByIdAsync(id);

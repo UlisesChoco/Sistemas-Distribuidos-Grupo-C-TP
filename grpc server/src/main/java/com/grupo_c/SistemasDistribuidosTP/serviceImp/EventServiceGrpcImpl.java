@@ -259,7 +259,7 @@ public class EventServiceGrpcImpl extends EventServiceGrpc.EventServiceImplBase{
                                                StreamObserver<EventServiceClass.EventsWithoutParticipantsList> responseStreamObserver){
 
         //desactivado hasta solucionar problemas con la zona horaria de docker
-        //eventService.markPastEventsAsCompleted();
+        eventService.markPastEventsAsCompletedWithDateTime(LocalDateTime.now(ZoneOffset.ofHours(-3)));
 
         List<Event> events = eventRepository.findAllJoinParticipants();
         List<EventServiceClass.EventWithoutParticipantsDto> eventsWithoutParticipantsDto = new ArrayList<>();

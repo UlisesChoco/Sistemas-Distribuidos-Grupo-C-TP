@@ -25,12 +25,13 @@ const inventoryClient = new proto.InventoryService(
 
 // ==================== Funciones de test (callback) ==================== //
 
-function getInventoryList() {
-  inventoryClient.GetInventoryList({}, (err, response) => {
+function getInventoryList(metadata) {
+  inventoryClient.GetInventoryList({}, metadata, (err, response) => {
     if (err) {
       console.error('Error GetInventoryList:', err);
     } else {
       console.log('Inventarios:', response.inventories);
+      return response.inventories;
     }
   });
 }

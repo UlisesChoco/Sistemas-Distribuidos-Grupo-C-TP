@@ -86,12 +86,30 @@ public class GrpcServerInterceptor implements ServerInterceptor {
                         "EventService/GetEventsWithParticipantsList",
                         "EventService/GetEventsWithoutParticipantsList",
                         "EventService/RegisterEventInventory",
-                        "EventService/GetEventInventory"
+                        "EventService/GetEventInventory",
+
+                        //inventory
+                        "InventoryService/CreateInventory",
+                        "InventoryService/GetInventoryList",
+                        "InventoryService/GetInventoryById",
+                        "InventoryService/GetInventoryByCategory",
+                        "InventoryService/UpdateInventory",
+                        "InventoryService/DeleteInventory",
+                        "InventoryService/GetAvailableInventory"
                 )
         );
         rolesAndMethods.put(
                 RoleEnum.VOCAL.name(),
-                List.of()
+                List.of(
+                        //inventory
+                        "InventoryService/CreateInventory",
+                        "InventoryService/GetInventoryList",
+                        "InventoryService/GetInventoryById",
+                        "InventoryService/GetInventoryByCategory",
+                        "InventoryService/UpdateInventory",
+                        "InventoryService/DeleteInventory",
+                        "InventoryService/GetAvailableInventory"
+                )
         );
         rolesAndMethods.put(
                 RoleEnum.COORDINADOR.name(),
@@ -128,15 +146,16 @@ public class GrpcServerInterceptor implements ServerInterceptor {
     private Set<String> initPublicMethods() {
         // queda para agregar mas metodos publicos a futuro (si los hay)
         return Set.of(
-                "UserService/Login"
-                //después sacar
-                ,"InventoryService/CreateInventory"
-                ,"InventoryService/GetInventoryList"
-                ,"InventoryService/GetInventoryById"
-                ,"InventoryService/GetInventoryByCategory"
-                ,"InventoryService/UpdateInventory"
-                ,"InventoryService/DeleteInventory"
-                ,"InventoryService/GetAvailableInventory"
+                "UserService/Login",
+
+                //inventory
+                "InventoryService/CreateInventory",
+                "InventoryService/GetInventoryList",
+                "InventoryService/GetInventoryById",
+                "InventoryService/GetInventoryByCategory",
+                "InventoryService/UpdateInventory",
+                "InventoryService/DeleteInventory",
+                "InventoryService/GetAvailableInventory"
         );
     }
 }
