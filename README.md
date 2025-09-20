@@ -83,6 +83,14 @@ Corre en http://localhost:9090.
 * Cliente (gRPC client):
 Corre en http://localhost:8080.
 
+    A la hora de visualizar la pantalla del login, pueden iniciar sesión a través de un usuario que el servidor registra automáticamente en la base de datos:
+    - ```Nombre de usuario``` | ```Correo electrónico```: Presidente | tomaslopez1987@gmail.com
+    - ```Contraseña```: admin
+    
+    El sistema permite usar tanto el nombre de usuario como el correo electrónico para iniciar sesión.
+
+<br>
+
 * MySQL:
 Puerto 3306. Usuario/clave los definidos en .env.
 
