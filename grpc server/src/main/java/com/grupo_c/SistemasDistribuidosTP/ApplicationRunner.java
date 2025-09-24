@@ -39,7 +39,7 @@ public class ApplicationRunner implements CommandLineRunner {
             user.setUsername("Presidente");
             user.setName("Tomás");
             user.setSurname("Lopez");
-            user.setPhoneNumber("1143763389");
+            user.setPhoneNumber("+54 11 4376-3389");
             user.setPassword(passwordEncoder.encode("admin"));
             user.setEmail("tomaslopez1987@gmail.com");
             user.setIsActive(true);

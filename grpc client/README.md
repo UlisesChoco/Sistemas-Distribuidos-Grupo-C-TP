@@ -2,6 +2,12 @@
 
 Este documento describe los endpoints HTTP del cliente gRPC.
 
+## Pre-requisitos
+
+Si se levanta la aplicación a través de Docker, no es necesario realizar ningún tipo de configuración en esta aplicación.
+
+En caso de desear levantar esta aplicación sin Docker, crear una copia del archivo `.env-example` que tenga el nombre `.env` y setear la variable de entorno indicada en dicho archivo.
+
 ## Tecnologías
 - [JavaScript](https://developer.mozilla.org/en-US/docs/Web/JavaScript)
 - [NodeJS](https://nodejs.org/es)
