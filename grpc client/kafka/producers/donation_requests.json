@@ -1,0 +1,72 @@
+[
+  {
+    "organization_id": 2,
+    "request_id": 1,
+    "donations": [
+      {
+        "category": "ALIMENTOS",
+        "description": "Leche en polvo"
+      },
+      {
+        "category": "ROPA",
+        "description": "Bufandas"
+      }
+    ]
+  },
+  {
+    "organization_id": 3,
+    "request_id": 2,
+    "donations": [
+      {
+        "category": "UTILES_ESCOLARES",
+        "description": "Hojas A4"
+      }
+    ]
+  },
+  {
+    "organization_id": 4,
+    "request_id": 3,
+    "donations": [
+      {
+        "category": "JUGUETES",
+        "description": "Rompecabezas"
+      },
+      {
+        "category": "ALIMENTOS",
+        "description": "Fideos"
+      },
+      {
+        "category": "ROPA",
+        "description": "Zapatillas"
+      }
+    ]
+  },
+  {
+    "organization_id": 5,
+    "request_id": 4,
+    "donations": [
+      {
+        "category": "UTILES_ESCOLARES",
+        "description": "Fibrones"
+      },
+      {
+        "category": "JUGUETES",
+        "description": "Muñecos de tela"
+      }
+    ]
+  },
+  {
+    "organization_id": 6,
+    "request_id": 5,
+    "donations": [
+      {
+        "category": "ALIMENTOS",
+        "description": "Harina"
+      },
+      {
+        "category": "UTILES_ESCOLARES",
+        "description": "Cartucheras"
+      }
+    ]
+  }
+]
