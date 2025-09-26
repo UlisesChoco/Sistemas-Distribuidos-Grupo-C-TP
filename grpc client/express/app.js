@@ -4,7 +4,7 @@ const cors = require("cors");
 const jwtAuth = require("./auth/jwt-auth.js"); // middleware de autenticación
 const cookieParser = require("cookie-parser");
 const path = require("path");
-const eventsConsumer = require('../kafka/consumers/externalEvents');
+const eventsConsumer = require('../kafka/consumers/externalEvents-consumer');
 
 const app = express();
 const port = process.env.PORT || 9091;

@@ -3,7 +3,7 @@ const router = express.Router();
 const eventClient = require('../../clients/eventClient');
 const grpc = require('@grpc/grpc-js');
 const jwtAuth = require("../auth/jwt-auth");
-const eventsConsumer = require('../../kafka/consumers/externalEvents');
+const eventsConsumer = require('../../kafka/consumers/externalEvents-consumer');
 
 //-------------------------- rutas gRPC -------------------------------
 
