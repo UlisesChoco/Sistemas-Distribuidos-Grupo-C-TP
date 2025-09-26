@@ -44,6 +44,12 @@ userRouter.post("/login", (req, res) => {
                 sameSite: 'strict',
                 maxAge: 1800000 //tiempo de vida de esta cookie. le ponemos la misma del token
             });
+            res.cookie('user', response.userWithRolesDTO, {
+                httpOnly: true,
+                secure: process.env.NODE_ENV === 'production',
+                sameSite: 'strict',
+                maxAge: 1800000 //tiempo de vida de esta cookie. le ponemos la misma del token
+            });
             res.send({user: response.userWithRolesDTO, token: response.token});
         }
         )
@@ -52,6 +58,12 @@ userRouter.post("/login", (req, res) => {
 
 userRouter.post("/logout", (req, res) => {
     res.clearCookie('token', {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === 'production',
+        sameSite: 'strict',
+        path: '/'
+    });
+    res.clearCookie('user', {
         httpOnly: true,
         secure: process.env.NODE_ENV === 'production',
         sameSite: 'strict',
