@@ -3,6 +3,9 @@ const router = express.Router();
 const eventClient = require('../../clients/eventClient');
 const grpc = require('@grpc/grpc-js');
 const jwtAuth = require("../auth/jwt-auth");
+const eventsConsumer = require('../../kafka/consumers/externalEvents');
+
+//-------------------------- rutas gRPC -------------------------------
 
 router.post('/create', (req, res) => {
     const { name, description, date, participants } = req.body;
@@ -221,6 +224,13 @@ router.get('/getEventInventory/:id', (req, res) => {
     });
 });
 
+//-------------------------- rutas kafka -------------------------------
+
+router.get('/getExternalEvents', (req, res) =>{
+    const events = eventsConsumer.getExternalEvents();
+    res.json(events);
+})
+
 //-------------------------- rutas de vistas -------------------------------
 
 
@@ -246,6 +256,14 @@ router.get('/donationsRegistry/:id/:name', jwtAuth, (req, res) => {
         return;
     }
     res.render('events/eventInventory', {eventId: req.params.id, eventName: req.params.name});
+});
+
+router.get('/external', jwtAuth, (req, res) => {
+    if(!req.user.roles.includes("PRESIDENTE") && !req.user.roles.includes("COORDINADOR") && !req.user.roles.includes("VOLUNTARIO")){
+        res.render("error/error-403");
+        return;
+    }
+    res.render('events/externalEvents', {roles: req.user.roles});
 });
 
 router.get('/', jwtAuth ,(req, res) => {
