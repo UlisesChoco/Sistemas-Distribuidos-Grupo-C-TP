@@ -5,21 +5,21 @@ producer = KafkaProducer(bootstrap_servers='localhost:29092',
                          value_serializer=lambda m: json.dumps(m).encode('utf-8'))
 
 def produceDonations():
-    with open('donation_requests.json', 'r', encoding='utf-8') as donation_requests_file:
+    with open('./json/donation_requests.json', 'r', encoding='utf-8') as donation_requests_file:
         donation_requests = json.load(donation_requests_file)
 
     for request in donation_requests:
         producer.send('solicitud-donaciones', value=request)
 
 def produceOffers():
-    with open('donation_offers.json', 'r', encoding='utf-8') as donation_offers_file:
+    with open('./json/donation_offers.json', 'r', encoding='utf-8') as donation_offers_file:
         donation_offers = json.load(donation_offers_file)
 
     for offer in donation_offers:
         producer.send('oferta-donaciones', value=offer)
 
 def produceEvents():
-    with open('solidarity_events.json', 'r', encoding='utf-8') as solidarity_events_file:
+    with open('./json/solidarity_events.json', 'r', encoding='utf-8') as solidarity_events_file:
         solidarity_events = json.load(solidarity_events_file)
 
     for event in solidarity_events:
