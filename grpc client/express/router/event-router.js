@@ -3,7 +3,11 @@ const router = express.Router();
 const eventClient = require('../../clients/eventClient');
 const grpc = require('@grpc/grpc-js');
 const jwtAuth = require("../auth/jwt-auth");
+
+// consumer de kafka para eventos externos
 const eventsConsumer = require('../../kafka/consumers/externalEvents-consumer');
+// proudcer de kafka para adhesión a eventos externos
+const eventAdhesionProducer = require('../../kafka/producers/eventAdhesion');
 
 //-------------------------- rutas gRPC -------------------------------
 
@@ -231,8 +235,31 @@ router.get('/getExternalEvents', (req, res) =>{
     res.json(events);
 })
 
-//-------------------------- rutas de vistas -------------------------------
+router.post('/joinExternalEvent', jwtAuth, (req, res) =>{
 
+    const { organizationId, eventId } = req.body;
+    const user = req.cookies.user;
+
+    console.log("ids recibidos: ", organizationId, eventId);
+
+    const eventAdhesion = {
+        organization_id: organizationId,
+        event_id: eventId,
+        voluntary: {
+            id_organization: 1, //el id de nuestra ong es 1
+            id_volunteer: req.user.id,
+            name: user.name,
+            surname: user.surname,
+            phoneNumber: user.phoneNumber,
+            email: user.email
+        }
+    }
+
+    eventAdhesionProducer.sendEventAdhesion(eventAdhesion);
+    res.status(200).json({message: "Solicitud de adhesión enviada"});
+})
+
+//-------------------------- rutas de vistas -------------------------------
 
 router.get('/edit/:id', jwtAuth ,(req, res) => {
     if(!req.user.roles.includes("PRESIDENTE") && !req.user.roles.includes("COORDINADOR")){
