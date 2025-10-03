@@ -47,6 +47,7 @@ while True:
     print("4. Bajas de solicitudes")
     print("5. Bajas de eventos") 
     print("6. Enviar todo y salir")
+    print("7. Salir")
     option = int(input(""))
 
     match option:

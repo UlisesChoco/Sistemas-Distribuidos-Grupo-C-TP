@@ -32,8 +32,10 @@ Producir mensajes:
 1. Solicitudes de donaciones
 2. Ofertas de donaciones
 3. Eventos solidarios
-4. Enviar todo y salir
-5. Salir
+4. Bajas de solicitudes
+5. Bajas de eventos
+6. Enviar todo y salir
+7. Salir
 ```
 
 Seleccioná la opción deseada para enviar los mensajes al topic correspondiente.
