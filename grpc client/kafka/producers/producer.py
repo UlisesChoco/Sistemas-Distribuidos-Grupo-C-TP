@@ -25,13 +25,28 @@ def produceEvents():
     for event in solidarity_events:
         producer.send('eventos-solidarios', value=event)
 
+def produceDeletedDonations():
+    with open('./json/donation_requests_deleted.json', 'r', encoding='utf-8') as file:
+        deleted_requests = json.load(file)
+
+    for request in deleted_requests:
+        producer.send('baja-solicitud-donaciones', value=request)
+
+def produceDeletedEvents():
+    with open('./json/solidarity_events_deleted.json', 'r', encoding='utf-8') as file:
+        deleted_events = json.load(file)
+
+    for event in deleted_events:
+        producer.send('baja-evento-solidario', value=event)
+
 while True:
     print("\nProducir mensajes:")
     print("1. Solicitudes de donaciones")
     print("2. Ofertas de donaciones")
     print("3. Eventos solidarios")
-    print("4. Enviar todo y salir")
-    print("5. Salir")
+    print("4. Bajas de solicitudes")
+    print("5. Bajas de eventos") 
+    print("6. Enviar todo y salir")
     option = int(input(""))
 
     match option:
@@ -47,14 +62,24 @@ while True:
             produceEvents()
             os.system('cls')
             print("Eventos solidarios enviados")
-        case 4:
+        case 4: 
+            produceDeletedDonations()
+            os.system('cls')
+            print("Bajas de solicitudes enviadas")
+        case 5:
+            produceDeletedEvents()
+            os.system('cls')
+            print("Bajas de eventos enviadas")
+        case 6:
             produceDonations()
             produceOffers()
             produceEvents()
+            produceDeletedDonations()
+            produceDeletedEvents()
             os.system('cls')
             print("Todo enviado")
             break
-        case 5:
+        case 7:
             break
         case _:
             print("Opción inválida")
