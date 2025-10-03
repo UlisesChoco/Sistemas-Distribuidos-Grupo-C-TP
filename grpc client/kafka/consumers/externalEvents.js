@@ -1,10 +1,10 @@
 const { Kafka } = require('kafkajs')
-//import { Kafka } from 'kafkajs';
+
+const deletedEventsConsumer = require('./solidarityEventsDeleted');
 
 const kafka = new Kafka({
   clientId: 'external-events-consumer',
   brokers: ['kafka:9092'],
-  //brokers: ['localhost:29092'],
 });
 
 const events = [];
@@ -31,8 +31,16 @@ const startEventsConsumer = async () => {
 
 const getExternalEvents = () => events;
 
+const getActiveExternalEvents = () =>{
+  //guardo la lista de ids de eventos eliminados
+  const deletedIds = deletedEventsConsumer.getDeletedEvents();
+  //filtro los eventos para devolver solo los que no están eliminados
+  return events.filter(event => !deletedIds.includes(event.event_id));
+}
+
 // se exportan las funciones para iniciar el consumidor y para obtener los eventos
 module.exports ={
   startEventsConsumer,
-  getExternalEvents
+  getExternalEvents,
+  getActiveExternalEvents
 }

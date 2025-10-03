@@ -4,9 +4,9 @@ const eventClient = require('../../clients/eventClient');
 const grpc = require('@grpc/grpc-js');
 const jwtAuth = require("../auth/jwt-auth");
 
-// consumer de kafka para eventos externos
-const eventsConsumer = require('../../kafka/consumers/externalEvents-consumer');
-// proudcer de kafka para adhesión a eventos externos
+// consumers de kafka
+const eventsConsumer = require('../../kafka/consumers/externalEvents');
+// producer de kafka para adhesión a eventos externos
 const eventAdhesionProducer = require('../../kafka/producers/eventAdhesion');
 
 //-------------------------- rutas gRPC -------------------------------
@@ -231,7 +231,7 @@ router.get('/getEventInventory/:id', (req, res) => {
 //-------------------------- rutas kafka -------------------------------
 
 router.get('/getExternalEvents', (req, res) =>{
-    const events = eventsConsumer.getExternalEvents();
+    const events = eventsConsumer.getActiveExternalEvents();
     res.json(events);
 })
 

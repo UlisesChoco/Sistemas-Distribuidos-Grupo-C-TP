@@ -21,7 +21,7 @@ async function getEvents() {
       hour12: false
     })}
             </td>
-            <td><button onclick="joinEvent(${event.organization_id}, ${event.event_id})">Unirse</button></td>
+            <td><button onclick="joinEvent(${event.organization_id}, ${event.event_id})">Solicitar Unirse</button></td>
         </tr>
     `
   });
@@ -50,9 +50,9 @@ function joinEvent(organization_id, event_id) {
       });
     })
     .then(data => {
-      alert('Te has unido al evento correctamente');
+      alert('Solicitud enviada con éxito');
     }).catch(error => {
       console.error('Error:', error.message);
-      alert('Hubo un error al unirse al evento');
+      alert('Hubo un error al enviar la solicitud');
     });
 }

@@ -4,7 +4,10 @@ const cors = require("cors");
 const jwtAuth = require("./auth/jwt-auth.js"); // middleware de autenticación
 const cookieParser = require("cookie-parser");
 const path = require("path");
-const eventsConsumer = require('../kafka/consumers/externalEvents-consumer');
+
+// consumers de kafka
+const eventsConsumer = require('../kafka/consumers/externalEvents');
+const deletedEventsConsumer = require('../kafka/consumers/solidarityEventsDeleted.js');
 
 const app = express();
 const port = process.env.PORT || 9091;
@@ -66,6 +69,7 @@ app.use("/img", express.static(path.join(frontPath, "img"))); // opcional
 
 // ================== Inicia consumidores de kafka ================== //
 eventsConsumer.startEventsConsumer().catch(console.error);
+deletedEventsConsumer.startDeletedEventsConsumer().catch(console.error);
 
 app.listen(port, () => {
   console.log("Express app listening on port", port,".");
