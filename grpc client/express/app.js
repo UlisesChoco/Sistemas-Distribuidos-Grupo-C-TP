@@ -8,6 +8,8 @@ const path = require("path");
 // consumers de kafka
 const eventsConsumer = require('../kafka/consumers/externalEvents');
 const deletedEventsConsumer = require('../kafka/consumers/solidarityEventsDeleted.js');
+const deletedRequestsConsumer = require('../kafka/consumers/donationRequestsDeleted.js');
+const donationRequestsConsumer = require('../kafka/consumers/donationRequests.js');
 
 const app = express();
 const port = process.env.PORT || 9091;
@@ -41,6 +43,12 @@ app.use("/events", eventRouter);
 const inventoryRouter = require("./router/inventory-router");
 app.use("/inventories", inventoryRouter);
 
+//routers que ofrecen funcionalidades de kafka
+const donationRequestsRouter = require("./router/kafka-donation-requests-router.js");
+app.use("/donationRequests", donationRequestsRouter);
+const transferDonationRouter = require("./router/kafka-donation-transfer-router.js");
+app.use("/transferDonation", transferDonationRouter);
+
 // ================== Rutas principales ================== //
 app.get("/", (req, res) => {
   res.render("index"); // busca /app/front/views/index.ejs
@@ -70,6 +78,8 @@ app.use("/img", express.static(path.join(frontPath, "img"))); // opcional
 // ================== Inicia consumidores de kafka ================== //
 eventsConsumer.startEventsConsumer().catch(console.error);
 deletedEventsConsumer.startDeletedEventsConsumer().catch(console.error);
+deletedRequestsConsumer.startDeletedRequestsConsumer().catch(console.error);
+donationRequestsConsumer.startConsuming();
 
 app.listen(port, () => {
   console.log("Express app listening on port", port,".");
