@@ -1,5 +1,23 @@
 [
   {
+    "organization_id": 1,
+    "request_id": 6,
+    "donations": [
+      {
+        "category": "ALIMENTOS",
+        "description": "Chocolatada"
+      },
+      {
+        "category": "ALIMENTOS",
+        "description": "Galletitas Bagley"
+      },
+      {
+        "category": "ROPA",
+        "description": "Buzos"
+      }
+    ]
+  },
+  {
     "organization_id": 2,
     "request_id": 1,
     "donations": [

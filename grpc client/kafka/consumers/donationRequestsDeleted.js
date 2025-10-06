@@ -7,7 +7,7 @@ const kafka = new Kafka({
 });
 
 // Consumer para bajas de solicitudes
-const consumer = kafka.consumer({ groupId: "baja-solicitudes-group" });
+const consumer = kafka.consumer({ groupId: `baja-solicitudes-group-${Date.now()}` });
 
 // Lista de solicitudes eliminadas (se acumulan en memoria)
 let deletedRequests = [];
@@ -44,13 +44,26 @@ const startDeletedRequestsConsumer = async () => {
   }
 };
 
+const deletedRequestsProducer = kafka.producer();
+
+const publish = async (message) => {
+  await deletedRequestsProducer.connect();
+  await deletedRequestsProducer.send({
+    topic: "baja-solicitud-donaciones",
+    messages: [
+      { value: JSON.stringify(message) }
+    ]
+  })
+};
+
 
 // Devuelve las solicitudes eliminadas almacenadas en memoria
 const getDeletedRequests = () => deletedRequests;
 
 module.exports = {
   startDeletedRequestsConsumer,
-  getDeletedRequests
+  getDeletedRequests,
+  publish
 };
 
 

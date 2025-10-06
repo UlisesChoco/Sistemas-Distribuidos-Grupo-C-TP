@@ -76,6 +76,31 @@ router.get('/available', async (req, res) => {
     }
 });
 
+router.get('/availableByCategory', async (req, res) => {
+    try {
+        const response = await getListAsync();
+        const inventories = (response && response.inventories) ? response.inventories : [];
+
+        const simplified = [];
+        inventories.forEach(inventory => {
+            const id = inventory.idInventory;
+            const category = inventory.category;
+            const description = inventory.description;
+            const inventoryObject = {
+                id: id,
+                category: category,
+                description: description
+            };
+            simplified.push(inventoryObject);
+        });
+
+        res.json(simplified);
+    } catch (err) {
+        console.error('Error al obtener inventarios disponibles:', err);
+        res.status(500).json({ error: 'Error al obtener inventarios disponibles' });
+    }
+});
+
 // Rutas de Acciones (POST)
 router.post('/', async (req, res) => {
     try {
