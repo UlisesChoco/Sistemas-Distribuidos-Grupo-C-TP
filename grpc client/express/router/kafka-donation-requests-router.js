@@ -6,14 +6,26 @@ const donationRequestsDeletedConsumer = require("../../kafka/consumers/donationR
 
 //views
 donationRequestsRouter.get("/allRequests", jwtAuth, (req, res) => {
+    if(!req.user.roles.includes("PRESIDENTE") || !req.user.roles.includes("VOCAL")) {
+        res.render("error/error-403");
+        return;
+    }
     res.render("donations/donationRequests");
 });
 
 donationRequestsRouter.get("/ourRequests", jwtAuth, (req, res) => {
+    if(!req.user.roles.includes("PRESIDENTE") || !req.user.roles.includes("VOCAL")) {
+        res.render("error/error-403");
+        return;
+    }
     res.render("donations/ourDonationRequests");
 });
 
 donationRequestsRouter.get("/create", jwtAuth, (req, res) => {
+    if(!req.user.roles.includes("PRESIDENTE") || !req.user.roles.includes("VOCAL")) {
+        res.render("error/error-403");
+        return;
+    }
     res.render("donations/createDonationRequest");
 });
 

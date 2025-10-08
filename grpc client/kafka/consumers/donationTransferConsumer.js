@@ -17,7 +17,6 @@ const computeNewLastRequestId = async (organizationId, topic) => {
     },
   });
 
-  // Esperar 1-2 segundos para leer mensajes recientes, luego desconectar
   await new Promise(r => setTimeout(r, 1000));
   await consumer.disconnect();
 

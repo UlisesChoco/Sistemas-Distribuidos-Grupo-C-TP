@@ -6,6 +6,10 @@ const { updateAsync, getByIdAsync } = require('../../clients/inventoryClient');
 
 //view
 donationTransferRouter.get("/create/:organizationId", jwtAuth, (req, res) => {
+    if(!req.user.roles.includes("PRESIDENTE") || !req.user.roles.includes("VOCAL")) {
+        res.render("error/error-403");
+        return;
+    }
     res.render("donations/transferDonation", { organizationId: req.params.organizationId });
 });
 
