@@ -15,7 +15,7 @@ const deleteEvent = async (eventDeletion) => {
         organization_id: eventDeletion.organization_id,
         event_name: eventDeletion.event_name,
         status: "DELETED",
-        deleted_at: Date.now(),
+        deleted_at: new Date().toISOString()
     };
 
     await producer.send({

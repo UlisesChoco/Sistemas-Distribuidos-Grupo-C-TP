@@ -9,6 +9,7 @@ const eventsConsumer = require('../../kafka/consumers/externalEvents');
 // producers de kafka
 const eventAdhesionProducer = require('../../kafka/producers/eventAdhesion');
 const eventDeletionProducer = require('../../kafka/producers/eventDeletion');
+const externalEventProducer = require('../../kafka/producers/externalEvent');
 
 //-------------------------- rutas gRPC -------------------------------
 
@@ -274,6 +275,30 @@ router.post('/deleteExternalEvent', (req, res) =>{
     res.status(200).json({message: "Evento eliminado"});
 })
 
+router.post('/createExternalEvent', (req, res) =>{
+
+    const { name, description, date } = req.body;
+
+    const formDate = new Date(date);
+    formDate.setHours(formDate.getHours() + 3);
+    const currentDate = new Date();
+
+    if(formDate.getTime() < currentDate.getTime()){
+        return res.status(400).json({ error: 'La fecha del evento no puede ser anterior a la fecha actual' });
+    }
+    
+    const event = {
+        organization_id: 1, //el id de nuestra ong es 1
+	    event_id: Math.floor(Math.random() * (999 - 1 + 1) + 1),
+	    event_name: name,
+	    description: description,
+	    date: formDate
+    }
+
+    externalEventProducer.createEvent(event);
+    res.status(201).json({message: "Evento creado"});
+})
+
 //-------------------------- rutas de vistas -------------------------------
 
 router.get('/edit/:id', jwtAuth ,(req, res) => {
@@ -306,6 +331,14 @@ router.get('/external', jwtAuth, (req, res) => {
         return;
     }
     res.render('events/externalEvents', {roles: req.user.roles});
+});
+
+router.get('/createExternal', jwtAuth, (req, res) => {
+    if(!req.user.roles.includes("PRESIDENTE") && !req.user.roles.includes("COORDINADOR")){
+        res.render("error/error-403");
+        return;
+    }
+    res.render('events/createExternalEvent', {userId: req.user.id});
 });
 
 router.get('/', jwtAuth ,(req, res) => {
