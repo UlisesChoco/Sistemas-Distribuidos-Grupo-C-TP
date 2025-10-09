@@ -6,8 +6,9 @@ const jwtAuth = require("../auth/jwt-auth");
 
 // consumers de kafka
 const eventsConsumer = require('../../kafka/consumers/externalEvents');
-// producer de kafka para adhesión a eventos externos
+// producers de kafka
 const eventAdhesionProducer = require('../../kafka/producers/eventAdhesion');
+const eventDeletionProducer = require('../../kafka/producers/eventDeletion');
 
 //-------------------------- rutas gRPC -------------------------------
 
@@ -257,6 +258,20 @@ router.post('/joinExternalEvent', jwtAuth, (req, res) =>{
 
     eventAdhesionProducer.sendEventAdhesion(eventAdhesion);
     res.status(200).json({message: "Solicitud de adhesión enviada"});
+})
+
+router.post('/deleteExternalEvent', (req, res) =>{
+
+    const { eventId, eventName } = req.body;
+
+    const eventDeletion = {
+        organization_id: 1, //el id de nuestra ong es 1
+        event_id: eventId,
+        event_name: eventName
+    }
+
+    eventDeletionProducer.deleteEvent(eventDeletion);
+    res.status(200).json({message: "Evento eliminado"});
 })
 
 //-------------------------- rutas de vistas -------------------------------
