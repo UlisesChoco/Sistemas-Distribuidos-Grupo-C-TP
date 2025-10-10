@@ -12,6 +12,7 @@ const transferDonation = async (organizationId, donationTransferOrganizationId, 
     });
     const topic = topicName+organizationId;
 
+    //previo a enviar el mensaje, me aseguro que el topic exista
     const admin = kafka.admin();
     await admin.connect();
     const existingTopics = await admin.listTopics();
@@ -21,6 +22,7 @@ const transferDonation = async (organizationId, donationTransferOrganizationId, 
             doesntExists = false;
         }
     });
+    //en caso de que no exista, lo creo
     if(doesntExists) {
         await admin.createTopics({
             validateOnly: false,
