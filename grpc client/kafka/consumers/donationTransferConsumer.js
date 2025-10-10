@@ -1,47 +1,41 @@
 const { Kafka } = require('kafkajs');
-const inventoryClient = require('../../clients/inventoryClient');
+const clientId = "donation-transfer-consumer";
+const broker = "kafka:9092";
 
-const MY_ORG_ID = process.env.MY_ORG_ID; 
+//pool de conexiones
+const connections = new Map();
 
-const kafka = new Kafka({
-    clientId: 'donation-transfer-consumer',
-    brokers: ['kafka:9092'],
-});
+//aca generamos una conexion nueva al broker y la metemos a la pool; solo se crea una conexion por topic
+const createConsumer = async (topic, organizationId) => {
+  const kafka = new Kafka({ clientId, brokers: [broker] });
+  const admin = kafka.admin();
+  const consumer = kafka.consumer({ groupId: `id-checker-${organizationId}-${Date.now()}` });
 
-const consumer = kafka.consumer({ groupId: `transfer-group-${MY_ORG_ID || 'default'}` });
+  await admin.connect();
+  await consumer.connect();
+  await consumer.subscribe({ topic, fromBeginning: true });
 
-const runDonationTransferConsumer = async () => {
-    if (!MY_ORG_ID) {
-        console.warn("ADVERTENCIA: La variable de entorno MY_ORG_ID no está definida. El consumidor de transferencias no se iniciará.");
-        return;
-    }
-    const topic = `transferencia-donaciones.${MY_ORG_ID}`;
+  const state = { lastRequestId: 1 };
 
-    await consumer.connect();
-    await consumer.subscribe({ topic: topic, fromBeginning: true });
-    console.log(`Consumidor escuchando transferencias en el topic: ${topic}`);
+  await consumer.run({
+    eachMessage: async ({ message }) => {
+      const data = JSON.parse(message.value.toString());
+      if (data.request_id >= state.lastRequestId) {
+        state.lastRequestId = data.request_id + 1;
+      }
+    },
+  });
 
-    await consumer.run({
-        eachMessage: async ({ message }) => {
-            console.log(`¡Transferencia de donación recibida!`);
-            try {
-                const transferData = JSON.parse(message.value.toString());
-                
-                const itemsToUpdate = transferData.Lista_donaciones.map(d => ({
-                    category: d.Categoria,
-                    description: d.Descripcion,
-                    quantity: parseInt(d.Cantidad, 10)
-                }));
+  connections.set(topic, { admin, consumer, state });
+  return { admin, consumer, getLastRequestId: () => state.lastRequestId };
+};
 
-                if (itemsToUpdate.length > 0) {
-                    const response = await inventoryClient.addOrUpdateStockAsync({ items: itemsToUpdate });
-                    console.log('Inventario actualizado por transferencia recibida:', response.message);
-                }
-            } catch (error) {
-                console.error('Error al actualizar inventario por transferencia:', error);
-            }
-        },
-    });
+const computeNewLastRequestId = async (organizationId, topic) => {
+  if (connections.has(topic)) {
+    return connections.get(topic).state.lastRequestId;
+  }
+  const consumer = await createConsumer(topic, organizationId);
+  return consumer.getLastRequestId();
 };
 
 module.exports = { runDonationTransferConsumer };
