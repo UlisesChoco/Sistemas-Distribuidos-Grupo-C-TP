@@ -38,4 +38,4 @@ const computeNewLastRequestId = async (organizationId, topic) => {
   return consumer.getLastRequestId();
 };
 
-module.exports = { computeNewLastRequestId };
+module.exports = { runDonationTransferConsumer };

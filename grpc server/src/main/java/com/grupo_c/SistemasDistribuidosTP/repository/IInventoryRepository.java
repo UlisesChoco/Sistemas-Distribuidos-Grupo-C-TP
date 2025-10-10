@@ -10,6 +10,7 @@ import com.grupo_c.SistemasDistribuidosTP.entity.Inventory.Category;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional; 
 
 @Repository
 public interface IInventoryRepository extends JpaRepository<Inventory, Long> {
@@ -32,7 +33,7 @@ public interface IInventoryRepository extends JpaRepository<Inventory, Long> {
     
     @Query("SELECT i FROM Inventory i WHERE i.creationDate BETWEEN :startDate AND :endDate")
     List<Inventory> findByCreationDateBetween(@Param("startDate") LocalDateTime startDate, 
-                                            @Param("endDate") LocalDateTime endDate);
+                                               @Param("endDate") LocalDateTime endDate);
     
     @Query("SELECT i FROM Inventory i WHERE i.category = :category AND i.isDeleted = false")
     List<Inventory> findAvailableByCategory(@Param("category") Category category);
@@ -48,5 +49,10 @@ public interface IInventoryRepository extends JpaRepository<Inventory, Long> {
     
     @Query("SELECT i FROM Inventory i WHERE i.category = :category AND i.isDeleted = :isDeleted")
     List<Inventory> findByCategoryAndisDeleted(@Param("category") Category category, 
-                                              @Param("isDeleted") Boolean isDeleted);
+                                               @Param("isDeleted") Boolean isDeleted);
+
+    // Permite buscar un item de inventario por su categoría y descripción.
+    // Devuelve un Optional para manejar de forma segura si el item no existe.
+    Optional<Inventory> findByCategoryAndDescription(Category category, String description);
+    
 }

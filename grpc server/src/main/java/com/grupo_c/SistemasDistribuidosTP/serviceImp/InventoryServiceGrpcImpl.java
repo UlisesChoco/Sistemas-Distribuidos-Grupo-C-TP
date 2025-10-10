@@ -1,13 +1,11 @@
 package com.grupo_c.SistemasDistribuidosTP.serviceImp;
 
+import com.google.protobuf.Empty; // <-- IMPORT CORREGIDO/AGREGADO
 import com.grupo_c.SistemasDistribuidosTP.entity.Inventory;
 import com.grupo_c.SistemasDistribuidosTP.entity.User;
 import com.grupo_c.SistemasDistribuidosTP.mapper.InventoryMapper;
 import com.grupo_c.SistemasDistribuidosTP.repository.IUserRepository;
-import com.grupo_c.SistemasDistribuidosTP.service.InventoryServiceClass;
-import com.grupo_c.SistemasDistribuidosTP.service.InventoryServiceGrpc;
-import com.grupo_c.SistemasDistribuidosTP.service.UserServiceClass;
-import com.grupo_c.SistemasDistribuidosTP.service.UtilsServiceClass;
+import com.grupo_c.SistemasDistribuidosTP.service.*;
 import io.grpc.Status;
 import io.grpc.StatusRuntimeException;
 import io.grpc.stub.StreamObserver;
@@ -15,7 +13,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
+import java.util.stream.Collectors;
+
 
 @Service
 public class InventoryServiceGrpcImpl extends InventoryServiceGrpc.InventoryServiceImplBase {
@@ -26,12 +25,35 @@ public class InventoryServiceGrpcImpl extends InventoryServiceGrpc.InventoryServ
 
     @Autowired
     public InventoryServiceGrpcImpl(InventoryServiceImpl inventoryService,
-                                    IUserRepository userRepository) {
+                                      IUserRepository userRepository) {
         this.inventoryService = inventoryService;
         this.userRepository = userRepository;
         this.inventoryMapper = new InventoryMapper();
     }
 
+    @Override
+    public void addOrUpdateStock(InventoryServiceClass.AddOrUpdateStockRequest request, StreamObserver<UtilsServiceClass.Response> responseObserver) {
+        try {
+            User currentUser = userRepository.findById(1L).orElseThrow(() -> new RuntimeException("Usuario de sistema (ID 1) no encontrado"));
+            
+            List<Inventory> inventoryList = request.getItemsList().stream()
+                    .map(item -> inventoryMapper.grpcToInventory(item, currentUser))
+                    .collect(Collectors.toList());
+            
+            inventoryService.addOrUpdateStock(inventoryList, currentUser);
+            
+            UtilsServiceClass.Response response = UtilsServiceClass.Response.newBuilder()
+                    .setSucceeded(true)
+                    .setMessage("Inventario actualizado correctamente por transferencia recibida.")
+                    .build();
+            responseObserver.onNext(response);
+            responseObserver.onCompleted();
+
+        } catch (Exception e) {
+            responseObserver.onError(Status.INTERNAL.withDescription("Error al sumar stock: " + e.getMessage()).asRuntimeException());
+        }
+    }
+    
     @Override
     public void getInventoryList(UtilsServiceClass.Empty request,
                                  StreamObserver<InventoryServiceClass.InventoryListResponse> responseObserver) {
@@ -120,47 +142,45 @@ public class InventoryServiceGrpcImpl extends InventoryServiceGrpc.InventoryServ
     }
 
    @Override
-public void updateInventory(InventoryServiceClass.InventoryDTO request,
-                            StreamObserver<InventoryServiceClass.InventoryDTO> responseObserver) {
-    try {
-        User currentUser = userRepository.findById(1L).orElse(null);
-        if (currentUser == null) {
-            responseObserver.onError(new StatusRuntimeException(Status.NOT_FOUND
-                    .withDescription("Usuario actual no encontrado")));
-            return;
-        }
+    public void updateInventory(InventoryServiceClass.InventoryDTO request,
+                                StreamObserver<InventoryServiceClass.InventoryDTO> responseObserver) {
+       try {
+           User currentUser = userRepository.findById(1L).orElse(null);
+           if (currentUser == null) {
+               responseObserver.onError(new StatusRuntimeException(Status.NOT_FOUND
+                       .withDescription("Usuario actual no encontrado")));
+               return;
+           }
 
-        Inventory existingInventory = inventoryService.findById(request.getIdInventory());
-        if (existingInventory == null) {
-            responseObserver.onError(new StatusRuntimeException(Status.NOT_FOUND
-                    .withDescription("Inventario no encontrado con id:: " + request.getIdInventory())));
-            return;
-        }
+           Inventory existingInventory = inventoryService.findById(request.getIdInventory());
+           if (existingInventory == null) {
+               responseObserver.onError(new StatusRuntimeException(Status.NOT_FOUND
+                       .withDescription("Inventario no encontrado con id:: " + request.getIdInventory())));
+               return;
+           }
 
-        // Solo permite modificar descripción y cantidad
-        existingInventory.setDescription(request.getDescription());
-        existingInventory.setQuantity(request.getQuantity());
+           existingInventory.setDescription(request.getDescription());
+           existingInventory.setQuantity(request.getQuantity());
 
-        // userModify y fecha modificación
-        existingInventory.setUserModify(currentUser);
-        existingInventory.setModificationDate(java.time.LocalDateTime.now());
+           existingInventory.setUserModify(currentUser);
+           existingInventory.setModificationDate(java.time.LocalDateTime.now());
 
-        Inventory updatedInventory = inventoryService.save(existingInventory, currentUser);
+           Inventory updatedInventory = inventoryService.save(existingInventory, currentUser);
 
-        UserServiceClass.UserSimpleDTO userCreatorDTO = inventoryMapper.toUserSimpleDTO(existingInventory.getUserCreator());
-        UserServiceClass.UserSimpleDTO userModifyDTO = inventoryMapper.toUserSimpleDTO(currentUser);
+           UserServiceClass.UserSimpleDTO userCreatorDTO = inventoryMapper.toUserSimpleDTO(existingInventory.getUserCreator());
+           UserServiceClass.UserSimpleDTO userModifyDTO = inventoryMapper.toUserSimpleDTO(currentUser);
 
-        responseObserver.onNext(inventoryMapper.toInventoryDTO(updatedInventory, userCreatorDTO, userModifyDTO));
-        responseObserver.onCompleted();
-    } catch (Exception e) {
-        responseObserver.onError(new StatusRuntimeException(Status.INTERNAL
-                .withDescription("Error al actualizar el inventario:" + e.getMessage())));
+           responseObserver.onNext(inventoryMapper.toInventoryDTO(updatedInventory, userCreatorDTO, userModifyDTO));
+           responseObserver.onCompleted();
+       } catch (Exception e) {
+           responseObserver.onError(new StatusRuntimeException(Status.INTERNAL
+                   .withDescription("Error al actualizar el inventario:" + e.getMessage())));
+       }
     }
-}
 
     @Override
     public void deleteInventory(InventoryServiceClass.InventoryRequest request,
-                                StreamObserver<UtilsServiceClass.Empty> responseObserver) {
+                                  StreamObserver<UtilsServiceClass.Empty> responseObserver) {
         try {
             User currentUser = userRepository.findById(1L).orElse(null);
             if (currentUser == null) {
@@ -178,11 +198,11 @@ public void updateInventory(InventoryServiceClass.InventoryDTO request,
                     .withDescription("Error al eliminar el inventario:" + e.getMessage())));
         }
     }
-
-     
+    
+   
     @Override
-    public void getAvailableInventory(UtilsServiceClass.Empty request,
-                                      StreamObserver<InventoryServiceClass.InventoryListResponse> responseObserver) {
+    public void getAvailableInventory(Empty request, 
+                                        StreamObserver<InventoryServiceClass.InventoryListResponse> responseObserver) {
         try {
             List<Inventory> inventories = inventoryService.findAvailableInventory();
             InventoryServiceClass.InventoryListResponse.Builder responseBuilder =
@@ -195,7 +215,7 @@ public void updateInventory(InventoryServiceClass.InventoryDTO request,
                 UserServiceClass.UserSimpleDTO userCreatorDTO = userCreator != null ?
                         inventoryMapper.toUserSimpleDTO(userCreator) :
                         UserServiceClass.UserSimpleDTO.newBuilder().setId(0L).setUsername("").build();
-
+                
                 UserServiceClass.UserSimpleDTO userModifyDTO = userModify != null ?
                         inventoryMapper.toUserSimpleDTO(userModify) :
                         UserServiceClass.UserSimpleDTO.newBuilder().setId(0L).setUsername("").build();

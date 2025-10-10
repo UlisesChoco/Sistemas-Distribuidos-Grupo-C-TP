@@ -14,8 +14,8 @@ import java.time.ZoneOffset;
 public class InventoryMapper {
 
     public InventoryServiceClass.InventoryDTO toInventoryDTO(Inventory inventory,
-                                                            UserServiceClass.UserSimpleDTO userCreate,
-                                                            UserServiceClass.UserSimpleDTO userModify) {
+                                                         UserServiceClass.UserSimpleDTO userCreate,
+                                                         UserServiceClass.UserSimpleDTO userModify) {
         InventoryServiceClass.InventoryDTO.Builder builder = InventoryServiceClass.InventoryDTO.newBuilder();
 
         if (inventory.getId() != null) {
@@ -77,6 +77,17 @@ public class InventoryMapper {
 
         return inventory;
     }
+    
+    // ---- NUEVO MÉTODO PARA MAPEAD DE ITEM A ENTIDAD ----
+    public Inventory grpcToInventory(InventoryServiceClass.InventoryItem grpcItem, User currentUser) {
+        Inventory inventory = new Inventory();
+        inventory.setCategory(Inventory.Category.valueOf(grpcItem.getCategory()));
+        inventory.setDescription(grpcItem.getDescription());
+        inventory.setQuantity(grpcItem.getQuantity());
+        // El método save se encargará de los usuarios y fechas
+        return inventory;
+    }
+
 
     public UserServiceClass.UserSimpleDTO toUserSimpleDTO(User user) {
         UserServiceClass.UserSimpleDTO.Builder b = UserServiceClass.UserSimpleDTO.newBuilder();

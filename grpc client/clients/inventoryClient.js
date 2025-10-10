@@ -116,4 +116,5 @@ module.exports = {
   updateAsync: (dto) => promisify(inventoryClient.UpdateInventory.bind(inventoryClient), dto),
   deleteAsync: (id) => promisify(inventoryClient.DeleteInventory.bind(inventoryClient), { idInventory: Number(id) }),
   getAvailableAsync: () => promisify(inventoryClient.GetAvailableInventory.bind(inventoryClient), {}),
+  addOrUpdateStockAsync: (dto) => promisify(inventoryClient.AddOrUpdateStock.bind(inventoryClient), dto),
 };
