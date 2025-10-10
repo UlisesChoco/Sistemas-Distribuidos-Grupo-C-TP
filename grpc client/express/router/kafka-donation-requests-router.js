@@ -6,7 +6,7 @@ const donationRequestsDeletedConsumer = require("../../kafka/consumers/donationR
 
 //views
 donationRequestsRouter.get("/allRequests", jwtAuth, (req, res) => {
-    if(!req.user.roles.includes("PRESIDENTE") || !req.user.roles.includes("VOCAL")) {
+    if(!req.user.roles.includes("PRESIDENTE") && !req.user.roles.includes("VOCAL")) {
         res.render("error/error-403");
         return;
     }
@@ -14,7 +14,7 @@ donationRequestsRouter.get("/allRequests", jwtAuth, (req, res) => {
 });
 
 donationRequestsRouter.get("/ourRequests", jwtAuth, (req, res) => {
-    if(!req.user.roles.includes("PRESIDENTE") || !req.user.roles.includes("VOCAL")) {
+    if(!req.user.roles.includes("PRESIDENTE") && !req.user.roles.includes("VOCAL")) {
         res.render("error/error-403");
         return;
     }
@@ -22,7 +22,7 @@ donationRequestsRouter.get("/ourRequests", jwtAuth, (req, res) => {
 });
 
 donationRequestsRouter.get("/create", jwtAuth, (req, res) => {
-    if(!req.user.roles.includes("PRESIDENTE") || !req.user.roles.includes("VOCAL")) {
+    if(!req.user.roles.includes("PRESIDENTE") && !req.user.roles.includes("VOCAL")) {
         res.render("error/error-403");
         return;
     }
