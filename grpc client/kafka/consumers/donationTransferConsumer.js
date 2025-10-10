@@ -1,26 +1,47 @@
 const { Kafka } = require('kafkajs');
-const clientId = "donation-transfer-producer";
-const broker = "kafka:9092";
+const inventoryClient = require('../../clients/inventoryClient');
 
-const computeNewLastRequestId = async (organizationId, topic) => {
-  const kafka = new Kafka({ clientId, brokers: [broker] });
-  const consumer = kafka.consumer({ groupId: `id-checker-${organizationId}-${Date.now()}` });
-  await consumer.connect();
-  await consumer.subscribe({ topic, fromBeginning: false });
+const MY_ORG_ID = process.env.MY_ORG_ID; 
 
-  let lastRequestId = 1;
+const kafka = new Kafka({
+    clientId: 'donation-transfer-consumer',
+    brokers: ['kafka:9092'],
+});
 
-  await consumer.run({
-    eachMessage: async ({ message }) => {
-      const data = JSON.parse(message.value.toString());
-      if (data.request_id >= lastRequestId) lastRequestId = data.request_id + 1;
-    },
-  });
+const consumer = kafka.consumer({ groupId: `transfer-group-${MY_ORG_ID || 'default'}` });
 
-  await new Promise(r => setTimeout(r, 1000));
-  await consumer.disconnect();
+const runDonationTransferConsumer = async () => {
+    if (!MY_ORG_ID) {
+        console.warn("ADVERTENCIA: La variable de entorno MY_ORG_ID no está definida. El consumidor de transferencias no se iniciará.");
+        return;
+    }
+    const topic = `transferencia-donaciones.${MY_ORG_ID}`;
 
-  return lastRequestId;
+    await consumer.connect();
+    await consumer.subscribe({ topic: topic, fromBeginning: true });
+    console.log(`Consumidor escuchando transferencias en el topic: ${topic}`);
+
+    await consumer.run({
+        eachMessage: async ({ message }) => {
+            console.log(`¡Transferencia de donación recibida!`);
+            try {
+                const transferData = JSON.parse(message.value.toString());
+                
+                const itemsToUpdate = transferData.Lista_donaciones.map(d => ({
+                    category: d.Categoria,
+                    description: d.Descripcion,
+                    quantity: parseInt(d.Cantidad, 10)
+                }));
+
+                if (itemsToUpdate.length > 0) {
+                    const response = await inventoryClient.addOrUpdateStockAsync({ items: itemsToUpdate });
+                    console.log('Inventario actualizado por transferencia recibida:', response.message);
+                }
+            } catch (error) {
+                console.error('Error al actualizar inventario por transferencia:', error);
+            }
+        },
+    });
 };
 
-module.exports = { computeNewLastRequestId };
+module.exports = { runDonationTransferConsumer };

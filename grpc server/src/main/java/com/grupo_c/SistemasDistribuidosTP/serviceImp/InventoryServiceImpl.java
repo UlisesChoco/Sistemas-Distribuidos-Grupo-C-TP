@@ -6,10 +6,14 @@ import com.grupo_c.SistemasDistribuidosTP.mapper.InventoryMapper;
 import com.grupo_c.SistemasDistribuidosTP.repository.IInventoryRepository;
 import com.grupo_c.SistemasDistribuidosTP.repository.IUserRepository;
 import com.grupo_c.SistemasDistribuidosTP.service.IInventoryService;
+
+import jakarta.transaction.Transactional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class InventoryServiceImpl implements IInventoryService {
@@ -20,7 +24,7 @@ public class InventoryServiceImpl implements IInventoryService {
 
     @Autowired
     public InventoryServiceImpl(IInventoryRepository inventoryRepository,
-                                IUserRepository userRepository) {
+                                  IUserRepository userRepository) {
         this.inventoryRepository = inventoryRepository;
         this.userRepository = userRepository;
         this.inventoryMapper = new InventoryMapper();
@@ -97,5 +101,25 @@ public class InventoryServiceImpl implements IInventoryService {
 
         inventory.setQuantity(inventory.getQuantity() - quantityToDecrease);
         save(inventory, user);
+    }
+
+   
+    @Override
+    @Transactional
+    public void addOrUpdateStock(List<Inventory> inventories, User currentUser) {
+        for (Inventory receivedItem : inventories) {
+            Optional<Inventory> optInventory = inventoryRepository
+                    .findByCategoryAndDescription(receivedItem.getCategory(), receivedItem.getDescription());
+
+            if (optInventory.isPresent()) {
+                // Si existe, sumamos la cantidad
+                Inventory inventory = optInventory.get();
+                inventory.setQuantity(inventory.getQuantity() + receivedItem.getQuantity());
+                save(inventory, currentUser);
+            } else {
+                // Si no existe, creamos un nuevo registro de inventario
+                save(receivedItem, currentUser);
+            }
+        }
     }
 }
