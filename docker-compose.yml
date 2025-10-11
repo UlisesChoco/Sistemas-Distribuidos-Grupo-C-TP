@@ -40,7 +40,6 @@ services:
   grpc-client:
     build: "./grpc client"
     container_name: api_gateway
-    command: sh -c "echo 'Esperando 20 segundos para que Kafka inicie...' && sleep 20 && node express/app.js"
     depends_on:
       grpc-server:
         condition: service_healthy

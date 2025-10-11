@@ -6,6 +6,9 @@ const jwtAuth = require("./auth/jwt-auth.js"); // middleware de autenticación
 const cookieParser = require("cookie-parser");
 const path = require("path");
 
+//inicializar kafka (crea topics si no existen)
+const initKafka = require("../kafka/config/initKafka");
+
 // consumers de kafka
 const eventsConsumer = require('../kafka/consumers/externalEvents');
 const deletedEventsConsumer = require('../kafka/consumers/solidarityEventsDeleted.js');
@@ -76,15 +79,29 @@ app.use("/css", express.static(path.join(frontPath, "css")));
 app.use("/js", express.static(path.join(frontPath, "js")));
 app.use("/img", express.static(path.join(frontPath, "img")));
 
-// ================== Inicia consumidores de kafka ================== //
-eventsConsumer.startEventsConsumer().catch(console.error);
-deletedEventsConsumer.startDeletedEventsConsumer().catch(console.error);
-deletedRequestsConsumer.startDeletedRequestsConsumer().catch(console.error);
-donationRequestsConsumer.startConsuming();
-runDonationOffersConsumer().catch(err => console.error("Fallo el consumidor de ofertas:", err)); 
+//esta funcion se encarga de arrancar la app solo cuando kafka este listo
+//primero, espera a que se ejecute initKafka(). esa funcion crea los topics necesarios si no existen
+//posteriormente simplemente todos los consumers se conectan al broker
+//esto lo agregue porque sino la app revienta al no encontrar los topics a la primera
+async function startApp() {
+  try {
+    await initKafka();
+    await Promise.all([
+      eventsConsumer.startEventsConsumer().catch(console.error),
+      deletedEventsConsumer.startDeletedEventsConsumer().catch(console.error),
+      deletedRequestsConsumer.startDeletedRequestsConsumer().catch(console.error),
+      donationRequestsConsumer.startConsuming(),
+      runDonationOffersConsumer().catch(err => console.error("Fallo el consumidor de ofertas:", err))
+    ]);
+    app.listen(port, () => {
+      console.log(`Express app listening on port ${port}.`);
+    });
+  } catch (err) {
+    console.error("Error al iniciar la app:", err);
+    process.exit(1);
+  }
+}
 
-app.listen(port, () => {
-    console.log("Express app listening on port", port,".");
-});
+startApp();
 
 module.exports = app;
