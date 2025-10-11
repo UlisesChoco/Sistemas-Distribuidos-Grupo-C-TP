@@ -11,6 +11,7 @@ En caso de desear levantar esta aplicación sin Docker, crear una copia del arch
 ## Tecnologías
 - [JavaScript](https://developer.mozilla.org/en-US/docs/Web/JavaScript)
 - [NodeJS](https://nodejs.org/es)
+- [KafkaJS](https://kafka.js.org/docs/getting-started)
 
 ## Dependencias
 - [@grpc/grpc-js](https://www.npmjs.com/package/@grpc/grpc-js)
@@ -36,6 +37,7 @@ Este cliente gRPC cuenta con:
   - user.proto
   - utils.proto
 - Implementación de express-jwt para validar tokens del frontend en caso de ejecutar una request que requiera autenticación.
+- Implementación de producers y consumers para Kafka, para abrir nuevos canales de comunicación de este sistema con otros externos.
 
 # Endpoints
 
@@ -113,3 +115,38 @@ Este cliente gRPC cuenta con:
 |----------|--------------|--------------|
 | `GET /` | a | a | 
 
+# Endpoints de Kafka
+
+## Donation Requests Router
+
+### Endpoints de vistas
+
+| Endpoint           | Descripción                                                                    | Restricciones de acceso            | Respuesta                                                                                      |
+| ------------------ | ------------------------------------------------------------------------------ | ---------------------------------- | ---------------------------------------------------------------------------------------------- |
+| `GET /allRequests` | Renderiza la vista con todas las solicitudes de donación.                      | Solo roles `PRESIDENTE` o `VOCAL`. | Renderiza la vista `donations/donationRequests` o `error/error-403` si no tiene permisos.      |
+| `GET /ourRequests` | Renderiza la vista con las solicitudes de donación propias de la organización. | Solo roles `PRESIDENTE` o `VOCAL`. | Renderiza la vista `donations/ourDonationRequests` o `error/error-403` si no tiene permisos.   |
+| `GET /create`      | Renderiza la vista para crear una nueva solicitud de donación.                 | Solo roles `PRESIDENTE` o `VOCAL`. | Renderiza la vista `donations/createDonationRequest` o `error/error-403` si no tiene permisos. |
+
+
+### Endpoints de la API
+
+| Endpoint  | Método | Body de la request                                                                   | Descripción                                                                            | Respuesta                                                                                                                                                                                                     |
+| --------- | ------ | ------------------------------------------------------------------------------------ | -------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `/all`    | `GET`  | —                                                                                    | Obtiene todas las solicitudes de donación **excepto** las propias de la organización.  | `{ allDonationRequests: [...] }`                                                                                                                                                                              |
+| `/ours`   | `GET`  | —                                                                                    | Obtiene todas las solicitudes de donación pertenecientes a **nuestra organización**.   | `{ ourDonationRequests: [...] }`                                                                                                                                                                              |
+| `/create` | `POST` | `json { "donations": [ ... ] } `                                                     | Crea una nueva solicitud de donación y la publica en Kafka.                            | **Éxito:** `{ succeeded: true, message: "Donación publicada correctamente." }`<br>**Error:** `{ succeeded: false, message: "No se pudo publicar la solicitud de donación. Vuelva a intentarlo, por favor." }` |
+| `/delete` | `POST` | `json { "organizationId": number, "requestId": number, "deleted_at": "timestamp" } ` | Elimina (marca como eliminada) una solicitud de donación y publica el evento en Kafka. | **Éxito:** `{ succeeded: true, message: "Donación eliminada correctamente." }`<br>**Error:** `{ succeeded: false, message: "No se pudo eliminar la solicitud de donación. Vuelva a intentarlo, por favor." }` |
+
+## Donation Transfer Router
+
+### Endpoints de vistas
+
+| Endpoint                      | Descripción                                                        | Restricciones de acceso            | Respuesta                                                                                                              |
+| ----------------------------- | ------------------------------------------------------------------ | ---------------------------------- | ---------------------------------------------------------------------------------------------------------------------- |
+| `GET /create/:organizationId` | Renderiza la vista para transferir donaciones a otra organización. | Solo roles `PRESIDENTE` o `VOCAL`. | Renderiza la vista `donations/transferDonation` pasando `{ organizationId }` o `error/error-403` si no tiene permisos. |
+
+### Endpoints de la API
+
+| Endpoint  | Método | Body de la request                                                                                                 | Descripción                                                                                                                                                                    | Respuesta                                                                                                                                                                                                                                                                                                                                                                                                              |
+| --------- | ------ | ------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `/create` | `POST` | `json { "organizationId": number, "donations": [ { "id": number, "description": string, "quantity": number } ] } ` | Transfiere las donaciones indicadas a otra organización. Verifica que el inventario tenga suficiente cantidad y actualiza la base antes de publicar la transferencia en Kafka. | **Éxito:** `{ succeeded: true, message: "Donación transferida correctamente." }`<br>**Error por inventario insuficiente:** `{ succeeded: false, message: "Fallo al transferir la donación. El inventario de ... no tiene la cantidad suficiente como para transferir la cantidad indicada." }`<br>**Error general:** `{ succeeded: false, message: "Fallo al transferir la donación. Intentar de nuevo, por favor." }` |
