@@ -12,7 +12,6 @@ const deletedEventsConsumer = require('../kafka/consumers/solidarityEventsDelete
 const deletedRequestsConsumer = require('../kafka/consumers/donationRequestsDeleted.js');
 const donationRequestsConsumer = require('../kafka/consumers/donationRequests.js');
 const { runDonationOffersConsumer } = require('../kafka/consumers/donationOffers');
-// const { runDonationTransferConsumer } = require('../kafka/consumers/donationTransferConsumer'); // Línea eliminada o comentada
 
 const app = express();
 const port = process.env.PORT || 9091;
@@ -83,10 +82,9 @@ deletedEventsConsumer.startDeletedEventsConsumer().catch(console.error);
 deletedRequestsConsumer.startDeletedRequestsConsumer().catch(console.error);
 donationRequestsConsumer.startConsuming();
 runDonationOffersConsumer().catch(err => console.error("Fallo el consumidor de ofertas:", err)); 
-// runDonationTransferConsumer().catch(err => console.error("Fallo el consumidor de transferencias:", err)); // Línea eliminada o comentada
 
 app.listen(port, () => {
-  console.log("Express app listening on port", port,".");
+    console.log("Express app listening on port", port,".");
 });
 
 module.exports = app;

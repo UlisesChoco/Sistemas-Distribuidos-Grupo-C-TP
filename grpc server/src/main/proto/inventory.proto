@@ -52,6 +52,6 @@ service InventoryService {
   rpc CreateInventory(InventoryDTO) returns (InventoryDTO);
   rpc UpdateInventory(InventoryDTO) returns (InventoryDTO);
   rpc DeleteInventory(InventoryRequest) returns (Empty);
-  rpc GetAvailableInventory (Empty) returns (InventoryListResponse);
+  rpc GetAvailableInventory(Empty) returns (InventoryListResponse);
   rpc AddOrUpdateStock(AddOrUpdateStockRequest) returns (Response);
 }
