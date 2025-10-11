@@ -1,5 +1,5 @@
 # Sistemas Distribuidos - Grupo C - TP
-Este proyecto implementa un sistema con **gRPC (Java/Spring Boot)**, **API Gateway (Node/Express)**, **MySQL** y **Mailhog** para pruebas de envío de correos.
+Este proyecto implementa un sistema con **gRPC (Java/Spring Boot)**, **API Gateway (Node/Express)**, **Kafka**, **MySQL** y **Mailhog** para pruebas de envío de correos.
 
 ---
 
@@ -9,6 +9,7 @@ Este proyecto implementa un sistema con **gRPC (Java/Spring Boot)**, **API Gatew
 - **MySQL 8** → Base de datos
 - **Mailhog** → Captura de correos (testing)
 - **Docker + Docker Compose** → Orquestación de servicios
+- **Kafka** → Medio de comunicación publicador/suscriptor
 
 ---
 
@@ -88,6 +89,11 @@ Corre en http://localhost:8080.
     - ```Contraseña```: admin
     
     El sistema permite usar tanto el nombre de usuario como el correo electrónico para iniciar sesión.
+
+<br>
+
+* Kafka:
+KafbatUI corre en http://localhost:8999/
 
 <br>
 
