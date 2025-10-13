@@ -6,9 +6,14 @@ const soapClient = require('../../soap/soap-client');
 //-------------------------- rutas SOAP -------------------------------
 
 router.get('/list-presidents', async (req, res) => {
-    const orgIds = ['6', '5', '8', '10']; // Ejemplo de IDs de organizaciones
+    const ids = req.query.ids || '';
+    const idsArray = ids
+        .split(',')
+        .map(id => id.trim())
+        .filter(id => id !== '');
+
     try{
-        const data =  await soapClient.list_presidents(orgIds);
+        const data =  await soapClient.list_presidents(idsArray);
         const presidentsList = data.list_presidentsResult?.PresidentType || [];
         res.json({ presidentsList });
     } catch (error){
@@ -18,9 +23,14 @@ router.get('/list-presidents', async (req, res) => {
 })
 
 router.get('/list-associations', async (req, res) => {
-    const orgIds = ['6', '5', '8', '10']; // Ejemplo de IDs de organizaciones
+    const ids = req.query.ids || '';
+    const idsArray = ids
+        .split(',')
+        .map(id => id.trim())
+        .filter(id => id !== '');
+
     try{
-        const data =  await soapClient.list_associations(orgIds);
+        const data =  await soapClient.list_associations(idsArray);
         const associationsList = data.list_associationsResult?.OrganizationType || [];
         res.json({ associationsList });
     } catch (error){
@@ -36,7 +46,7 @@ router.get('/', jwtAuth, (req, res) => {
         res.render("error/error-403");
         return;
     }
-    res.render('soap/queries');
+    res.render('queries/queries');
 })
 
 module.exports = router;

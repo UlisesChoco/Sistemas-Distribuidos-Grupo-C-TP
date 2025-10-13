@@ -6,6 +6,7 @@
         <a href="/home">Volver al inicio</a>
         <% if(roles && roles.includes("PRESIDENTE")){ %>
         <a href="/user/">Gestión de Usuarios</a>
+        <a href="/queries/">Consultas</a>
         <% } %>
         <% if(roles && (roles.includes("PRESIDENTE") || roles.includes("COORDINADOR") || roles.includes("VOLUNTARIO"))){ %>
         <a href="/events/">Eventos</a>
