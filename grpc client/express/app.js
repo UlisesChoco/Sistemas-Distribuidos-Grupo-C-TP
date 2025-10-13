@@ -53,6 +53,9 @@ app.use("/transferDonation", transferDonationRouter);
 const donationOffersRouter = require("./router/kafka-donation-offers-router.js");
 app.use("/donation-offers", donationOffersRouter);
 
+const soapRouter = require("./router/soap-router.js");
+app.use("/queries", soapRouter);
+
 // Rutas principales
 app.get("/", (req, res) => {
   res.render("index");
