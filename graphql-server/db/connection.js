@@ -1,5 +1,6 @@
 const mysql = require('mysql2/promise');
 
+// TODO: dockerizar server
 const pool = mysql.createPool({
   host: 'localhost',
   user: 'root',

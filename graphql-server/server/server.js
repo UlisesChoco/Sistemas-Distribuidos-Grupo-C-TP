@@ -9,6 +9,7 @@ app.use('/graphql', graphqlHTTP({
   graphiql: true
 }));
 
+// TODO: dockerizar server
 app.listen(4000, () => {
   console.log('Servidor GraphQL corriendo en http://localhost:4000/graphql');
 });
