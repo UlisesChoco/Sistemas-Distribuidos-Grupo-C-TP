@@ -3,13 +3,13 @@ const { graphqlHTTP } = require('express-graphql');
 const schema = require('../schema/mergeSchemas');
 
 const app = express();
+const port = 4000;
 
 app.use('/graphql', graphqlHTTP({
   schema,
   graphiql: true
 }));
 
-// TODO: dockerizar server
-app.listen(4000, () => {
-  console.log('Servidor GraphQL corriendo en http://localhost:4000/graphql');
+app.listen(port, () => {
+  console.log(`Servidor GraphQL corriendo en http://localhost:${port}/graphql`);
 });

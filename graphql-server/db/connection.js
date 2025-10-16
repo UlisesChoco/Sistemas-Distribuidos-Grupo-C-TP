@@ -1,12 +1,11 @@
 const mysql = require('mysql2/promise');
 
-// TODO: dockerizar server
 const pool = mysql.createPool({
-  host: 'localhost',
-  user: 'root',
-  password: 'root',
-  database: 'graphql',
-  port: 3306 
+  host: process.env.DB_HOST,
+  user: process.env.DB_USER,
+  password: process.env.DB_PASSWORD,
+  database: process.env.DB_NAME,
+  port: parseInt(process.env.DB_PORT, 10)
 });
 
 module.exports = pool;

@@ -56,6 +56,23 @@ services:
       JWT_PRIVATE_KEY: ${JWT_PRIVATE_KEY}
       MY_ORG_ID: ${MY_ORG_ID}
 
+  graphql-server:
+    build: "./graphql-server"
+    container_name: graphql_server
+    depends_on:
+      db:
+        condition: service_healthy
+    ports:
+      - "4000:4000"
+    volumes:
+      - ./graphql-server:/app
+    environment:
+      DB_HOST: db
+      DB_USER: ${MYSQL_DB_USERNAME}
+      DB_PASSWORD: ${MYSQL_DB_PASSWORD}
+      DB_NAME: ${MYSQL_DB_NAME}
+      DB_PORT: 3306
+
   mailhog:
     image: mailhog/mailhog
     container_name: mailhog
