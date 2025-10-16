@@ -1,6 +1,13 @@
 const pool = require('../db/connection');
 
 // querys a la bd para la entidad donation
+/* 
+Esta entidad todavia no existe en la bd, sus atributos son:
+- category: string
+- description: string
+- quantity: int
+- deleted: boolean
+*/
 // similar a un repository en java
 const Donation = {
     getAll: async () => {
