@@ -12,6 +12,7 @@
   "dependencies": {
     "@graphql-tools/merge": "^9.1.1",
     "@graphql-tools/schema": "^10.0.25",
+    "cors": "^2.8.5",
     "express": "^5.1.0",
     "express-graphql": "^0.12.0",
     "graphql": "^15.10.1",
