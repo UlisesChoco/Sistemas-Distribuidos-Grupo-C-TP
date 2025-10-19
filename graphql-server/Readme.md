@@ -10,29 +10,7 @@ Servidor GraphQL en Node.js para realizar consultas a la base de datos MySQL.
 - **mysql2**: cliente para Node.js
 - **graphql-tools**: para modularizar esquemas y resolvers
 
-## Levantar el servidor
-
-1. Instalar las dependencias:
-
-```bash
-npm install
-```
-
-2. Configurar la conexión a MySQL en db/connection.js
-
-3. Abrir una terminal en la carpeta server y ejecutar el servidor
-
-```bash
-node server.js
-```
-
-4. Acceder a GraphiQL en:
-
-```bash
-http://localhost:4000/graphql
-```
-
-## Ejemplos de queries
+## Endpoints
 
 * Obtener todas las donaciones
 
@@ -55,6 +33,54 @@ query {
   donation(id: "1") {
     category
     description
+  }
+}
+```
+
+* Obtener todos los eventos
+
+```bash
+query {
+  events{
+    id
+    name
+    description
+    is_completed
+    date
+    participants{
+      id
+      username
+    }
+    inventory{
+      category
+      description
+      quantity
+      distributionDate
+    }
+  }
+}
+```
+
+* Obtener un evento por ID
+
+```bash
+query {
+  event(id:"1"){
+    id
+    name
+    description
+    is_completed
+    date
+    participants{
+      id
+      username
+    }
+    inventory{
+      category
+      description
+      quantity
+      distributionDate
+    }
   }
 }
 ```
