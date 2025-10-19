@@ -10,6 +10,13 @@ module.exports = gql`
         username: String!
     }
 
+    type EventDonation{
+        category: String!
+        description: String!
+        quantity: Int!
+        distributionDate: String!
+    }
+
     type Event {
         id: ID!
         name: String!
@@ -17,6 +24,7 @@ module.exports = gql`
         is_completed: Boolean!
         date: String!
         participants: [User!]!
+        inventory: [EventDonation!]!
     }
 
     # solo para consultas

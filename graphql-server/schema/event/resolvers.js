@@ -4,8 +4,7 @@ const Event = require('../../models/Event');
 // similar a un service en java
 module.exports = {
   Query: {
-    //events: () => Event.getAll(),
-    events: () => Event.getAllWithParticipants(),
+    events: () => Event.getAll(),
     event: (_, { id }) => Event.getById(id)
   }
 };
