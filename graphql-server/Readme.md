@@ -12,6 +12,8 @@ Servidor GraphQL en Node.js para realizar consultas a la base de datos MySQL.
 
 ## Endpoints
 
+- Ruta: http://localhost:4000/graphql
+
 * Obtener todas las donaciones
 
 ```bash
