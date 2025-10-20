@@ -1,0 +1,86 @@
+const { Kafka } = require('kafkajs');
+const { getListAsync, updateAsync, createAsync } = require('../../clients/inventoryClient');
+const clientId = "received-donation-consumer";
+const brokers = ["kafka:9092"];
+
+// El topic para las donaciones que RECIBIMOS (ID de nuestra organización = 1)
+const topic = "transferencia-donaciones-1";
+
+const kafka = new Kafka({ clientId, brokers });
+const consumer = kafka.consumer({ groupId: clientId });
+
+const consume = async () => {
+    await consumer.connect();
+    await consumer.subscribe({ topic, fromBeginning: true });
+    console.log(`[Kafka] Consumidor de donaciones recibidas conectado y suscrito al topic: ${topic}`);
+
+    await consumer.run({
+        eachMessage: async ({ message }) => {
+            try {
+                const data = JSON.parse(message.value.toString());
+                console.log(`[Kafka] Mensaje de donación recibido de la organización ID: ${data.id_organizacion_donante}`);
+
+                const donationItems = data.lista_donaciones; // La lista de productos que nos donaron
+
+                if (!donationItems || donationItems.length === 0) {
+                    console.log("[Kafka] El mensaje no contenía items para donar. Omitiendo.");
+                    return;
+                }
+
+                // 1. Obtenemos nuestro inventario actual para saber qué tenemos
+                console.log("[gRPC] Obteniendo inventario actual...");
+                const currentInventoryResponse = await getListAsync();
+                const ourInventory = currentInventoryResponse.inventories || [];
+
+                // 2. Procesamos cada item donado
+                for (const donatedItem of donationItems) {
+                    // Buscamos si el item ya existe en nuestro inventario
+                    const existingItem = ourInventory.find(inv =>
+                        inv.category === donatedItem.categoria && inv.description === donatedItem.descripcion
+                    );
+
+                    if (existingItem) {
+                        // --- SI YA EXISTE: Le sumamos la cantidad nueva ---
+                        const newQuantity = existingItem.quantity + donatedItem.cantidad;
+                        console.log(`[Lógica] Item existente: "${donatedItem.descripcion}". Actualizando stock: ${existingItem.quantity} + ${donatedItem.cantidad} = ${newQuantity}`);
+
+                        const updateDto = {
+                            idInventory: existingItem.idInventory,
+                            // Pasamos los demás datos para que el DTO esté completo
+                            category: existingItem.category,
+                            description: existingItem.description,
+                            quantity: newQuantity
+                        };
+
+                        await updateAsync(updateDto);
+                        console.log(`[gRPC] Stock actualizado para "${donatedItem.descripcion}".`);
+
+                    } else {
+                        // --- SI NO EXISTE: Creamos un nuevo registro ---
+                        console.log(`[Lógica] Item nuevo: "${donatedItem.descripcion}". Creando con stock: ${donatedItem.cantidad}.`);
+
+                        const createDto = {
+                            category: donatedItem.categoria,
+                            description: donatedItem.descripcion,
+                            quantity: donatedItem.cantidad
+                        };
+
+                        await createAsync(createDto);
+                        console.log(`[gRPC] Nuevo item "${donatedItem.descripcion}" creado en el inventario.`);
+                    }
+                }
+                 console.log("--- Procesamiento de donación completado ---");
+
+            } catch (error) {
+                console.error('Error procesando el mensaje de Kafka o llamando a gRPC:', error);
+            }
+        },
+    });
+};
+
+// Auto-ejecutamos el consumidor al iniciar la aplicación
+consume().catch(err => {
+    console.error("Error fatal en el consumidor de Kafka:", err);
+});
+
+module.exports = { consume };
