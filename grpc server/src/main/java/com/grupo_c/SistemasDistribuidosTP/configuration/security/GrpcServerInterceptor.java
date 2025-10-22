@@ -155,7 +155,12 @@ public class GrpcServerInterceptor implements ServerInterceptor {
                 "InventoryService/GetInventoryByCategory",
                 "InventoryService/UpdateInventory",
                 "InventoryService/DeleteInventory",
-                "InventoryService/GetAvailableInventory"
+                "InventoryService/GetAvailableInventory",
+
+                //donation
+                "DonationService/GetDonationList",
+                "DonationService/CreateDonation",
+                "DonationService/UpdateStock"
         );
     }
 }
