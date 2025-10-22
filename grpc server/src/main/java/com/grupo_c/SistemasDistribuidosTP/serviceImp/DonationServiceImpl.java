@@ -8,6 +8,8 @@ import com.grupo_c.SistemasDistribuidosTP.service.IDonationService;
 import com.grupo_c.SistemasDistribuidosTP.validator.DonationValidator;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
+
+import java.time.LocalDate;
 import java.util.List;
 
 @Service
@@ -39,6 +41,7 @@ public class DonationServiceImpl implements IDonationService {
         donationForDB.setCategory(category);
         donationForDB.setDescription(description);
         donationForDB.setIsDeleted(false);
+        donationForDB.setLastDonationDate(LocalDate.now());
 
         return donationRepository.save(donationForDB);
     }

@@ -3,6 +3,8 @@ package com.grupo_c.SistemasDistribuidosTP.entity;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.time.LocalDate;
+
 @Entity
 @Table(name = "donations")
 @AllArgsConstructor
@@ -25,6 +27,9 @@ public class Donation {
 
     @Column(nullable = false)
     private Boolean isDeleted;
+
+    @Column(nullable = false)
+    private LocalDate lastDonationDate;
 
     public Donation() {
         this.quantity = 0;
