@@ -11,6 +11,7 @@ const topicsToEnsure = [
   { topic: "baja-solicitud-donaciones", numPartitions: 1, replicationFactor: 1 },
   { topic: "eventos-solidarios", numPartitions: 1, replicationFactor: 1 },
   { topic: "oferta-donaciones", numPartitions: 1, replicationFactor: 1 },
+  { topic: "transferencia-donaciones-1", numPartitions: 1, replicationFactor: 1 },
 ];
 
 const wait = (ms) => new Promise((resolve) => setTimeout(resolve, ms));

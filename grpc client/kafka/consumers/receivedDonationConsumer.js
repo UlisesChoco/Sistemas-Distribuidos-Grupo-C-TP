@@ -1,5 +1,6 @@
 const { Kafka } = require('kafkajs');
 const { getListAsync, updateAsync, createAsync } = require('../../clients/inventoryClient');
+const donationClient = require('../../clients/donationClient');
 const clientId = "received-donation-consumer";
 const brokers = ["kafka:9092"];
 
@@ -32,11 +33,24 @@ const consume = async () => {
                 const currentInventoryResponse = await getListAsync();
                 const ourInventory = currentInventoryResponse.inventories || [];
 
+                const currentDonationResponse = donationClient.GetDonationList({}, (error, response) => {
+                    if (error) {
+                        console.error('Error al obtener la lista de donaciones:', error);
+                        return;
+                    }
+                    return response;
+                });
+                const ourDonations = currentDonationResponse.donations || [];
+
                 // 2. Procesamos cada item donado
                 for (const donatedItem of donationItems) {
                     // Buscamos si el item ya existe en nuestro inventario
                     const existingItem = ourInventory.find(inv =>
                         inv.category === donatedItem.categoria && inv.description === donatedItem.descripcion
+                    );
+
+                    const existingDonation = ourDonations.find(don =>
+                        don.category === donatedItem.categoria && don.description === donatedItem.descripcion
                     );
 
                     if (existingItem) {
@@ -68,8 +82,39 @@ const consume = async () => {
                         await createAsync(createDto);
                         console.log(`[gRPC] Nuevo item "${donatedItem.descripcion}" creado en el inventario.`);
                     }
+
+                    if (existingDonation) {
+                        const updateDto = {
+                            idDonation: null,
+                            category: existingDonation.category,
+                            description: existingDonation.description,
+                            quantity: donatedItem.cantidad,
+                            isDeleted: false
+                        };
+                        donationClient.CreateDonation(updateDto, (error, response) => {
+                            if (error) {
+                                console.error('Error al actualizar la donación:', error);
+                                return;
+                            }
+                        });
+                    } else {
+                        const updateDto = {
+                            idDonation: null,
+                            category: donatedItem.categoria,
+                            description: donatedItem.descripcion,
+                            quantity: donatedItem.cantidad,
+                            isDeleted: false
+                        };
+                        console.log("Voy a persistir esto: ", updateDto);
+                        donationClient.CreateDonation(updateDto, (error, response) => {
+                            if (error) {
+                                console.error('Error al actualizar la donación:', error);
+                                return;
+                            }
+                        });
+                    }
                 }
-                 console.log("--- Procesamiento de donación completado ---");
+                console.log("--- Procesamiento de donación completado ---");
 
             } catch (error) {
                 console.error('Error procesando el mensaje de Kafka o llamando a gRPC:', error);
