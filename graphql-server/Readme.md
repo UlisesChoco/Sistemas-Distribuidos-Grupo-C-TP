@@ -40,6 +40,34 @@ query {
 }
 ```
 
+* Obtener donaciones hechas o no por nosotros
+
+```bash
+query {
+  donationsByMadeByOurselves(madeByOurselves: true) {
+    category
+    description
+    quantity
+    deleted
+    lastDonationDate
+  }
+}
+```
+
+* Obtener una donación por filtros
+```bash
+query {
+  donationsFiltered(category: "ROPA", dateFrom: "2022-01-02", dateTo: "2022-01-10", deleted: false, madeByOurselves: true) {
+    category
+    description
+    quantity
+    deleted
+    lastDonationDate
+  }
+}
+```
+
+
 * Obtener todos los eventos
 
 ```bash
