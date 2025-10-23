@@ -9,6 +9,7 @@ import java.util.List;
 public interface IDonationService {
     List<Donation> findAll();
     Donation save(Donation donation) throws DonationException;
+    boolean existsByCategoryAndDescriptionAndMadeByOurselves(Inventory.Category category, String description, Boolean madeByOurselves);
     void updateStock(List<Donation> donations) throws DonationException;
     boolean existsByCategoryAndDescription(Inventory.Category category, String description);
     Donation findByCategoryAndDescription(Inventory.Category category, String description);

@@ -31,6 +31,9 @@ public class Donation {
     @Column(nullable = false)
     private LocalDate lastDonationDate;
 
+    @Column(nullable = false)
+    private Boolean madeByOurselves;
+
     public Donation() {
         this.quantity = 0;
     }

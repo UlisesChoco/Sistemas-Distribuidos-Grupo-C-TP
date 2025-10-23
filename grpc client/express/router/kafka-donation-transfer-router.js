@@ -3,6 +3,7 @@ const express = require('express');
 const jwtAuth = require("../auth/jwt-auth");
 const donationTransferRouter = express.Router();
 const donationTransferProducer = require("../../kafka/producers/donationTransferProducer");
+const donationClient = require('../../clients/donationClient');
 const { updateAsync, getByIdAsync } = require('../../clients/inventoryClient');
 
 //view
@@ -20,6 +21,14 @@ donationTransferRouter.post("/create", jwtAuth, async (req, res) => {
     const donations = req.body.donations;
 
     try {
+        const currentDonationResponse = donationClient.GetDonationList({}, (error, response) => {
+            if (error) {
+                console.error('Error al obtener la lista de donaciones:', error);
+                return;
+            }
+            return response;
+        });
+        const ourDonations = currentDonationResponse.donations || [];
         for (const donation of donations) {
             const inventoryFromDB = await getByIdAsync(donation.id);
 
@@ -37,8 +46,28 @@ donationTransferRouter.post("/create", jwtAuth, async (req, res) => {
                 description: donation.description,
                 quantity: newQuantity
             };
-            
+
             await updateAsync(inventoryDto);
+
+            const existingDonation = ourDonations.find(don =>
+                don.category === donation.category && don.description === donation.description
+            );
+
+            const donationDto = {
+                idDonation: null,
+                category: (existingDonation) ? existingDonation.category : donation.category,
+                description: (existingDonation) ? existingDonation.description : donation.description,
+                quantity: donation.quantity,
+                isDeleted: false,
+                madeByOurselves: true
+            };
+
+            donationClient.CreateDonation(donationDto, (error, response) => {
+                if (error) {
+                    console.error('Error al actualizar la donación:', error);
+                    return;
+                }
+            });
         }
 
         donationTransferProducer.transferDonation(organizationId, 1, donations);

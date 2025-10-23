@@ -10,6 +10,8 @@ module.exports = gql`
         description: String!
         quantity: Int!
         deleted: Boolean!
+        lastDonationDate: String!
+        madeByOurselves: Boolean!
     }
 
     # define los campos que se necesitan para la mutation

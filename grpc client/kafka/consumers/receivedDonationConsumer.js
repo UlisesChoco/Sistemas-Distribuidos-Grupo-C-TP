@@ -103,7 +103,8 @@ const consume = async () => {
                             category: donatedItem.categoria,
                             description: donatedItem.descripcion,
                             quantity: donatedItem.cantidad,
-                            isDeleted: false
+                            isDeleted: false,
+                            madeByOurselves: false
                         };
                         console.log("Voy a persistir esto: ", updateDto);
                         donationClient.CreateDonation(updateDto, (error, response) => {

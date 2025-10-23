@@ -30,11 +30,12 @@ public class DonationServiceImpl implements IDonationService {
         DonationValidator.validate(donation);
         Inventory.Category category = donation.getCategory();
         String description = donation.getDescription();
+        Boolean madeByOurselves = donation.getMadeByOurselves();
         Donation donationForDB = new Donation();
 
         //en caso de que ya exista una donacion de este tipo, sobreescribo el objeto con el de la bd
-        if(existsByCategoryAndDescription(category, description))
-            donationForDB = donationRepository.findByCategoryAndDescription(category, description);
+        if(existsByCategoryAndDescriptionAndMadeByOurselves(category, description, madeByOurselves))
+            donationForDB = donationRepository.findByCategoryAndDescriptionAndMadeByOurselves(category, description, madeByOurselves);
 
         Integer newQuantity = donationForDB.getQuantity() + donation.getQuantity();
         donationForDB.setQuantity(newQuantity);
@@ -42,8 +43,14 @@ public class DonationServiceImpl implements IDonationService {
         donationForDB.setDescription(description);
         donationForDB.setIsDeleted(false);
         donationForDB.setLastDonationDate(LocalDate.now());
+        donationForDB.setMadeByOurselves(donation.getMadeByOurselves());
 
         return donationRepository.save(donationForDB);
+    }
+
+    @Override
+    public boolean existsByCategoryAndDescriptionAndMadeByOurselves(Inventory.Category category, String description, Boolean madeByOurselves) {
+        return donationRepository.existsByCategoryAndDescriptionAndMadeByOurselves(category, description, madeByOurselves);
     }
 
     @Transactional

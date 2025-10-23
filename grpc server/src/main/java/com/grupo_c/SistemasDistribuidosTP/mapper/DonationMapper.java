@@ -14,14 +14,15 @@ public class DonationMapper {
                 .setDescription(donation.getDescription())
                 .setQuantity(donation.getQuantity())
                 .setIsDeleted(donation.getIsDeleted())
+                .setMadeByOurselves(donation.getMadeByOurselves())
                 .build();
     }
 
     public static DonationServiceClass.DonationListResponse toDonationListResponse(List<Donation> donations) {
-        DonationServiceClass.DonationListResponse donationListResponse = DonationServiceClass.DonationListResponse.getDefaultInstance();
+        DonationServiceClass.DonationListResponse.Builder builder = DonationServiceClass.DonationListResponse.newBuilder();
         for(Donation donation : donations)
-            donationListResponse.getDonationsList().add(toDonationDTO(donation));
-        return donationListResponse;
+            builder.addDonations(toDonationDTO(donation));
+        return builder.build();
     }
 
     public static Donation toDonation(DonationServiceClass.DonationDTO request) {
@@ -36,6 +37,7 @@ public class DonationMapper {
         donation.setDescription(request.getDescription());
         donation.setQuantity(request.getQuantity());
         donation.setIsDeleted(request.getIsDeleted());
+        donation.setMadeByOurselves(request.getMadeByOurselves());
         return donation;
     }
 

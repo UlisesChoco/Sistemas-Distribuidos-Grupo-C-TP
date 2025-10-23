@@ -28,7 +28,7 @@ public class DonationServiceGrpcImpl extends DonationServiceGrpc.DonationService
             responseObserver.onNext(donationListResponses);
             responseObserver.onCompleted();
         } catch (Exception e) {
-            e.printStackTrace(); // o log.error(...)
+            e.printStackTrace();
             responseObserver.onError(
                     Status.INTERNAL
                             .withDescription("Error obteniendo lista de donaciones: " + e.getMessage())
