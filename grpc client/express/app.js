@@ -56,6 +56,10 @@ app.use("/donation-offers", donationOffersRouter);
 const soapRouter = require("./router/soap-router.js");
 app.use("/queries", soapRouter);
 
+//routers graphql
+const graphQLDonationsRouter = require("./router/graphql-donations-router.js");
+app.use("/donations", graphQLDonationsRouter);
+
 // Rutas principales
 app.get("/", (req, res) => {
   res.render("index");
