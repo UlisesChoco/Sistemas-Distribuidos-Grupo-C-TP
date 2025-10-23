@@ -3,7 +3,7 @@ const DonationFilter = require('../../models/DonationFilter');
 module.exports = {
   Query: {
     filters: () => DonationFilter.getAll(),
-    filtersById: (_, { user_id }) => DonationFilter.getById(user_id)
+    filtersByUser: (_, { user_id }) => DonationFilter.getByUser(user_id)
   },
 
   Mutation: {

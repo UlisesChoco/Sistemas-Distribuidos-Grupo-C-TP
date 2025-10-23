@@ -155,3 +155,101 @@ mutation {
   deleteDonation(id: "1")
 }
 ```
+
+# Filtros de donaciones
+
+## Ejemplos de Query
+
+* Obtener todos los filtros de donaciones
+
+```bash
+query {
+  filters {
+    id,
+    name,
+    category,
+    dateFrom,
+    dateTo,
+    deleted,
+    user_id
+  }
+}
+```
+
+* Obtener todos los filtros de donaciones de un usuario
+
+```bash
+query {
+  filtersByUser(user_id: 1) {
+    id,
+    name,
+    category,
+    dateFrom,
+    dateTo,
+    deleted,
+    user_id
+  }
+}
+```
+
+## Ejemplos de Mutaciones
+
+* Crear un nuevo filtro de donación
+
+```bash
+mutation {
+  addFilter(
+    input: 
+    	{ 
+        name: "Primer Filtro",
+        category: null,
+        dateFrom: null,
+        dateTo: null,
+        deleted: null,
+        user_id: 1
+      }
+  ) {
+    id,
+    name,
+    category,
+    dateFrom,
+    dateTo,
+    deleted,
+    user_id
+  }
+}
+```
+
+* Actualizar un filtro de donación
+
+```bash
+mutation {
+  updateFilter(
+    id: 2,
+    input: {
+      name: "Filtro modificado",
+      category: "ROPA",
+      dateFrom: null,
+      dateTo: null,
+      deleted: false,
+      user_id: 1
+    }
+  ) {
+    id,
+    name,
+    category,
+    dateFrom,
+    dateTo,
+    deleted,
+    user_id
+  }
+}
+```
+
+* Eliminar un filtro de donación
+
+```bash
+mutation {
+  deleteFilter(id: 2)
+}
+```

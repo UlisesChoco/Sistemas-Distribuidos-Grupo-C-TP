@@ -2,26 +2,36 @@ const { gql } = require('graphql-tag');
 
 module.exports = gql`
     # datos de la entidad
-    type Filter {
+    type DonationFilter {
         id: ID!
         name: String!
+        category: String
+        dateFrom: String
+        dateTo: String
+        deleted: Boolean
+        user_id: ID!
     }
 
     # datos para crear/modificar el filtro
-    input FilterInput {
+    input DonationFilterInput {
         name: String!
+        category: String
+        dateFrom: String
+        dateTo: String
+        deleted: Boolean
+        user_id: ID!
     }
 
     # solo para consultas
     type Query {
-        filters: [Filter!]!
-        filtersById(user_id: ID!): [Filter!]!
+        filters: [DonationFilter!]!
+        filtersByUser(user_id: ID!): [DonationFilter!]!
     }
 
     # cambios en la base de datos
     type Mutation {
-        addFilter(input: FilterInput!): Filter!
-        updateFilter(id: ID!, input: FilterInput!): Filter!
+        addFilter(input: DonationFilterInput!): DonationFilter!
+        updateFilter(id: ID!, input: DonationFilterInput!): DonationFilter!
         deleteFilter(id: ID!): Boolean!
     }
 `;
