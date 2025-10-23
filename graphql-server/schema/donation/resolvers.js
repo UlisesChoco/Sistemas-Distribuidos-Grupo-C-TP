@@ -5,7 +5,9 @@ const Donation = require('../../models/Donation');
 module.exports = {
   Query: {
     donations: () => Donation.getAll(),
-    donation: (_, { id }) => Donation.getById(id)
+    donation: (_, { id }) => Donation.getById(id),
+    donationsByMadeByOurselves: (_, { madeByOurselves }) => Donation.getByMadeByOurselves(madeByOurselves),
+    donationsFiltered: (_, { category, dateFrom, dateTo, deleted, madeByOurselves }) => Donation.getFiltered(category, dateFrom, dateTo, deleted, madeByOurselves)
   },
   // métodos de prueba, el enunciado no los pide para esta entidad
   Mutation: {

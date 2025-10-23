@@ -26,6 +26,8 @@ module.exports = gql`
     type Query {
         donations: [Donation!]!
         donation(id: ID!): Donation
+        donationsByMadeByOurselves(madeByOurselves: Boolean!): [Donation!]!
+        donationsFiltered(category: String, dateFrom: String, dateTo: String, deleted: Boolean!, madeByOurselves: Boolean!): [Donation!]!
     }
 
     # cambios en la base de datos

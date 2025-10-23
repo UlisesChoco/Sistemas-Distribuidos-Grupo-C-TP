@@ -24,6 +24,7 @@ query {
     description
     quantity
     deleted
+    lastDonationDate
   }
 }
 ```
