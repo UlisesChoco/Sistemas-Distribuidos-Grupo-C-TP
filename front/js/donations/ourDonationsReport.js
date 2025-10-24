@@ -58,6 +58,7 @@ const clearFilters = () => {
     document.getElementById('dateFrom').value = '';
     document.getElementById('dateTo').value = '';
     document.getElementById('deleted').value = '';
+    document.getElementById('saved-filters').value = '';
 }
 const clearFiltersButton = document.getElementById('clear-filters');
 clearFiltersButton.addEventListener('click', clearFilters);

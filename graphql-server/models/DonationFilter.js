@@ -34,6 +34,17 @@ const DonationFilter = {
             console.error("Error fetching donation filters by user:", error);
         }
     },
+    getById: async (id) => {
+        try {
+            const query = 'SELECT * FROM donation_filter WHERE id = ?';
+            const params = [id];
+            const [rows] = await pool.query(query, params);
+            const mappedRows = DonationFilter.mapRows(rows);
+            return mappedRows.length > 0 ? mappedRows[0] : null;
+        } catch(error) {
+            console.error("Error fetching donation filter by id:", error);
+        }
+    },
     //mutations
     create: async ({ name, category, dateFrom, dateTo, deleted, user_id }) => {
         try {

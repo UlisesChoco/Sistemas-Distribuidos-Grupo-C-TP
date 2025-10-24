@@ -9,11 +9,13 @@
     <title>Document</title>
 </head>
 <body>
-    <h1>ONG Empuje Comunitario - Gestión de Usuarios</h1>
+    <h1>ONG Empuje Comunitario - Gestión de Donaciones</h1>
     <p class="slogan">“Trabajamos juntos por una comunidad más fuerte y solidaria.”</p>
     <%- include('../templates/navbarDonationReports') %>
     <%- include('../templates/donationsReportFilters') %>
 
+    <div id="success"></div>
+    <div id="error"></div>
     <section>
         <div class="container">
             <h1>Donaciones recibidas</h1>
@@ -44,6 +46,8 @@
         </div>
     </section>
     <%- include('../templates/footer') %>
+    <input type="hidden" id="userId" value="<%= userId %>">
     <script src="/js/donations/receivedDonationsReport.js"></script>
+    <script src="/js/donations/donationsReportFilters.js"></script>
 </body>
 </html>

@@ -26,6 +26,7 @@ module.exports = gql`
     type Query {
         filters: [DonationFilter!]!
         filtersByUser(user_id: ID!): [DonationFilter!]!
+        filterById(id: ID!): DonationFilter!
     }
 
     # cambios en la base de datos

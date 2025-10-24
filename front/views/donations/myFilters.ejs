@@ -12,32 +12,21 @@
     <h1>ONG Empuje Comunitario - Gestión de Donaciones</h1>
     <p class="slogan">“Trabajamos juntos por una comunidad más fuerte y solidaria.”</p>
     <%- include('../templates/navbarDonationReports') %>
-    <%- include('../templates/donationsReportFilters') %>
-
     <div id="success"></div>
     <div id="error"></div>
+    <input type="hidden" id="userId" value="<%= userId %>">
     <section>
         <div class="container">
-            <h1>Donaciones realizadas</h1>
-            <table id="donationsTable">
+            <h1>Mis filtros</h1>
+            <table id="filtersTable">
                 <thead>
                     <tr>
+                        <th>Nombre</th>
                         <th>Categoría</th>
-                        <th>Descripción</th>
-                        <th>Cantidad</th>
+                        <th>Fecha desde</th>
+                        <th>Fecha hasta</th>
                         <th>Eliminada</th>
-                        <th>Fecha de la última donación</th>
-                    </tr>
-                </thead>
-                <tbody>
-                </tbody>
-            </table>
-            <h1>Resumen por categorías</h1>
-            <table id="resumeTable">
-                <thead>
-                    <tr>
-                        <th>Categoría</th>
-                        <th>Cantidad Total</th>
+                        <th>Acción</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -46,8 +35,6 @@
         </div>
     </section>
     <%- include('../templates/footer') %>
-    <input type="hidden" id="userId" value="<%= userId %>">
-    <script src="/js/donations/ourDonationsReport.js"></script>
-    <script src="/js/donations/donationsReportFilters.js"></script>
+    <script src="/js/donations/myFilters.js"></script>
 </body>
 </html>
