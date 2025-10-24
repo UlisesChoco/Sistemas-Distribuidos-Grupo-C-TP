@@ -192,6 +192,23 @@ query {
 }
 ```
 
+* Obtener un filtro de donación por su ID
+
+```bash
+query {
+  filterById(id: 1) {
+    id,
+    name,
+    category,
+    dateFrom,
+    dateTo,
+    deleted,
+    user_id
+  }
+}
+```
+
+
 ## Ejemplos de Mutaciones
 
 * Crear un nuevo filtro de donación
