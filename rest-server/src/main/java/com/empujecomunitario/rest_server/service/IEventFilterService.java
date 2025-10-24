@@ -2,28 +2,22 @@ package com.empujecomunitario.rest_server.service;
 
 import org.springframework.stereotype.Service;
 
-import com.empujecomunitario.rest_server.entity.EventFilter;
-import com.empujecomunitario.rest_server.repository.IEventFilterRepository;
+import com.empujecomunitario.rest_server.dto.EventFilterRequest;
+import com.empujecomunitario.rest_server.dto.EventFilterResponse;
 
 import java.util.List;
 
 @Service
-public class IEventFilterService {
-    private final IEventFilterRepository repository;
+public interface IEventFilterService {
+    List<EventFilterResponse> getFiltersByUser(Long userId);
 
-    public IEventFilterService(IEventFilterRepository repository) {
-        this.repository = repository;
-    }
+    EventFilterResponse getFilterById(Long id);
 
-    public List<EventFilter> getFiltersByUser(Long userId) {
-        return repository.findByUserId(userId);
-    }
+    List<EventFilterResponse> getAllFilters();
 
-    public EventFilter createFilter(EventFilter filter) {
-        return repository.save(filter);
-    }
+    EventFilterResponse createFilter(EventFilterRequest request);
 
-    public void deleteFilter(Long id) {
-        repository.deleteById(id);
-    }
+    EventFilterResponse updateFilter(Long id, EventFilterRequest request);
+
+    void deleteFilter(Long id);
 }
