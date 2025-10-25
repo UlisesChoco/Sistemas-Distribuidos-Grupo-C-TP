@@ -12,13 +12,14 @@ import java.util.List;
 @Repository
 public interface IEventRepository extends JpaRepository<Event, Long> {
 
-    @Query("SELECT e FROM Event e WHERE " +
-            "(:fechaDesde IS NULL OR e.date >= :fechaDesde) AND " +
-            "(:fechaHasta IS NULL OR e.date <= :fechaHasta) AND " +
-            "(:repartoDonaciones IS NULL OR COALESCE(e.hasDonationDistribution, false) = :repartoDonaciones) AND " +
-            "(:completados IS NULL OR COALESCE(e.isCompleted, false) = :completados)")
-    List<Event> findWithFilters(@Param("fechaDesde") LocalDateTime fechaDesde, // ← Cambiar a LocalDateTime
-            @Param("fechaHasta") LocalDateTime fechaHasta, // ← Cambiar a LocalDateTime
-            @Param("repartoDonaciones") Boolean repartoDonaciones,
-            @Param("completados") Boolean completados);
+        @Query("SELECT e FROM Event e WHERE " +
+                        "(:fechaDesde IS NULL OR e.date >= :fechaDesde) AND " +
+                        "(:fechaHasta IS NULL OR e.date <= :fechaHasta) AND " +
+                        "(:repartoDonaciones IS NULL OR COALESCE(e.hasDonationDistribution, false) = :repartoDonaciones) AND "
+                        +
+                        "(:completados IS NULL OR COALESCE(e.isCompleted, false) = :completados)")
+        List<Event> findWithFilters(@Param("fechaDesde") LocalDateTime fechaDesde,
+                        @Param("fechaHasta") LocalDateTime fechaHasta,
+                        @Param("repartoDonaciones") Boolean repartoDonaciones,
+                        @Param("completados") Boolean completados);
 }

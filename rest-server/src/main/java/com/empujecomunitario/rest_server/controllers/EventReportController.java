@@ -40,7 +40,6 @@ public class EventReportController {
                         @RequestParam(required = false) Boolean completados) {
 
                 try {
-                        // Convertir a LocalDateTime (incluye hora)
                         LocalDateTime fechaDesdeDateTime = fechaDesde != null
                                         ? LocalDate.parse(fechaDesde).atStartOfDay()
                                         : null;

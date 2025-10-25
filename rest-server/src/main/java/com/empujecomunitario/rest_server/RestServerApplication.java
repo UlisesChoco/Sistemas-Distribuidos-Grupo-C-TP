@@ -15,37 +15,32 @@ public class RestServerApplication {
 	public static void main(String[] args) {
 		ApplicationContext ctx = SpringApplication.run(RestServerApplication.class, args);
 
-		System.out.println("🎯 DIAGNÓSTICO DE CONTROLLERS");
+		System.out.println("DIAGNÓSTICO DE CONTROLLERS");
 
-		// 1. Ver todos los beans que contengan "controller"
 		String[] allBeans = ctx.getBeanDefinitionNames();
 		for (String bean : allBeans) {
 			if (bean.toLowerCase().contains("controller")) {
-				System.out.println("✅ CONTROLLER BEAN: " + bean);
+				System.out.println("CONTROLLER BEAN: " + bean);
 			}
 		}
 
-		// 2. Verificar paquete de scanning
-		System.out.println("📁 PAQUETE ACTUAL: " + RestServerApplication.class.getPackage().getName());
+		System.out.println("PAQUETE ACTUAL: " + RestServerApplication.class.getPackage().getName());
 
-		// 3. Buscar específicamente tus controllers
 		try {
 			Object controller = ctx.getBean("eventFilterController");
-			System.out.println("✅ EventFilterController ENCONTRADO: " + controller.getClass());
+			System.out.println("EventFilterController ENCONTRADO: " + controller.getClass());
 		} catch (Exception e) {
-			System.out.println("❌ EventFilterController NO ENCONTRADO: " + e.getMessage());
+			System.out.println("EventFilterController NO ENCONTRADO: " + e.getMessage());
 		}
 
-		// 4. BUSCAR EVENT REPORT CONTROLLER ESPECÍFICAMENTE
 		try {
 			Object controller = ctx.getBean("eventReportController");
-			System.out.println("✅ EventReportController ENCONTRADO: " + controller.getClass());
+			System.out.println("EventReportController ENCONTRADO: " + controller.getClass());
 		} catch (Exception e) {
-			System.out.println("❌ EventReportController NO ENCONTRADO: " + e.getMessage());
+			System.out.println("EventReportController NO ENCONTRADO: " + e.getMessage());
 		}
 
-		// 5. Ver mappings específicos
-		System.out.println("🔄 BUSCANDO MAPPINGS PARA /api/events/report");
+		System.out.println("BUSCANDO MAPPINGS PARA /api/events/report");
 
 	}
 

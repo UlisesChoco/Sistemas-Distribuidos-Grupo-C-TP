@@ -2,7 +2,6 @@ FROM openjdk:17-slim AS builder
 
 WORKDIR /app
 
-# Instala Maven manualmente
 RUN apt-get update && apt-get install -y maven
 
 COPY .mvn/ .mvn/
