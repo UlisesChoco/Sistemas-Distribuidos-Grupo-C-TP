@@ -1,6 +1,6 @@
 const soap = require('soap');
 
-const WSDL_URL = 'https://soap-app-latest.onrender.com/?wsdl'
+const WSDL_URL = process.env.WSDL_URL || 'https://soap-app-latest.onrender.com/?wsdl';
 
 const soapHeaders = {
     Auth: {
