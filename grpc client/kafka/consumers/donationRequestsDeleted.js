@@ -16,7 +16,7 @@ let deletedRequests = [];
 const startDeletedRequestsConsumer = async () => {
   try {
     await consumer.connect();
-    console.log("✅ Consumer conectado a Kafka");
+    console.log("Consumer conectado a Kafka");
 
     await consumer.subscribe({
       topic: "baja-solicitud-donaciones",
@@ -32,15 +32,15 @@ const startDeletedRequestsConsumer = async () => {
             deletedRequests.push(data.request_id);
             console.log(`Solicitud dada de baja: ${data.request_id} (org: ${data.organization_id})`);
           } else {
-            console.warn("⚠️ Mensaje recibido sin request_id:", data);
+            console.warn("Mensaje recibido sin request_id:", data);
           }
         } catch (err) {
-          console.error("❌ Error al procesar mensaje:", err);
+          console.error("Error al procesar mensaje:", err);
         }
       },
     });
   } catch (err) {
-    console.error("❌ Error al iniciar consumer:", err);
+    console.error("Error al iniciar consumer:", err);
   }
 };
 

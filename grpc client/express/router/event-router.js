@@ -358,7 +358,7 @@ router.get('/', jwtAuth ,(req, res) => {
 
     eventClient.GetEventsWithoutParticipantsList(requestBody, metadata, (err, response) => {
         if (err) return res.status(500).json({ error: err.message });
-        res.render('events/events', {events: response.events, roles: req.user.roles});
+        res.render('events/events', {events: response.events, roles: req.user.roles, userId: req.user.id});
     });
 
 });

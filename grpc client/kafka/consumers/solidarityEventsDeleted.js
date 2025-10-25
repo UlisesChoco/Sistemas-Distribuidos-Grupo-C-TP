@@ -15,7 +15,7 @@ let deletedEvents = [];
 const startDeletedEventsConsumer = async () => {
   try {
     await consumer.connect();
-    console.log("✅ Consumer de bajas de eventos conectado a Kafka");
+    console.log("Consumer de bajas de eventos conectado a Kafka");
 
     await consumer.subscribe({
       topic: "baja-evento-solidario",
@@ -31,15 +31,15 @@ const startDeletedEventsConsumer = async () => {
             deletedEvents.push(data.event_id);
             console.log(`Evento eliminado: ${data.event_id} (org: ${data.organization_id})`);
           } else {
-            console.warn("⚠️ Mensaje recibido sin event_id:", data);
+            console.warn("Mensaje recibido sin event_id:", data);
           }
         } catch (err) {
-          console.error("❌ Error al procesar mensaje:", err);
+          console.error("Error al procesar mensaje:", err);
         }
       },
     });
   } catch (err) {
-    console.error("❌ Error al iniciar consumer de bajas de eventos:", err);
+    console.error("Error al iniciar consumer de bajas de eventos:", err);
   }
 };
 
@@ -50,4 +50,4 @@ const getDeletedEvents = () => deletedEvents;
 export { startDeletedEventsConsumer, getDeletedEvents };
 
 
-console.log("🚀 Consumer de bajas de eventos iniciado");
+console.log("Consumer de bajas de eventos iniciado");

@@ -6,7 +6,6 @@ import org.springframework.web.bind.annotation.*;
 
 import com.empujecomunitario.rest_server.dto.EventFilterRequest;
 import com.empujecomunitario.rest_server.dto.EventFilterResponse;
-import com.empujecomunitario.rest_server.service.IEventFilterService;
 import com.empujecomunitario.rest_server.serviceImpl.EventFilterService;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -16,7 +15,7 @@ import jakarta.validation.Valid;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/filters")
+@RequestMapping("/filters")
 @Tag(name = "Gestión de Filtros", description = "Operaciones para guardar, editar y eliminar filtros personalizados de eventos")
 public class EventFilterController {
 
