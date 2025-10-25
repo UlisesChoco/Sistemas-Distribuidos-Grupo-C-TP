@@ -175,8 +175,20 @@ document.getElementById('saved-filters').addEventListener('change', async (event
     const data = await res.json();
     const filter = data.data.filterById;
     document.getElementById('category').value = filter.category || 'TODAS';
-    filter.dateFrom = filter.dateFrom ? new Date(filter.dateFrom).toISOString().split('T')[0] : '';
-    filter.dateTo = filter.dateTo ? new Date(filter.dateTo).toISOString().split('T')[0] : '';
+    if (filter.dateFrom) {
+        const [day, month, year] = filter.dateFrom.split('/');
+        const parsedDate = new Date(`${year}-${month}-${day}`);
+        filter.dateFrom = parsedDate.toISOString().split('T')[0];
+    } else {
+        filter.dateFrom = null;
+    }
+    if (filter.dateTo) {
+        const [day, month, year] = filter.dateTo.split('/');
+        const parsedDate = new Date(`${year}-${month}-${day}`);
+        filter.dateTo = parsedDate.toISOString().split('T')[0];
+    } else {
+        filter.dateTo = null;
+    }
     document.getElementById('dateFrom').value = filter.dateFrom;
     document.getElementById('dateTo').value = filter.dateTo;
     document.getElementById('deleted').value = filter.deleted === null ? '' : filter.deleted.toString();
