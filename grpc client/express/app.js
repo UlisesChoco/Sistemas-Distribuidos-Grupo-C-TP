@@ -15,6 +15,7 @@ const deletedEventsConsumer = require('../kafka/consumers/solidarityEventsDelete
 const deletedRequestsConsumer = require('../kafka/consumers/donationRequestsDeleted.js');
 const donationRequestsConsumer = require('../kafka/consumers/donationRequests.js');
 const { runDonationOffersConsumer } = require('../kafka/consumers/donationOffers');
+const receivedDonationConsumer = require('../kafka/consumers/receivedDonationConsumer.js');
 
 const app = express();
 const port = process.env.PORT || 9091;
@@ -99,7 +100,7 @@ async function startApp() {
             deletedRequestsConsumer.startDeletedRequestsConsumer().catch(console.error),
             donationRequestsConsumer.startConsuming(),
             runDonationOffersConsumer().catch(err => console.error("Fallo el consumidor de ofertas:", err)),
-            require('../kafka/consumers/receivedDonationConsumer.js') // <--- AQUI ESTA LA IMPLEMENTACION
+            receivedDonationConsumer.consume().catch(err => console.error("Fallo el consumidor de donaciones recibidas:", err))
         ]);
         app.listen(port, () => {
             console.log(`Express app listening on port ${port}.`);

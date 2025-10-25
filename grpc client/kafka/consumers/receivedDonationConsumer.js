@@ -33,14 +33,9 @@ const consume = async () => {
                 const currentInventoryResponse = await getListAsync();
                 const ourInventory = currentInventoryResponse.inventories || [];
 
-                const currentDonationResponse = donationClient.GetDonationList({}, (error, response) => {
-                    if (error) {
-                        console.error('Error al obtener la lista de donaciones:', error);
-                        return;
-                    }
-                    return response;
-                });
+                const currentDonationResponse = await getDonationListAsync();
                 const ourDonations = currentDonationResponse.donations || [];
+                console.log(ourDonations);
 
                 // 2. Procesamos cada item donado
                 for (const donatedItem of donationItems) {
@@ -91,12 +86,7 @@ const consume = async () => {
                             quantity: donatedItem.cantidad,
                             isDeleted: false
                         };
-                        donationClient.CreateDonation(updateDto, (error, response) => {
-                            if (error) {
-                                console.error('Error al actualizar la donación:', error);
-                                return;
-                            }
-                        });
+                        await createDonationAsync(updateDto);
                     } else {
                         const updateDto = {
                             idDonation: null,
@@ -107,16 +97,10 @@ const consume = async () => {
                             madeByOurselves: false
                         };
                         console.log("Voy a persistir esto: ", updateDto);
-                        donationClient.CreateDonation(updateDto, (error, response) => {
-                            if (error) {
-                                console.error('Error al actualizar la donación:', error);
-                                return;
-                            }
-                        });
+                        await createDonationAsync(updateDto);
                     }
                 }
                 console.log("--- Procesamiento de donación completado ---");
-
             } catch (error) {
                 console.error('Error procesando el mensaje de Kafka o llamando a gRPC:', error);
             }
@@ -124,9 +108,24 @@ const consume = async () => {
     });
 };
 
-// Auto-ejecutamos el consumidor al iniciar la aplicación
-consume().catch(err => {
-    console.error("Error fatal en el consumidor de Kafka:", err);
-});
+function getDonationListAsync() {
+    return new Promise((resolve, reject) => {
+        donationClient.GetDonationList({}, (error, response) => {
+            if (error) return reject(error);
+            resolve(response);
+        });
+    });
+}
+
+function createDonationAsync(dto) {
+    return new Promise((resolve, reject) => {
+        donationClient.CreateDonation(dto, (error, response) => {
+            if (error) return reject(error);
+            console.log(response);
+            resolve(response);
+        });
+    });
+}
+
 
 module.exports = { consume };
